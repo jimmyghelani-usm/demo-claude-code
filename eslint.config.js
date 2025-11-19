@@ -10,7 +10,7 @@ import tsparser from '@typescript-eslint/parser'
 
 export default [// Ignore patterns
 {
-  ignores: ['dist', 'node_modules', '.vite', 'build'],
+  ignores: ['dist', 'node_modules', '.vite', 'build', 'storybook-static', '**/*.md', '**/*.txt'],
 }, // Base configuration for all files
 {
   files: ['**/*.{ts,tsx}'],

@@ -40,5 +40,14 @@
     // Vitest types
     "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
-  "include": ["src/**/*", "src/**/*.tsx"]
+  "include": ["src/**/*", "src/**/*.tsx"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "**/*.md",
+    "**/*.txt",
+    "*.md",
+    "*.txt"
+  ]
 }
