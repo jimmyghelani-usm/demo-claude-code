@@ -18,7 +18,7 @@
     "type-check": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "test:storybook": "npx vitest --project=storybook",
+    "test:storybook": "npx vitest --project=storybook"
   },
   "repository": {
     "type": "git",
