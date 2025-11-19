@@ -1,0 +1,34 @@
+# Dependencies
+node_modules
+
+# Build outputs
+dist
+build
+.vite
+
+# Cache directories
+.cache
+.parcel-cache
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+
+# IDE
+.idea
+.vscode
+
+# Git
+.git
+
+# Package manager
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
