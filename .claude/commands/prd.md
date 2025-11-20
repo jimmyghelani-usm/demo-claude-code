@@ -1,8 +1,14 @@
 ---
-description: Create a PRD (Product Requirements Document)
+description: Create a standalone PRD without implementation (for planning/review phase)
 ---
 
-# Create Product Requirements Document
+# Create Product Requirements Document (Standalone)
+
+**Use this when**: You need a PRD for planning, stakeholder review, or documentation without immediate implementation.
+
+**For complete implementation**: Use `/implement-linear <ticket-id>` which creates PRD + implements + tests.
+
+---
 
 ## Step 1: Create PRD
 Use the Task tool with subagent_type='prd-writer' to create a comprehensive Product Requirements Document based on the following requirements:

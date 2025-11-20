@@ -1,8 +1,14 @@
 ---
-description: Fetch Linear ticket, create PRD, extract Figma designs, and implement feature with full testing
+description: Complete workflow - Linear ticket → PRD → Figma → Implementation → Testing (use this for end-to-end ticket completion)
 ---
 
 # Complete Linear → Implementation Workflow
+
+**Use this when**: You want complete end-to-end ticket implementation (PRD + code + tests).
+
+**For PRD only**: Use `/prd <requirements>` if you just need planning documentation.
+
+---
 
 You will orchestrate a complete feature implementation workflow from a Linear ticket. Follow these steps in order:
 

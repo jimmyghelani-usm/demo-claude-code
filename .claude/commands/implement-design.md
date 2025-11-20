@@ -1,8 +1,14 @@
 ---
-description: Extract Figma design specifications and implement with full testing and documentation
+description: Extract Figma designs and implement with testing (use when you have Figma URLs and want implementation)
 ---
 
 # Figma Design → Implementation Workflow
+
+**Use this when**: You have Figma design URLs and want to extract specs + implement + test.
+
+**For complete Linear workflow**: Use `/implement-linear <ticket-id>` if starting from a Linear ticket.
+
+---
 
 You will orchestrate a complete design implementation workflow from Figma URLs. Follow these steps:
 
