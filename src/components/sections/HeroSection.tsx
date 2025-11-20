@@ -15,14 +15,14 @@ export const HeroSection: React.FC = () => {
         <div className={styles.content}>
           <h1 className={styles.headline}>
             <span className={styles.primaryText}>US Mobile Trade In</span>
-            <span className={styles.emojiText}>
+            <span className={styles.secondaryText}>
               Get 💰 for your old 📱
             </span>
           </h1>
 
           <p className={styles.subheading}>
-            Trade in your old phone, tablet, or smartwatch and get cash or credit toward your next
-            device. It&apos;s easy, secure, and good for the environment.
+            Trade in your old phone, tablet, or smartwatch. Instant quote. Free shipping. Fast
+            payout.
           </p>
 
           <Button variant="primary" size="lg" onClick={() => {}}>

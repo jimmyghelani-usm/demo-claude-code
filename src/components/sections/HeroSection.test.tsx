@@ -57,14 +57,19 @@ describe('HeroSection', () => {
       expect(subheading).toBeInTheDocument();
     });
 
-    it('mentions cash or credit', () => {
+    it('mentions instant quote', () => {
       render(<HeroSection />);
-      expect(screen.getByText(/get cash or credit/i)).toBeInTheDocument();
+      expect(screen.getByText(/instant quote/i)).toBeInTheDocument();
     });
 
-    it('mentions environmental benefit', () => {
+    it('mentions free shipping', () => {
       render(<HeroSection />);
-      expect(screen.getByText(/good for the environment/i)).toBeInTheDocument();
+      expect(screen.getByText(/free shipping/i)).toBeInTheDocument();
+    });
+
+    it('mentions fast payout', () => {
+      render(<HeroSection />);
+      expect(screen.getByText(/fast payout/i)).toBeInTheDocument();
     });
 
     it('mentions multiple device types', () => {
@@ -228,20 +233,20 @@ describe('HeroSection', () => {
     it('mentions key value propositions', () => {
       render(<HeroSection />);
 
-      // Easy
-      expect(screen.getByText(/easy/i)).toBeInTheDocument();
+      // Instant quote
+      expect(screen.getByText(/instant quote/i)).toBeInTheDocument();
 
-      // Secure
-      expect(screen.getByText(/secure/i)).toBeInTheDocument();
+      // Free shipping
+      expect(screen.getByText(/free shipping/i)).toBeInTheDocument();
 
-      // Good for environment
-      expect(screen.getByText(/good for the environment/i)).toBeInTheDocument();
+      // Fast payout
+      expect(screen.getByText(/fast payout/i)).toBeInTheDocument();
     });
 
-    it('uses proper apostrophe in text', () => {
+    it('has concise and clear messaging', () => {
       render(<HeroSection />);
-      const text = screen.getByText(/it's easy/i);
-      expect(text).toHaveTextContent("It's"); // Checks for proper apostrophe
+      const subheading = screen.getByText(/trade in your old phone, tablet, or smartwatch/i);
+      expect(subheading).toHaveTextContent('Instant quote. Free shipping. Fast payout.');
     });
   });
 

@@ -11,8 +11,8 @@ import { HeroSection } from './HeroSection';
  * - Right column: Device showcase with placeholder graphics
  *
  * ## Content
- * - **Headline**: "US Mobile Trade In" with emoji accent "Get 💰 for your old 📱"
- * - **Subheading**: Explains the trade-in value proposition
+ * - **Headline**: "US Mobile Trade In" (blue #1D5FF6) with emoji accent "Get 💰 for your old 📱"
+ * - **Subheading**: "Trade in your old phone, tablet, or smartwatch. Instant quote. Free shipping. Fast payout."
  * - **CTA Button**: "Check trade in value" (primary, large)
  * - **Device Showcase**: Visual representation of phone, watch, and laptop
  *
@@ -158,11 +158,11 @@ export const HeadlineDetails: Story = {
               }}
             >
               <h3 style={{ fontSize: '16px', marginBottom: '8px' }}>Primary Text</h3>
-              <p style={{ fontSize: '14px', color: '#0C173E', fontWeight: '600' }}>
+              <p style={{ fontSize: '14px', color: '#1D5FF6', fontWeight: '600' }}>
                 "US Mobile Trade In"
               </p>
               <p style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
-                Brand name and service
+                Brand name and service (blue #1D5FF6)
               </p>
             </div>
             <div
@@ -173,7 +173,7 @@ export const HeadlineDetails: Story = {
                 border: '1px solid #ddd',
               }}
             >
-              <h3 style={{ fontSize: '16px', marginBottom: '8px' }}>Emoji Text</h3>
+              <h3 style={{ fontSize: '16px', marginBottom: '8px' }}>Secondary Text</h3>
               <p style={{ fontSize: '14px' }}>
                 "Get 💰 for your old 📱"
               </p>
@@ -301,8 +301,7 @@ export const ContentBreakdown: Story = {
               </h3>
               <p style={{ fontSize: '14px', lineHeight: '1.6' }}>
                 The subheading expands on the value proposition, explaining what users can trade
-                in, what they'll receive, and key benefits (easy, secure, environmentally
-                friendly).
+                in and key benefits: instant quote, free shipping, and fast payout.
               </p>
             </div>
             <div>

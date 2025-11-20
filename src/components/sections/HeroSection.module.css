@@ -32,10 +32,10 @@
   font-size: 56px;
   font-weight: 700;
   line-height: 1.2;
-  color: #000000;
+  color: #1d5ff6;
 }
 
-.emojiText {
+.secondaryText {
   font-size: 56px;
   font-weight: 700;
   line-height: 1.2;
@@ -115,7 +115,7 @@
   }
 
   .primaryText,
-  .emojiText {
+  .secondaryText {
     font-size: 48px;
   }
 
@@ -147,7 +147,7 @@
   }
 
   .primaryText,
-  .emojiText {
+  .secondaryText {
     font-size: 36px;
   }
 
