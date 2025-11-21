@@ -11,3 +11,4 @@ export * from './navigation.js';
 export * from './interactions.js';
 export * from './capture.js';
 export * from './advanced.js';
+export * from './utils.js';

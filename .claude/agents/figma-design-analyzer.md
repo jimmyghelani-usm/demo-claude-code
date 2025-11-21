@@ -108,5 +108,33 @@ Your analysis enables pixel-perfect implementation. Missing details = UI that do
 
 ## MCP Execution Delegation
 
-- MUST use `mcp-execution-agent` when attempting to call or run MCP wrappers (`figma`, `linear`, `playwright`) via code execution scripts.
-- Do not create one-off scripts; delegate to `mcp-execution-agent` to reuse or scaffold reusable CLI scripts under `mcp/tests/`.
+**REQUIRED: Use `mcp-execution-agent` for all MCP operations**
+
+Instead of writing code to call MCP wrappers, delegate to mcp-execution-agent:
+
+### Correct Pattern
+```
+Use mcp-execution-agent:
+
+Operation: figma
+Task: getScreenshot
+Arguments: {nodeId: "2172-3050", filename: "figma-design.png"}
+Output Format: file
+
+Operation: figma
+Task: getDesignContext
+Arguments: {nodeId: "2172-3050", clientFrameworks: "react", clientLanguages: "typescript"}
+Output Format: json
+```
+
+### Why Delegate
+- **Context Efficiency**: MCP-execution-agent processes data locally, not in your context
+- **Reusable Patterns**: Reuses CLI scripts in `mcp/tests/` instead of creating one-offs
+- **Error Handling**: Centralized timeout management, retry logic, fallbacks
+- **Maintainability**: All MCP calls managed from single agent
+
+### Do NOT do this
+- ❌ Don't import and call `figma` directly in your code
+- ❌ Don't create one-off execution scripts
+- ❌ Don't generate code that calls MCP wrappers
+- ✅ Always delegate to mcp-execution-agent with clear operation specification

@@ -68,13 +68,37 @@ Before completing:
 - ✓ Testing agents delegated (storybook-expert + react-component-tester)
 - ✓ User informed of http://localhost:3000
 
-### 4. MCP Wrappers (if needed)
-```typescript
-import { figma, linear, playwright } from './mcp';
+### 4. MCP Operations (if needed)
+
+**ALWAYS delegate to `mcp-execution-agent` - Do NOT import MCP wrappers directly**
+
+Examples of delegating MCP operations:
+
 ```
-- **Figma**: Additional design context
-- **Linear**: Issue context or updates
-- **Playwright**: Not typically needed
+Use mcp-execution-agent:
+
+Operation: figma
+Task: getDesignContext
+Arguments: {nodeId: "2172-3050", clientFrameworks: "react"}
+Output Format: json
+(Reason: Get additional design specs/tokens)
+
+Operation: linear
+Task: getIssue
+Arguments: {id: "ENG-123"}
+Output Format: json
+(Reason: Fetch issue context before implementation)
+
+Operation: linear
+Task: updateIssue
+Arguments: {id: "ENG-123", state: "In Progress"}
+Output Format: json
+(Reason: Mark issue as started)
+```
+
+- **Figma**: Design tokens, variables, component specs
+- **Linear**: Issue context, assignment, status updates
+- **Playwright**: Generally handled by playwright-dev-tester agent
 
 ### 5. Delegation Rules
 

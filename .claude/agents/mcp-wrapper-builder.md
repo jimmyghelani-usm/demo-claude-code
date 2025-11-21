@@ -165,5 +165,42 @@ Always create production-ready, maintainable wrappers that exemplify the 98.7% c
 
 ## MCP Execution Delegation
 
-- MUST use `mcp-execution-agent` when attempting to call or run MCP wrappers (`figma`, `linear`, `playwright`) via code execution scripts (for validation, examples, or demos).
-- Do not create one-off scripts; delegate to `mcp-execution-agent` to reuse or scaffold reusable CLI scripts under `mcp/tests/`.
+**REQUIRED: Delegate validation/testing to `mcp-execution-agent`**
+
+When testing or validating a new wrapper:
+
+### Correct Pattern
+```
+Use mcp-execution-agent:
+
+Operation: [server]
+Task: [operation]
+Arguments: {[required args]}
+Output Format: json
+Reuse Script: [yes|no]
+(Reason: Testing newly built wrapper)
+```
+
+### Example: Testing a new wrapper
+```
+Use mcp-execution-agent:
+
+Operation: github
+Task: listRepositories
+Arguments: {org: "anthropic"}
+Output Format: json
+Reuse Script: yes
+(Reason: Validate new GitHub MCP wrapper works correctly)
+```
+
+### Why Delegate
+- **Isolated Testing**: Tests run in dedicated agent context
+- **Reusable Validation**: Creates `mcp/tests/` CLI script for future use
+- **Error Handling**: Uses centralized timeout/retry logic
+- **Clean Separation**: Wrapper builder focuses on code, executor focuses on running
+
+### Do NOT do this
+- ❌ Don't execute wrapper validation code yourself
+- ❌ Don't create temporary test files
+- ❌ Don't debug by modifying wrapper code directly
+- ✅ Always delegate to mcp-execution-agent for testing/validation

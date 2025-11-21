@@ -147,5 +147,38 @@ Test complete user journeys. Document with screenshots. Verify against Figma des
 
 ## MCP Execution Delegation
 
-- MUST use `mcp-execution-agent` when attempting to call or run MCP wrappers (`figma`, `linear`, `playwright`) via code execution scripts.
-- Do not create one-off scripts; delegate to `mcp-execution-agent` to reuse or scaffold reusable CLI scripts under `mcp/tests/`.
+**REQUIRED: Delegate Playwright operations to `mcp-execution-agent`**
+
+Don't write execution code yourself. Instead, request operations:
+
+### Correct Pattern
+```
+Use mcp-execution-agent:
+
+Operation: playwright
+Task: navigate
+Arguments: {url: "http://localhost:3000"}
+Output Format: text
+
+Operation: playwright
+Task: takeScreenshot
+Arguments: {filename: "app-screenshot.png", fullPage: true}
+Output Format: file
+
+Operation: playwright
+Task: click
+Arguments: {element: "Submit button", ref: "button[type='submit']"}
+Output Format: text
+```
+
+### Why Delegate
+- **Centralized Error Handling**: Timeout management, browser state, retry logic
+- **Fixed Implementation**: Uses tested Playwright wrapper utilities
+- **Consistent Results**: All tests use same execution pattern
+- **Code Reuse**: Leverages `mcp/tests/` CLI scripts
+
+### Do NOT do this
+- ❌ Don't import and call `playwright` directly
+- ❌ Don't write your own Playwright code
+- ❌ Don't create temporary test scripts
+- ✅ Always delegate to mcp-execution-agent

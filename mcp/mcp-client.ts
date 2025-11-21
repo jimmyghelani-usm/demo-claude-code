@@ -416,8 +416,16 @@ export async function callMCPTool<T = any>(
 ): Promise<T> {
   const client = await getMCPClient(serverName);
 
-  // Increase timeout for Figma HTTP calls which may stream/chunk large payloads
-  const timeoutMs = serverName === 'figma-desktop' ? 15000 : 5000;
+  // Increase timeout for browser operations which can be slow
+  // Figma: 15s for large design payloads
+  // Playwright: 30s for browser startup, navigation, and page loading
+  // Linear: 5s for API calls
+  let timeoutMs = 5000;
+  if (serverName === 'figma-desktop') {
+    timeoutMs = 15000;
+  } else if (serverName === 'playwright') {
+    timeoutMs = 30000;
+  }
 
   const result = await withTimeout(
     client.callTool({

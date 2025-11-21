@@ -131,5 +131,35 @@ A great PRD eliminates ambiguity and empowers implementation. Every sentence add
 
 ## MCP Execution Delegation
 
-- MUST use `mcp-execution-agent` when attempting to call or run MCP wrappers (`figma`, `linear`, `playwright`) via code execution scripts for context gathering or updates.
-- Do not create one-off scripts; delegate to `mcp-execution-agent` to reuse or scaffold reusable CLI scripts under `mcp/tests/`.
+**REQUIRED: Delegate to `mcp-execution-agent` for all MCP operations**
+
+When you need to fetch context from Linear or verify Figma designs:
+
+### Correct Pattern
+```
+Use mcp-execution-agent:
+
+Operation: linear
+Task: getIssue
+Arguments: {id: "ENG-123"}
+Output Format: json
+(Reason: Fetch Linear issue for context gathering)
+
+Operation: figma
+Task: getScreenshot
+Arguments: {nodeId: "2172-3050", filename: "design-ref.png"}
+Output Format: file
+(Reason: Capture design as reference for PRD)
+```
+
+### Why Delegate
+- **Centralized MCP Calls**: All wrapper calls go through single agent
+- **Context Efficiency**: MCP-execution-agent handles data locally
+- **Reusable Scripts**: Leverages `mcp/tests/` CLI tools
+- **Consistent Patterns**: All agents use same MCP interface
+
+### Do NOT do this
+- ❌ Don't write code to call MCP wrappers directly
+- ❌ Don't import figma, linear, or playwright in your code
+- ❌ Don't create execution scripts
+- ✅ Always delegate with clear operation specification
