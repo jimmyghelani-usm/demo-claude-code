@@ -21,19 +21,45 @@ import { figma, linear, playwright } from './mcp';
 - **Linear** (`mcp/servers/linear/`) - For issue context or updates
 - **Playwright** (`mcp/servers/playwright/`) - Not typically needed during implementation
 
-### THIS IS A MUST - Required Agent Delegation ⚠️ NON-NEGOTIABLE
-After implementing ANY component:
-1. **Launch ALL RELEVANT agents in PARALLEL and in the background if necessary** using a single message with multiple Task tool calls
-2. **storybook-expert**: Required for anytime you create a component that seems like it could be eventually reused
-3. **react-component-tester**: Required for ALL components
+### THIS IS A MUST - Required Agent Delegation ⚠️ ABSOLUTELY NON-NEGOTIABLE
+
+**YOU MUST ALWAYS DELEGATE TO TESTING AGENTS AFTER IMPLEMENTATION - NO EXCEPTIONS**
+
+After implementing ANY component, you MUST:
+
+1. **IMMEDIATELY launch testing agents in PARALLEL** using a single message with multiple Task tool calls
+2. **storybook-expert**:
+   - ✅ REQUIRED for: Reusable UI components with props (Button, Card, Modal, Form, Input, etc.)
+   - ❌ SKIP for: Simple stateless pages without props (App.tsx, splash pages)
+   - If unsure, CREATE the story (better to have it than miss it)
+3. **react-component-tester**:
+   - ✅ REQUIRED for ALL components (no exceptions)
+   - Must test: user interactions, conditional rendering, accessibility
 4. **DO NOT wait** for completion - continue with your workflow
 5. Provide complete context: file path, props, variants, states, interactions, edge cases
 
+**Example - Single Component**:
+```typescript
+// After implementing Button.tsx, launch in SINGLE message:
+Task({ subagent_type: 'storybook-expert', prompt: 'Create story for Button.tsx with size/variant/disabled props...' })
+Task({ subagent_type: 'react-component-tester', prompt: 'Test Button.tsx: click handling, disabled state, a11y...' })
+```
+
+**Example - Multiple Components**:
+```typescript
+// After implementing HeroSection.tsx + Navigation.tsx, launch in SINGLE message:
+Task({ subagent_type: 'storybook-expert', prompt: 'Create story for HeroSection.tsx...' })
+Task({ subagent_type: 'react-component-tester', prompt: 'Test HeroSection.tsx...' })
+Task({ subagent_type: 'storybook-expert', prompt: 'Create story for Navigation.tsx...' })
+Task({ subagent_type: 'react-component-tester', prompt: 'Test Navigation.tsx...' })
+```
+
 **playwright-dev-tester**: Only delegate for:
-- checking local work against figma designs
+- Checking local work against Figma designs (visual comparison)
 - Complex multi-step user flows (checkout, authentication, wizards)
 - Integration testing across multiple pages
 - Visual regression testing requirements
+- **When delegating playwright**: Instruct to save screenshots to `docs/temp/playwright-screenshots/`
 
 ---
 
@@ -155,10 +181,13 @@ Before delivering:
 - ✓ Code is readable and maintainable
 - ✓ Naming is clear and consistent
 - ✓ Edge cases handled or documented
-- ✓ **Storybook stories delegated** to storybook-expert (if reusable UI component with props)
-- ✓ **Component tests delegated** to react-component-tester (required for ALL components)
-- ✓ **Both agents launched in SINGLE message** with parallel Task calls
-- ✓ **Playwright E2E testing** only delegated if complex multi-step user flow
+
+**MANDATORY TESTING DELEGATION** (verify these or you FAILED):
+- ✓ **Storybook stories delegated** to storybook-expert (for reusable UI components with props)
+- ✓ **Component tests delegated** to react-component-tester (REQUIRED for ALL components - NO EXCEPTIONS)
+- ✓ **Both agents launched in SINGLE message** with parallel Task calls (NOT separate messages)
+- ✓ **Provided complete context** in Task prompts (file path, props, interactions, edge cases)
+- ✓ **Playwright E2E testing** delegated only if: complex user flow, visual comparison, or integration testing needed
 
 **When Uncertain**:
 - Ask for clarification on requirements

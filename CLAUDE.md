@@ -45,6 +45,78 @@ npx tsx mcp/examples/browser-testing.ts       # Run Playwright + Linear workflow
 cd servers && npx tsc --noEmit                    # Type-check server code
 ```
 
+## Development Server Management
+
+**CRITICAL: Always check if servers are already running before starting them.**
+
+### Checking Running Servers
+
+Before running `npm run dev` or `npm run storybook`, check if they're already running:
+
+```bash
+# Check if dev server is running (port 3000)
+lsof -ti:3000
+
+# Check if Storybook is running (port 6006)
+lsof -ti:6006
+
+# If either command returns a PID (process ID), the server is running
+# If no output, the port is free and you can start the server
+```
+
+### Best Practices
+
+**Before starting dev server:**
+```bash
+# Check first
+if lsof -ti:3000 > /dev/null; then
+  echo "✓ Dev server already running on port 3000"
+else
+  echo "Starting dev server..."
+  npm run dev
+fi
+```
+
+**Before starting Storybook:**
+```bash
+# Check first
+if lsof -ti:6006 > /dev/null; then
+  echo "✓ Storybook already running on port 6006"
+else
+  echo "Starting Storybook..."
+  npm run storybook
+fi
+```
+
+### Background Processes
+
+When using `run_in_background: true` with Bash tool:
+- **ALWAYS check if server is running first** to avoid spawning duplicate processes
+- Use `lsof -ti:PORT` to detect running servers
+- Only start in background if port is free
+
+### Stopping Servers
+
+If you need to stop servers:
+```bash
+# Kill dev server (port 3000)
+kill $(lsof -ti:3000) 2>/dev/null
+
+# Kill Storybook (port 6006)
+kill $(lsof -ti:6006) 2>/dev/null
+```
+
+### Common Issues
+
+**"Port already in use" errors:**
+- Caused by trying to start a server when it's already running
+- Solution: Check port first with `lsof -ti:PORT`
+- If stuck: Kill the process and restart
+
+**Multiple server instances:**
+- Caused by not checking before starting in background
+- Solution: Always check first, only start if needed
+
 ## Architecture
 
 ### Frontend Structure

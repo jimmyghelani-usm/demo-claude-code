@@ -14,10 +14,10 @@ color: orange
 ```typescript
 import { figma } from './mcp';
 
-// STEP 1 (ALWAYS FIRST): Capture screenshot for visual analysis
+// STEP 1 (MUST ALWAYS FIRST): Capture screenshot for visual analysis
 const screenshot = await figma.getScreenshot({
   nodeId: '2171-13039',
-  filename: 'docs/project/temp-figma-screenshot.png'  // Temporary location
+  filename: 'docs/project/temp-figma-screenshot-[helpful-name].png'  // Temporary location
 });
 // Then use Read tool to view screenshot visually
 
@@ -69,11 +69,15 @@ Extract and document everything relevant for implementation:
 
 ## Methodology
 
-**Phase 1: Screenshot Capture (ALWAYS DO THIS FIRST)**
+**Phase 1: Screenshot Capture (ALWAYS DO THIS FIRST - NO EXCEPTIONS)**
 - **CRITICAL**: Use `figma.getScreenshot()` to capture visual screenshot of the component
-- Save screenshot to temporary location: `docs/project/temp-figma-screenshot-[helpful-name].png`
-- **Use Read tool to analyze the screenshot visually**
+- Save screenshot to: `docs/temp/figma-screenshots/[ticket-or-component-name]-[timestamp].png`
+  - Create directory if needed: `docs/temp/figma-screenshots/`
+  - Use descriptive names: `hero-section-2025-01-21.png`, `login-form-2025-01-21.png`
+- **IMPORTANT**: Screenshot creation is MANDATORY - it's NOT a "markdown file" that should be skipped
+- **Use Read tool to analyze the screenshot visually** after capturing
 - Visual analysis provides context MCP data might miss (layout, visual hierarchy, spacing)
+- **ALWAYS return the screenshot path** in your final response so other agents can reference it
 
 **Phase 2: MCP Data Extraction**
 - Use `figma.getDesignContext()` to extract component specs, colors, typography
@@ -154,15 +158,24 @@ Be proactive identifying design patterns that can be abstracted into reusable co
 Your goal: Provide a complete implementation blueprint that eliminates guesswork and enables pixel-perfect frontend development.
 
 **CRITICAL REMINDERS**:
-1. **Screenshots**: ALWAYS capture screenshot FIRST, analyze it visually, return the screenshot path to the orchestrator for other agents to use
-2. **No Files unless screenshot**: Return all design specifications in your response message as structured text. DO NOT create markdown documentation files. If necessary pass image screenshot to other agents or orchestrator for processing.
-4. **Context, Not Files unless screenshot**: The orchestrator needs your analysis as direct context, not file references unless its a screnshot
+1. **Screenshots are MANDATORY**: ALWAYS capture screenshot FIRST (use `figma.getScreenshot()`), analyze it visually with Read tool, return the screenshot path in your response
+2. **Screenshot Location**: Save to `docs/temp/figma-screenshots/[descriptive-name].png` (NOT `docs/project/`)
+3. **No Markdown Files**: Return all design specifications in your response message as structured text. DO NOT create markdown documentation files.
+4. **Screenshot Exception**: Screenshots are IMAGE files, not markdown files - they MUST be created and saved
+5. **Return Path**: Always include the screenshot file path in your final response so orchestrator and other agents can use it
 
-**Screenshot Workflow Summary**:
+**Screenshot Workflow (MANDATORY - NO EXCEPTIONS)**:
 ```
-1. Take screenshot → docs/project/temp-figma-screenshot.png
-2. Read screenshot with Read tool (visual analysis)
-3. Extract MCP data (getDesignContext, etc.)
-4. Synthesize specifications from visual + data
-6. Return specifications in response (no markdown files) as well as screenshot path and attachment if necessary
+1. Create directory: docs/temp/figma-screenshots/ (if not exists)
+2. Take screenshot → docs/temp/figma-screenshots/[component-name]-[date].png
+3. Read screenshot with Read tool (visual analysis)
+4. Extract MCP data (getDesignContext, getVariableDefs, etc.)
+5. Synthesize specifications from visual + data
+6. Return in response: (a) specifications as text, (b) screenshot file path
 ```
+
+**Why Screenshots are Critical**:
+- Visual context for implementation accuracy
+- Reference for other agents (playwright-dev-tester can compare)
+- Permanent record of design at time of implementation
+- NOT optional, NOT a "markdown file to skip"

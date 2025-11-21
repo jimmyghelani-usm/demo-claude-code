@@ -79,14 +79,28 @@ AskUserQuestion({
 1. **Extract Node IDs** from Figma URLs
 2. **Launch figma-design-analyzer agents** in parallel (one per URL)
    - Use SINGLE message with multiple Task calls
+   - Instruct: "MUST capture screenshot to docs/temp/figma-screenshots/"
    - Each returns specs in response (no files)
 3. **Collect design specs** from all analyzer responses
 4. **Launch senior-frontend-engineer agents** in parallel
    - Pass PRD requirements + Figma specs directly in prompts
-   - Each auto-triggers storybook-expert and react-component-tester
+   - Each agent AUTOMATICALLY triggers storybook-expert and react-component-tester
+   - Verify all testing agents were triggered after completion
 5. **Run verification**: `npm run type-check && npm run test:run`
-6. **Optional E2E testing**: Launch playwright-dev-tester if needed
-7. **Run cleanup**: Remove any temporary files created
+6. **Visual & E2E testing (RECOMMENDED)**:
+   - **Check and start dev server first**:
+     ```bash
+     if lsof -ti:3000 > /dev/null; then
+       echo "✓ Dev server already running on port 3000"
+     else
+       npm run dev  # Use run_in_background: true
+     fi
+     ```
+   - Launch playwright-dev-tester
+   - Compare live implementation against Figma screenshots in docs/temp/figma-screenshots/
+   - Take new screenshots to docs/temp/playwright-screenshots/
+   - Verify visual accuracy and test critical user flows
+7. **Run cleanup**: Remove any temporary markdown files created (keep screenshots)
 
 ### Option C: "Implement directly"
 **If user chooses to implement without Figma:**
@@ -94,10 +108,21 @@ AskUserQuestion({
 1. **Launch senior-frontend-engineer agent(s)**
    - Pass complete PRD requirements in prompt
    - If multiple independent components, launch in parallel (SINGLE message)
-   - Each auto-triggers storybook-expert and react-component-tester
+   - Each agent AUTOMATICALLY triggers storybook-expert and react-component-tester
+   - Verify all testing agents were triggered after completion
 2. **Run verification**: `npm run type-check && npm run test:run`
-3. **Optional E2E testing**: Launch playwright-dev-tester if needed
-4. **Run cleanup**: Remove any temporary files created
+3. **E2E testing (conditional)**:
+   - **If testing needed, check dev server first**:
+     ```bash
+     if lsof -ti:3000 > /dev/null; then
+       echo "✓ Dev server already running"
+     else
+       npm run dev  # Use run_in_background: true if needed
+     fi
+     ```
+   - If complex user flows (authentication, checkout, multi-step wizards): Launch playwright-dev-tester
+   - If simple components: Skip (unit tests sufficient)
+4. **Run cleanup**: Remove any temporary markdown files created
 
 ### Option D: "Update Linear ticket"
 **If user chooses to update Linear ticket:**
@@ -124,11 +149,11 @@ If Steps 3B or 3C were executed, run cleanup:
 # Remove ticket-specific PRD files (if any accidentally created)
 rm -f docs/project/prd/*.md docs/project/*-prd*.md 2>/dev/null || true
 
-# Remove ticket-specific design spec files
+# Remove ticket-specific design spec files (but keep screenshots!)
 rm -f docs/project/design-specs/*.md docs/project/*-design-spec*.md docs/project/*-figma-*.md 2>/dev/null || true
 
-# Remove any JSON/PNG artifacts
-rm -f docs/project/*.json docs/project/*.png 2>/dev/null || true
+# Remove any JSON artifacts (but NOT screenshots)
+rm -f docs/project/*.json 2>/dev/null || true
 
 # Remove empty directories
 rmdir docs/project/prd docs/project/design-specs 2>/dev/null || true
@@ -137,6 +162,8 @@ rmdir docs/project/prd docs/project/design-specs 2>/dev/null || true
 rm -f mcp/tests/test-*.ts mcp/tests/analyze-*.ts mcp/tests/extract-*.ts mcp/tests/process-*.ts mcp/tests/update-*.ts mcp/tests/temp-*.ts 2>/dev/null || true
 ```
 
+**IMPORTANT**: Do NOT delete screenshots from `docs/temp/figma-screenshots/` or `docs/temp/playwright-screenshots/` - these are permanent reference documentation.
+
 ## Critical Execution Rules:
 
 **🔀 PARALLELIZATION FIRST**: When implementation is chosen, maximize parallel execution.
@@ -144,11 +171,16 @@ rm -f mcp/tests/test-*.ts mcp/tests/analyze-*.ts mcp/tests/extract-*.ts mcp/test
 1. **PRD Creation**: Use haiku model for speed (sonnet for complex features)
 2. **User Choice**: ALWAYS ask user what to do with PRD (don't assume)
 3. **Figma Analysis**: Launch all figma-design-analyzer agents in parallel (SINGLE message)
+   - Instruct agents to capture screenshots to docs/temp/figma-screenshots/
 4. **Implementation**: Launch all senior-frontend-engineer agents in parallel if multiple components
-5. **Testing**: Each engineer auto-triggers storybook-expert and react-component-tester in parallel
-6. **No File Creation**: All agents return content in responses, not files
-7. **Background Processes**: Use `run_in_background: true` for dev server if E2E testing needed
-8. **Cleanup Always**: Run cleanup after implementation to remove temporary files
+5. **Testing Auto-Trigger**: Each engineer AUTOMATICALLY triggers storybook-expert and react-component-tester
+   - Verify all testing agents were triggered after implementation completes
+6. **Visual Testing**: If Figma designs exist, STRONGLY RECOMMEND playwright-dev-tester
+   - Compare live implementation against Figma screenshots
+   - Save new screenshots to docs/temp/playwright-screenshots/
+7. **No Markdown Files**: All agents return content in responses (screenshots are images, not markdown)
+8. **Background Processes**: ALWAYS check if server running first (`lsof -ti:3000`), then use `run_in_background: true` only if needed
+9. **Cleanup Always**: Run cleanup after implementation to remove temporary markdown files (keep screenshots)
 
 ## Example Execution (PRD Only):
 ```

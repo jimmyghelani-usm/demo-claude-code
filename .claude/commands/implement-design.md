@@ -29,7 +29,7 @@ Extract node IDs from all provided Figma URLs:
 For each unique Figma URL/node:
 - Extract node ID from URL
 - Create one Task call with subagent_type='figma-design-analyzer'
-- **Instruct**: "Return design specs as structured summary in your response. Do NOT create markdown files."
+- **Instruct**: "MUST capture screenshot to docs/temp/figma-screenshots/. Return design specs as structured summary in your response. Do NOT create markdown files (screenshots are images, not markdown - they MUST be created)."
 
 Example for 2 Figma URLs:
 ```typescript
@@ -38,15 +38,17 @@ Task({
   subagent_type: 'figma-design-analyzer',
   model: 'haiku',
   prompt: 'Analyze desktop component (node 1413:13771).
+           MUST capture screenshot to docs/temp/figma-screenshots/desktop-component-[date].png
            Extract: colors (hex), typography (sizes/weights), layout dimensions, spacing.
-           Return structured summary in response. DO NOT create MD files.'
+           Return structured summary + screenshot path in response. DO NOT create MD files.'
 })
 Task({
   subagent_type: 'figma-design-analyzer',
   model: 'haiku',
   prompt: 'Analyze mobile component (node 1413:17052).
+           MUST capture screenshot to docs/temp/figma-screenshots/mobile-component-[date].png
            Extract: colors, typography, dimensions, touch targets (44px).
-           Return structured summary in response. DO NOT create MD files.'
+           Return structured summary + screenshot path in response. DO NOT create MD files.'
 })
 ```
 
@@ -72,7 +74,8 @@ If implementing one cohesive component:
 - Use Task tool with subagent_type='senior-frontend-engineer'
 - **Pass context directly**: Include Figma specs from analyzer responses
 - **No file references**: Copy actual specifications into prompt, not file paths
-- Instruction: "After implementation, delegate to storybook-expert and react-component-tester in parallel"
+- **Testing Auto-Trigger**: The senior-frontend-engineer agent is configured to AUTOMATICALLY launch storybook-expert and react-component-tester agents in parallel after implementation
+- **Verify**: After agent completes, confirm testing agents were triggered (you'll see their reports)
 
 **4C: Parallel Component Implementation**
 If implementing multiple independent components:
@@ -83,7 +86,8 @@ For each independent component:
 - Create one Task call with subagent_type='senior-frontend-engineer'
 - **Pass context directly**: Include relevant Figma specs in the prompt (copy actual text from agent responses)
 - **No file references**: Embed specifications directly, not file paths
-- Each agent will auto-trigger its own storybook-expert and react-component-tester
+- **Testing Auto-Trigger**: Each senior-frontend-engineer agent is configured to AUTOMATICALLY launch its own storybook-expert and react-component-tester agents in parallel
+- **Verify**: After all complete, confirm all testing agents were triggered (6 total: 3 engineers × 2 testing agents each)
 
 Example for 3 components:
 ```typescript
@@ -106,23 +110,62 @@ Task({
 
 ## Step 5: Verification (After Implementation)
 After implementation is complete:
+
+**5A: Run Unit Tests & Type Checking**
 1. Run type checking: `npm run type-check`
 2. Run all tests: `npm run test:run`
-3. **If dev server needed**: Start in background: `npm run dev` (run_in_background: true)
-4. **If interactive E2E testing needed**: Use Task tool with subagent_type='playwright-dev-tester'
-   - Provide URL (e.g., http://localhost:3000)
-   - Specify user flows to test
-   - Agent will return test results in response (no MD files)
+3. Fix any failures before proceeding
+
+**5B: Visual & E2E Testing (RECOMMENDED when Figma designs were analyzed)**
+
+Since Figma designs were provided, **STRONGLY RECOMMEND** using playwright-dev-tester to verify implementation matches design:
+
+1. **Check and start dev server** (if not already running):
+   ```bash
+   # Check if dev server is already running
+   if lsof -ti:3000 > /dev/null; then
+     echo "✓ Dev server already running on port 3000"
+   else
+     echo "Starting dev server in background..."
+     npm run dev  # Use run_in_background: true
+   fi
+   ```
+
+2. **Launch playwright-dev-tester** with Task tool:
+   ```typescript
+   Task({
+     subagent_type: 'playwright-dev-tester',
+     model: 'haiku',
+     prompt: 'Test implementation at http://localhost:3000
+
+              Visual Verification (PRIMARY GOAL):
+              - Compare live implementation against Figma screenshots in docs/temp/figma-screenshots/
+              - Take screenshots of live implementation and save to docs/temp/playwright-screenshots/
+              - Verify: colors, typography, spacing, layout match Figma design
+              - Check responsive behavior (mobile/tablet/desktop)
+
+              Functional Testing:
+              - [Specify critical user interactions to test based on component type]
+              - [e.g., "Click buttons, fill forms, test navigation"]
+
+              Return results in response with screenshot paths for comparison.'
+   })
+   ```
+
+**When to SKIP Playwright** (use unit tests only):
+- Simple stateless components with no user interactions
+- Backend-only changes
+- Configuration or tooling updates
 
 ## Step 5.5: Cleanup (Remove Temporary Documentation)
 **CRITICAL**: Clean up any markdown/documentation files that agents may have accidentally created:
 
 ```bash
-# Remove ticket-specific design spec files
+# Remove ticket-specific design spec files (but keep screenshots!)
 rm -f docs/project/design-specs/*.md docs/project/*-design-spec*.md docs/project/*-figma-*.md 2>/dev/null || true
 
-# Remove any JSON/PNG artifacts from Figma analysis
-rm -f docs/project/*.json docs/project/*.png 2>/dev/null || true
+# Remove any JSON artifacts from Figma analysis (but NOT screenshots)
+rm -f docs/project/*.json 2>/dev/null || true
 
 # Remove empty directories
 rmdir docs/project/design-specs 2>/dev/null || true
@@ -130,6 +173,8 @@ rmdir docs/project/design-specs 2>/dev/null || true
 # Clean up one-off MCP test files (keep only reusable scripts)
 rm -f mcp/tests/test-*.ts mcp/tests/analyze-*.ts mcp/tests/extract-*.ts mcp/tests/process-*.ts mcp/tests/temp-*.ts 2>/dev/null || true
 ```
+
+**IMPORTANT**: Do NOT delete screenshots from `docs/temp/figma-screenshots/` or `docs/temp/playwright-screenshots/` - these are permanent reference documentation.
 
 **Why**: Agents should return specs in their responses, not create files. This cleanup ensures:
 - No context pollution from stale documentation
@@ -162,11 +207,15 @@ rm -f mcp/tests/test-*.ts mcp/tests/analyze-*.ts mcp/tests/extract-*.ts mcp/test
    - Each engineer can work on separate files/components simultaneously
 
 4. **Parallel Testing**:
-   - Each senior-frontend-engineer auto-triggers its own storybook-expert and react-component-tester in parallel
-   - If E2E testing needed → Launch playwright-dev-tester after implementation
+   - Each senior-frontend-engineer AUTOMATICALLY triggers its own storybook-expert and react-component-tester in parallel
+   - Verify all testing agents were triggered after implementation completes
+   - If Figma designs exist → STRONGLY RECOMMEND playwright-dev-tester for visual verification
+     - Compare against Figma screenshots in docs/temp/figma-screenshots/
+     - Save new screenshots to docs/temp/playwright-screenshots/
 
 5. **Background Processes**:
-   - Use `run_in_background: true` for dev server if needed for testing
+   - **ALWAYS check if server is running first** with `lsof -ti:3000`
+   - Use `run_in_background: true` for dev server only if port is free
    - Long-running Playwright tests can use background processes
 
 6. **No Manual Implementation**: You orchestrate agents - do NOT implement code yourself

@@ -24,7 +24,7 @@ await playwright.type({ element: 'Email input', ref: 'input#email', text: 'user@
 await playwright.fillForm({ formData: { email: 'user@test.com', password: 'pass123' } });
 
 // Capture & Verification
-await playwright.takeScreenshot({ filename: 'test-result.png', fullPage: true });
+await playwright.takeScreenshot({ filename: 'docs/temp/playwright-screenshots/test-result.png', fullPage: true });
 await playwright.snapshot();  // Get full page HTML
 const messages = await playwright.consoleMessages();  // Get console logs
 
@@ -147,15 +147,30 @@ Structure reports as:
 1. **Summary**: Brief overview of what was tested (2-3 sentences max)
 2. **Test Results**: Pass/Fail with specific findings
 3. **Issues Found**: Critical bugs only (skip minor suggestions unless requested)
-4. **Evidence**: Screenshot filenames saved (NOT embedded images)
+4. **Evidence**: Screenshot file paths saved in `docs/temp/playwright-screenshots/`
 5. **Next Steps**: Actionable fixes required (1-3 items max)
 
-**CRITICAL - Cleanup After Testing**:
-After returning your test results in the response message, you MUST delete all screenshot/image files you created:
-```bash
-rm -f test-*.png test-*.jpg screenshot-*.png *.png *.jpg
+**CRITICAL - Screenshot Management**:
+**ALWAYS save screenshots to permanent location for reference**:
+```typescript
+// Save all screenshots to docs/temp/playwright-screenshots/
+await playwright.takeScreenshot({
+  filename: 'docs/temp/playwright-screenshots/[test-name]-[timestamp].png',
+  fullPage: true
+});
 ```
-This prevents test artifacts from polluting the repository. Only delete files you created during the test run.
+
+**Directory Setup**:
+- Create directory if needed: `docs/temp/playwright-screenshots/`
+- Use descriptive filenames: `login-form-validation-2025-01-21.png`, `checkout-flow-step2-2025-01-21.png`
+- Screenshots are permanent reference documentation, NOT temporary artifacts
+
+**Why Keep Screenshots**:
+- Visual evidence of test results and issues
+- Compare against Figma designs for accuracy
+- Debug failures without re-running tests
+- Historical record of UI state during development
+- Reference for future development
 
 **Keep It Concise**:
 - Focus on failures and critical issues
