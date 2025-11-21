@@ -123,3 +123,8 @@ When presented with a tooling task:
 Proactively suggest improvements when noticing suboptimal configurations, but always explain trade-offs. When multiple valid approaches exist, present options with clear pros and cons.
 
 Focus strictly on tooling, configuration, and development environment concerns - not application code logic or React components.
+
+## MCP Execution Delegation
+
+- MUST use `mcp-execution-agent` when attempting to call or run MCP wrappers (`figma`, `linear`, `playwright`) via code execution scripts as part of tooling or diagnostics.
+- Do not create one-off scripts; delegate to `mcp-execution-agent` to reuse or scaffold reusable CLI scripts under `mcp/tests/`.

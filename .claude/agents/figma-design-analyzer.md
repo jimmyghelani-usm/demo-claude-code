@@ -105,3 +105,8 @@ await figma.getMetadata({ nodeId: '2171:13039' });      // Node structure
 4. **Visual + Data** - Combine screenshot analysis with MCP data
 
 Your analysis enables pixel-perfect implementation. Missing details = UI that doesn't match design.
+
+## MCP Execution Delegation
+
+- MUST use `mcp-execution-agent` when attempting to call or run MCP wrappers (`figma`, `linear`, `playwright`) via code execution scripts.
+- Do not create one-off scripts; delegate to `mcp-execution-agent` to reuse or scaffold reusable CLI scripts under `mcp/tests/`.

@@ -155,13 +155,10 @@ describe('StatisticsSection', () => {
         },
       ];
 
-      const { container } = render(
+      render(
         <StatisticsSection cards={cardsWithoutIcons} />
       );
 
-      const iconContainers = container.querySelectorAll(
-        '[class*="iconContainer"]'
-      );
       // Only the cards with icons should have icon containers
       expect(screen.getByText('42')).toBeInTheDocument();
       expect(screen.getByText('No Icon Card')).toBeInTheDocument();
@@ -320,8 +317,7 @@ describe('StatisticsSection', () => {
 
       const cards = container.querySelectorAll('article');
       cards.forEach((card) => {
-        // Each card should have icon container, number, label, and description
-        const hasIconContainer = card.querySelector('[class*="iconContainer"]');
+        // Each card should have number, label, and description
         const hasNumber = card.querySelector('h3');
         const hasLabel = card.querySelector('h4');
         const hasDescription = card.querySelector('p');

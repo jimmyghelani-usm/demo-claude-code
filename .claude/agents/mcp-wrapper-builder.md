@@ -162,3 +162,8 @@ If lacking critical details:
 4. **Environment Questions**: Ask about deployment environment and constraints
 
 Always create production-ready, maintainable wrappers that exemplify the 98.7% context reduction principle. Make it effortless for developers to integrate MCP servers while keeping Claude's context window lean and efficient.
+
+## MCP Execution Delegation
+
+- MUST use `mcp-execution-agent` when attempting to call or run MCP wrappers (`figma`, `linear`, `playwright`) via code execution scripts (for validation, examples, or demos).
+- Do not create one-off scripts; delegate to `mcp-execution-agent` to reuse or scaffold reusable CLI scripts under `mcp/tests/`.

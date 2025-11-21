@@ -82,6 +82,7 @@ import { figma, linear, playwright } from './mcp';
 - `storybook-expert` - For ALL components that need stories created or updated (NO EXCEPTIONS)
 - `react-component-tester` - For ALL components (NO EXCEPTIONS)
 - `playwright-dev-tester` - For visual verification against Figma designs
+- `mcp-execution-agent` - MUST be used whenever attempting to call or run MCP wrappers (`figma`, `linear`, `playwright`). Do not create one-off scripts; ask this agent to reuse or scaffold reusable CLI scripts under `mcp/tests/`.
 
 Provide complete context: file path, props, variants, states, interactions, edge cases.
 

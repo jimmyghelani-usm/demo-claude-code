@@ -243,6 +243,12 @@ await linear.updateIssue({
 
 ### MCP Execution Files (`mcp/tests/`)
 
+> Cursor rule: When creating execution files that call MCP wrappers (`figma`, `linear`, `playwright`):
+- First check for an existing reusable script in `mcp/tests/` and reuse or generalize it
+- If none exists, create a reusable CLI script with arguments (not a one-off)
+- Delete temporary one-off scripts after successful execution
+- Import wrappers from the top level: `import { figma, linear, playwright } from './mcp'`
+
 **Critical Rules for Creating MCP Execution Scripts:**
 
 **1. ALWAYS Check for Reusable Scripts First:**
@@ -367,6 +373,13 @@ If you see `[Linear] MCP timeout, using GraphQL API fallback`, this is **normal*
 - Leave hardcoded test files in the repository
 - Create execution files without checking for existing patterns
 - Accumulate technical debt in `mcp/tests/`
+
+### Commands and Agents
+- Cursor Commands (see `.cursor/commands/`) provide quick entry points to reuse the existing `mcp/tests` scripts (e.g., linear:get-issue).
+- Claude MCP Execution Agent (see `.claude/agents/mcp-execution-agent.md`) describes how a Claude sub-agent should operate:
+  - Reuse-first for `mcp/tests`
+  - Create reusable CLI scripts only if missing
+  - Prefer GraphQL fallback when MCP transport fails (Linear)
 
 ### ESLint Configuration
 

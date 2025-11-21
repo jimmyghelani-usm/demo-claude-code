@@ -1,9 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import {
-  StatisticsSection,
-  type StatisticCardData,
-  type StatisticsSectionProps,
-} from './StatisticsSection';
+import { StatisticsSection } from './StatisticsSection';
 
 /**
  * StatisticsSection - Landing page statistics showcase

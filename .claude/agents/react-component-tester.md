@@ -122,3 +122,8 @@ vi.mock('./module', () => ({ export: mockFn }));
 - ✓ Mocks only external dependencies, not React internals
 
 Test what users see and do. Keep tests simple and maintainable.
+
+## MCP Execution Delegation
+
+- MUST use `mcp-execution-agent` when attempting to call or run MCP wrappers (`figma`, `linear`, `playwright`) via code execution scripts.
+- Do not create one-off scripts; delegate to `mcp-execution-agent` to reuse or scaffold reusable CLI scripts under `mcp/tests/`.

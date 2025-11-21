@@ -31,7 +31,12 @@ export async function getIssue(params: GetIssueParams): Promise<any> {
     return await callMCPTool('linear-server', 'get_issue', params);
   } catch (error: any) {
     // Fall back to GraphQL API if MCP fails
-    if (error.message?.includes('ETIMEDOUT') || error.message?.includes('Connection closed') || error.message?.includes('MCP_TIMEOUT')) {
+    if (
+      error.message?.includes('ETIMEDOUT') ||
+      error.message?.includes('Connection closed') ||
+      error.message?.includes('MCP_TIMEOUT') ||
+      error.message?.includes('fetch failed')
+    ) {
       console.log('[Linear] MCP timeout, using GraphQL API fallback');
       return await getIssueGraphQL(params);
     }
@@ -52,7 +57,12 @@ export async function listIssues(params: ListIssuesParams = {}): Promise<any> {
   try {
     return await callMCPTool('linear-server', 'list_issues', params);
   } catch (error: any) {
-    if (error.message?.includes('ETIMEDOUT') || error.message?.includes('Connection closed') || error.message?.includes('MCP_TIMEOUT')) {
+    if (
+      error.message?.includes('ETIMEDOUT') ||
+      error.message?.includes('Connection closed') ||
+      error.message?.includes('MCP_TIMEOUT') ||
+      error.message?.includes('fetch failed')
+    ) {
       console.log('[Linear] MCP timeout, using GraphQL API fallback');
       return await listIssuesGraphQL(params);
     }
@@ -77,7 +87,12 @@ export async function createIssue(params: CreateIssueParams): Promise<any> {
   try {
     return await callMCPTool('linear-server', 'create_issue', params);
   } catch (error: any) {
-    if (error.message?.includes('ETIMEDOUT') || error.message?.includes('Connection closed') || error.message?.includes('MCP_TIMEOUT')) {
+    if (
+      error.message?.includes('ETIMEDOUT') ||
+      error.message?.includes('Connection closed') ||
+      error.message?.includes('MCP_TIMEOUT') ||
+      error.message?.includes('fetch failed')
+    ) {
       console.log('[Linear] MCP timeout, using GraphQL API fallback');
       return await createIssueGraphQL(params);
     }
@@ -101,7 +116,12 @@ export async function updateIssue(params: UpdateIssueParams): Promise<any> {
   try {
     return await callMCPTool('linear-server', 'update_issue', params);
   } catch (error: any) {
-    if (error.message?.includes('ETIMEDOUT') || error.message?.includes('Connection closed') || error.message?.includes('MCP_TIMEOUT')) {
+    if (
+      error.message?.includes('ETIMEDOUT') ||
+      error.message?.includes('Connection closed') ||
+      error.message?.includes('MCP_TIMEOUT') ||
+      error.message?.includes('fetch failed')
+    ) {
       console.log('[Linear] MCP timeout, using GraphQL API fallback');
       return await updateIssueGraphQL(params);
     }
