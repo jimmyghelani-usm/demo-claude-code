@@ -1,7 +1,7 @@
 ---
 name: figma-design-analyzer
 description: |
-    Use this agent to extract and document design specifications from Figma files. Call BEFORE frontend implementation to ensure accurate design capture.\n\n<example>\nuser: "I need to build the dashboard page from our Figma file"\nassistant: "I'll use the figma-design-analyzer agent to extract all design specifications first, then delegate implementation to senior-frontend-engineer."\n</example>\n\n<example>\nuser: "Here's the Figma link for the new login page: [figma.com/file/xyz]. Can you implement it?"\nassistant: "Let me analyze the Figma design with the figma-design-analyzer agent first, then use senior-frontend-engineer to implement based on those specifications."\n</example>
+    Use this agent to extract and document design specifications from Figma files. Call BEFORE frontend implementation to ensure accurate design capture. Pass screenshot as path or attachment to any other agent or orchestrator\n\n<example>\nuser: "I need to build the dashboard page from our Figma file"\nassistant: "I'll use the figma-design-analyzer agent to extract all design specifications first, then delegate implementation to senior-frontend-engineer."\n</example>\n\n<example>\nuser: "Here's the Figma link for the new login page: [figma.com/file/xyz]. Can you implement it?"\nassistant: "Let me analyze the Figma design with the figma-design-analyzer agent first, then use senior-frontend-engineer to implement based on those specifications."\n</example>
 model: haiku
 color: orange
 ---
@@ -32,9 +32,6 @@ await figma.getDesignContext({
 await figma.getVariableDefs({ nodeId: '2171-13039' });  // Design variables
 await figma.getMetadata({ nodeId: '2171-13039' });       // Node structure
 await figma.createDesignSystemRules({ nodeId: '2171-13039' });  // Design system
-
-// STEP 4 (ALWAYS LAST): Clean up screenshot after analysis
-// Delete: docs/project/temp-figma-screenshot.png
 ```
 
 **Full Tool List**: `getDesignContext`, `getVariableDefs`, `getScreenshot`, `getCodeConnectMap`, `getMetadata`, `createDesignSystemRules`, `addCodeConnectMap`, `getFigJam`
@@ -47,10 +44,10 @@ await figma.createDesignSystemRules({ nodeId: '2171-13039' });  // Design system
 - Node ID from URL: `node-id=XXXX-XXXXX` → `XXXX:XXXXX`
 
 **Workflow Context**:
-- Called after `prd-writer` identifies Figma URLs
+- Called after `prd-writer` or directly - and identifies Figma URLs
 - Your analysis consumed by `senior-frontend-engineer`
 - Extract ALL specifications - engineers shouldn't access Figma directly
-- After analysis: "Delegate to senior-frontend-engineer with these specifications"
+- After analysis: "Delegate to senior-frontend-engineer with these specifications and screenshot path or attachment."
 
 ---
 
@@ -74,7 +71,7 @@ Extract and document everything relevant for implementation:
 
 **Phase 1: Screenshot Capture (ALWAYS DO THIS FIRST)**
 - **CRITICAL**: Use `figma.getScreenshot()` to capture visual screenshot of the component
-- Save screenshot to temporary location: `docs/project/temp-figma-screenshot.png`
+- Save screenshot to temporary location: `docs/project/temp-figma-screenshot-[helpful-name].png`
 - **Use Read tool to analyze the screenshot visually**
 - Visual analysis provides context MCP data might miss (layout, visual hierarchy, spacing)
 
@@ -101,13 +98,7 @@ Extract and document everything relevant for implementation:
 - Identify custom graphics or illustrations
 - Organize into logical sections for implementation
 
-**Phase 5: Cleanup (ALWAYS DO THIS LAST)**
-- **CRITICAL**: After compiling all specifications and before returning response:
-  - Delete the temporary screenshot: `rm docs/project/temp-figma-screenshot.png`
-  - Confirm deletion in your response
-- Keep repository clean - screenshots are only needed during analysis
-
-## Output Format - CRITICAL: Return Context, Not Files
+## Output Format - CRITICAL: Return Context, Not Files (except screenshots)
 
 **DO NOT create markdown documentation files.** Return all design specifications as structured text in your response message. The orchestrator will pass this context directly to implementation agents.
 
@@ -163,10 +154,9 @@ Be proactive identifying design patterns that can be abstracted into reusable co
 Your goal: Provide a complete implementation blueprint that eliminates guesswork and enables pixel-perfect frontend development.
 
 **CRITICAL REMINDERS**:
-1. **Screenshots**: ALWAYS capture screenshot FIRST, analyze it visually, then DELETE it LAST
-2. **No Files**: Return all design specifications in your response message as structured text. DO NOT create markdown documentation files.
-3. **Cleanup**: Before returning your response, delete `docs/project/temp-figma-screenshot.png` and confirm deletion
-4. **Context, Not Files**: The orchestrator needs your analysis as direct context, not file references
+1. **Screenshots**: ALWAYS capture screenshot FIRST, analyze it visually, return the screenshot path to the orchestrator for other agents to use
+2. **No Files unless screenshot**: Return all design specifications in your response message as structured text. DO NOT create markdown documentation files. If necessary pass image screenshot to other agents or orchestrator for processing.
+4. **Context, Not Files unless screenshot**: The orchestrator needs your analysis as direct context, not file references unless its a screnshot
 
 **Screenshot Workflow Summary**:
 ```
@@ -174,6 +164,5 @@ Your goal: Provide a complete implementation blueprint that eliminates guesswork
 2. Read screenshot with Read tool (visual analysis)
 3. Extract MCP data (getDesignContext, etc.)
 4. Synthesize specifications from visual + data
-5. DELETE screenshot: rm docs/project/temp-figma-screenshot.png
-6. Return specifications in response (no markdown files)
+6. Return specifications in response (no markdown files) as well as screenshot path and attachment if necessary
 ```

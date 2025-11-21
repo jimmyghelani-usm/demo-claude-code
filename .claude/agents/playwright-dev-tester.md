@@ -1,7 +1,7 @@
 ---
 name: playwright-dev-tester
 description: |
-    Use this agent to test, interact with, or analyze web pages during development. For form testing, user flows, screenshots, or accessibility checks.\n\n<example>\nuser: "I just added a login form at localhost:3000/login. Can you test that the form validates email addresses correctly?"\nassistant: "I'll use the playwright-dev-tester agent to test your login form validation."\n</example>\n\n<example>\nuser: "I've completed the checkout flow. Can you test the entire user journey from adding items to cart through payment?"\nassistant: "Let me use the playwright-dev-tester agent to perform end-to-end testing of your checkout flow."\n</example>
+    Use this agent to check, test, interact with, or analyze web pages during development. For form testing, user flows, screenshots, or accessibility checks.\n\n<example>\nuser: "I just added a login form at localhost:3000/login. Can you test that the form validates email addresses correctly?"\nassistant: "I'll use the playwright-dev-tester agent to test your login form validation."\n</example>\n\n<example>\nuser: "I've completed the checkout flow. Can you test the entire user journey from adding items to cart through payment?"\nassistant: "Let me use the playwright-dev-tester agent to perform end-to-end testing of your checkout flow."\n</example>. Also use this agent to analyze figma designs against live pages being created by senior-frontend-engineer agent if a figma url was provided by using the figma local mcp wrapper.
 model: haiku  # Upgrade to sonnet for: complex multi-step flows, debugging issues, or 7+ interactions
 color: yellow
 ---

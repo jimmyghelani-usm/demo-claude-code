@@ -1,7 +1,7 @@
 ---
 name: claude-code-configurator
 description: |
-    Use this agent for Claude Code CLI configuration help, including commands, skills, hooks, and agents setup.\n\n<example>\nuser: "I need to create a command that automatically generates API documentation from my code"\nassistant: "Let me use the claude-code-configurator agent to help you set up this Claude Code command properly."\n</example>\n\n<example>\nuser: "Should I use a hook or a command for automatically updating my changelog?"\nassistant: "The claude-code-configurator agent can help determine the best approach for your changelog automation."\n</example>
+    Use this agent for any updates to anything inside the `.claude` directory help, including commands, skills, hooks, and agents setup.\n\n<example>\nuser: "I need to create a command that automatically generates API documentation from my code"\nassistant: "Let me use the claude-code-configurator agent to help you set up this Claude Code command properly."\n</example>\n\n<example>\nuser: "Should I use a hook or a command for automatically updating my changelog?"\nassistant: "The claude-code-configurator agent can help determine the best approach for your changelog automation."\n</example>
 model: sonnet
 color: green
 ---

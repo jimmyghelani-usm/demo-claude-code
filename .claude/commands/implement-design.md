@@ -65,6 +65,7 @@ Review all extracted design specifications and:
 Review Figma specs to determine if work can be parallelized:
 - **Single component**: Use one senior-frontend-engineer agent
 - **Multiple independent components**: Use multiple senior-frontend-engineer agents in parallel
+- **Reusable patterns**: Use storybook-expert agents to review patterns (storybook-expert also gets called from senior-frontend-engineer)
 
 **4B: Single Component Implementation**
 If implementing one cohesive component:
