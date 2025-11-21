@@ -1,140 +1,256 @@
-.hero {
-  background-color: #f4f8ff;
-  padding: 140px 0 80px 0;
-  min-height: 600px;
+/* Design tokens based on Figma specifications FE-426 */
+:root {
+  --hero-bg: #759fff;
+  --brand-blue: #1d5ff6;
+  --white: #ffffff;
+  --placeholder-bg: #efefef;
+  --placeholder-text: #999999;
+
+  /* Typography */
+  --font-family: 'GT Walsheim Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica',
+    'Arial', sans-serif;
+
+  /* Spacing */
+  --hero-left-margin: 230px;
+  --hero-top-margin: 148px;
+  --content-width: 497px;
+
+  /* Border radius */
+  --border-radius-button: 15px;
+  --border-radius-badge: 6px;
+  --border-radius-placeholder: 15px;
 }
 
+/* Hero section container */
+.hero {
+  background-color: var(--hero-bg);
+  min-height: 684px;
+  padding: var(--hero-top-margin) 0 80px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Main container - two-column layout */
 .container {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 0 32px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  padding: 0 var(--hero-left-margin);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 80px;
-  align-items: center;
 }
 
+/* Content section (left column) */
 .content {
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  max-width: 600px;
+  max-width: var(--content-width);
+  width: 100%;
 }
 
+/* Badge component */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--brand-blue);
+  color: var(--white);
+    font-family: var(--font-family), sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: normal;
+  text-align: center;
+  padding: 5px 8px;
+  border-radius: var(--border-radius-badge);
+  width: fit-content;
+  margin-bottom: 38px;
+}
+
+/* Headline group with decorative underline */
+.headlineGroup {
+  position: relative;
+  margin-bottom: 82px;
+}
+
+/* Main headline */
 .headline {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  font-family: var(--font-family), sans-serif;
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 54px;
+  letter-spacing: -1.2px;
+  color: var(--white);
   margin: 0;
+  padding: 0;
 }
 
-.primaryText {
-  font-size: 56px;
-  font-weight: 700;
-  line-height: 1.2;
-  color: #1d5ff6;
+/* Decorative underline SVG */
+.underline {
+  position: absolute;
+  left: 4px;
+  top: 60px;
+  pointer-events: none;
 }
 
-.secondaryText {
-  font-size: 56px;
-  font-weight: 700;
-  line-height: 1.2;
-  color: #000000;
+/* Subheadline */
+.subheadline {
+  font-family: var(--font-family), sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 30px;
+  color: var(--white);
+  margin: 0 0 27px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.subheading {
+/* Description text */
+.description {
+  font-family: var(--font-family), sans-serif;
   font-size: 18px;
   font-weight: 400;
-  line-height: 1.6;
-  color: #586271;
-  margin: 0;
+  line-height: 24px;
+  color: var(--white);
+  margin: 0 0 88px 0;
+  max-width: 450px;
 }
 
-.showcase {
+/* CTA Button */
+.ctaButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 230px;
+  height: 50px;
+  background-color: var(--white);
+  border: none;
+  border-radius: var(--border-radius-button);
+  padding: 0 20px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-family: var(--font-family), sans-serif;
+}
+
+.ctaButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.ctaButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ctaButton:focus-visible {
+  outline: 3px solid rgba(29, 95, 246, 0.4);
+  outline-offset: 2px;
+}
+
+.buttonText {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--brand-blue);
+  line-height: normal;
+}
+
+.buttonIcon {
+  width: 16px;
+  height: 16px;
+  color: var(--brand-blue);
+  flex-shrink: 0;
+}
+
+/* Image placeholder (right column) */
+.imagePlaceholder {
+  width: 410px;
+  height: 476px;
+  background-color: var(--placeholder-bg);
+  border-radius: var(--border-radius-placeholder);
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  min-height: 400px;
+  flex-shrink: 0;
 }
 
-.deviceGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-  position: relative;
+.placeholderContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  max-width: 500px;
+  height: 100%;
 }
 
-.device {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 16px;
-  transition: transform 250ms ease-in-out;
+.placeholderText {
+  font-family: var(--font-family), sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--placeholder-text);
+  text-align: center;
 }
 
-.device:hover {
-  transform: scale(1.05);
-}
+/* Responsive breakpoints */
 
-.deviceLarge {
-  grid-column: 1;
-  grid-row: 1 / 3;
-}
-
-.deviceMedium {
-  grid-column: 2;
-  grid-row: 1;
-}
-
-.deviceSmall {
-  grid-column: 2;
-  grid-row: 2;
-}
-
-.devicePlaceholder {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.deviceLabel {
-  position: absolute;
-  font-size: 48px;
-  opacity: 0.8;
-}
-
-/* Responsive */
+/* Tablet (768px - 1024px) */
 @media (max-width: 1024px) {
   .container {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 60px;
     gap: 48px;
   }
 
-  .primaryText,
-  .secondaryText {
-    font-size: 48px;
+  .content {
+    max-width: 100%;
+    align-items: center;
+    text-align: center;
   }
 
-  .showcase {
-    min-height: 300px;
+  .badge {
+    margin-bottom: 24px;
   }
 
-  .deviceGrid {
-    max-width: 400px;
+  .headlineGroup {
+    margin-bottom: 48px;
   }
 
-  .deviceLabel {
-    font-size: 36px;
+  .headline {
+    font-size: 42px;
+    line-height: 48px;
+  }
+
+  .underline {
+    display: none; /* Hide underline on tablet for cleaner look */
+  }
+
+  .subheadline {
+    font-size: 20px;
+    line-height: 28px;
+    margin-bottom: 20px;
+    white-space: normal;
+  }
+
+  .description {
+    margin-bottom: 48px;
+    max-width: 100%;
+  }
+
+  .ctaButton {
+    margin: 0 auto;
+  }
+
+  .imagePlaceholder {
+    width: 350px;
+    height: 400px;
   }
 }
 
+/* Mobile (< 768px) */
 @media (max-width: 768px) {
   .hero {
-    padding: 120px 0 60px 0;
+    min-height: auto;
+    padding: 80px 0 60px 0;
   }
 
   .container {
@@ -142,25 +258,64 @@
     gap: 40px;
   }
 
-  .content {
-    gap: 24px;
+  .badge {
+    font-size: 12px;
+    padding: 4px 6px;
+    margin-bottom: 20px;
   }
 
-  .primaryText,
-  .secondaryText {
-    font-size: 36px;
+  .headlineGroup {
+    margin-bottom: 32px;
   }
 
-  .subheading {
+  .headline {
+    font-size: 32px;
+    line-height: 38px;
+    letter-spacing: -0.8px;
+  }
+
+  .subheadline {
+    font-size: 18px;
+    line-height: 24px;
+    margin-bottom: 16px;
+  }
+
+  .description {
+    font-size: 16px;
+    line-height: 22px;
+    margin-bottom: 32px;
+  }
+
+  .ctaButton {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .imagePlaceholder {
+    width: 100%;
+    max-width: 320px;
+    height: 360px;
+  }
+
+  .placeholderText {
     font-size: 16px;
   }
+}
 
-  .deviceGrid {
-    max-width: 320px;
-    gap: 16px;
+/* Small mobile (< 375px) */
+@media (max-width: 374px) {
+  .headline {
+    font-size: 28px;
+    line-height: 34px;
   }
 
-  .deviceLabel {
-    font-size: 28px;
+  .subheadline {
+    font-size: 16px;
+    line-height: 22px;
+  }
+
+  .description {
+    font-size: 14px;
+    line-height: 20px;
   }
 }
