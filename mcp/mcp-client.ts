@@ -76,15 +76,15 @@ class FigmaDirectClient {
     let initData: any = null;
 
     if (responseText.startsWith('event:') || responseText.startsWith('data:')) {
-      // Parse SSE format
+      // Parse SSE format - use the LAST valid JSON data: line
       const lines = responseText.split('\n');
       for (const line of lines) {
         if (line.startsWith('data: ')) {
           try {
             initData = JSON.parse(line.substring(6));
-            break;
-          } catch (e) {
-            // Continue looking
+            // do not break; prefer the last complete JSON payload
+          } catch {
+            // ignore parse errors on intermediate chunks
           }
         }
       }
@@ -173,14 +173,19 @@ class FigmaDirectClient {
       let data: any = null;
 
     if (responseText.startsWith('event:') || responseText.startsWith('data:')) {
+      // Parse SSE and use the LAST valid JSON chunk to capture final result
       const lines = responseText.split('\n');
       for (const line of lines) {
         if (line.startsWith('data: ')) {
+          const payload = line.substring(6);
+          if (payload === '[DONE]') {
+            continue;
+          }
           try {
-            data = JSON.parse(line.substring(6));
-            break;
-          } catch (e) {
-            // Continue
+            data = JSON.parse(payload);
+            // keep going to prefer the last full message
+          } catch {
+            // ignore partial chunks
           }
         }
       }
@@ -411,12 +416,15 @@ export async function callMCPTool<T = any>(
 ): Promise<T> {
   const client = await getMCPClient(serverName);
 
+  // Increase timeout for Figma HTTP calls which may stream/chunk large payloads
+  const timeoutMs = serverName === 'figma-desktop' ? 15000 : 5000;
+
   const result = await withTimeout(
     client.callTool({
       name: toolName,
       arguments: args,
     }),
-    5000 // 5 second timeout for all MCP calls
+    timeoutMs
   );
 
   // Parse and return the result

@@ -13,7 +13,7 @@ import './App.css';
  */
 function App() {
   return (
-    <main>
+    <main className="noSectionGaps">
       <ReferralRewardsHero />
       <StatisticsSection />
       <HowItWorksSection />
