@@ -1,0 +1,356 @@
+/**
+ * FAQSection Styles
+ * Frequently Asked Questions accordion with 2-column grid layout
+ */
+
+.section {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  padding: 80px 0;
+  margin: 0 auto;
+}
+
+.container {
+  max-width: 1110px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Title Section */
+.titleWrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 60px;
+}
+
+.title {
+  font-family: 'GT Walsheim Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 48px;
+  letter-spacing: -0.8px;
+  color: #ffffff;
+  margin: 0;
+  text-align: center;
+  max-width: 600px;
+}
+
+/* FAQ Grid */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px 48px;
+}
+
+/* FAQ Item */
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Question Button */
+.questionButton {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'GT Walsheim Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+  text-align: left;
+  position: relative;
+}
+
+.questionButton:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.questionButton:focus-visible {
+  outline: 2px solid #608ff9;
+  outline-offset: 2px;
+}
+
+.questionButton:active {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Question Text */
+.questionText {
+  display: block;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 32px;
+  letter-spacing: -0.3px;
+  color: #ffffff;
+  flex: 1;
+}
+
+/* Icon */
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+  color: #608ff9;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+  margin-top: 2px;
+}
+
+.icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.iconExpanded {
+  transform: rotate(180deg);
+}
+
+/* Answer Wrapper */
+.answerWrapper {
+  overflow: hidden;
+  animation: slideDown 0.3s ease forwards;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+  }
+}
+
+/* Answer Text */
+.answerText {
+  font-family: 'GT Walsheim Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 28px;
+  letter-spacing: -0.2px;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  padding: 20px;
+  padding-top: 16px;
+  background-color: rgba(255, 255, 255, 0.02);
+  border-radius: 0 0 12px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Responsive Design */
+
+/* Tablet - Large (1024px and below) */
+@media (max-width: 1024px) {
+  .section {
+    padding: 60px 0;
+  }
+
+  .container {
+    padding: 0 32px;
+  }
+
+  .titleWrapper {
+    margin-bottom: 50px;
+  }
+
+  .title {
+    font-size: 36px;
+    line-height: 44px;
+    letter-spacing: -0.7px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 40px;
+  }
+
+  .questionText {
+    font-size: 22px;
+    line-height: 30px;
+  }
+
+  .answerText {
+    font-size: 16px;
+    line-height: 26px;
+  }
+}
+
+/* Tablet - Medium (768px and below) */
+@media (max-width: 768px) {
+  .section {
+    padding: 48px 0;
+  }
+
+  .container {
+    padding: 0 24px;
+  }
+
+  .titleWrapper {
+    margin-bottom: 40px;
+  }
+
+  .title {
+    font-size: 32px;
+    line-height: 40px;
+    letter-spacing: -0.6px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .questionButton {
+    padding: 18px 16px;
+  }
+
+  .questionText {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .answerText {
+    font-size: 16px;
+    line-height: 26px;
+    padding: 16px;
+    padding-top: 12px;
+  }
+
+  .icon {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+  }
+}
+
+/* Mobile - Large (640px and below) */
+@media (max-width: 640px) {
+  .section {
+    padding: 40px 0;
+  }
+
+  .container {
+    padding: 0 20px;
+  }
+
+  .titleWrapper {
+    margin-bottom: 32px;
+  }
+
+  .title {
+    font-size: 28px;
+    line-height: 36px;
+    letter-spacing: -0.5px;
+  }
+
+  .grid {
+    gap: 20px;
+  }
+
+  .questionButton {
+    padding: 16px 14px;
+    border-radius: 10px;
+  }
+
+  .questionText {
+    font-size: 18px;
+    line-height: 26px;
+  }
+
+  .answerText {
+    font-size: 15px;
+    line-height: 24px;
+    padding: 14px;
+    padding-top: 10px;
+    border-radius: 0 0 10px 10px;
+  }
+}
+
+/* Mobile - Small (480px and below) */
+@media (max-width: 480px) {
+  .section {
+    padding: 32px 0;
+  }
+
+  .container {
+    padding: 0 16px;
+  }
+
+  .titleWrapper {
+    margin-bottom: 28px;
+  }
+
+  .title {
+    font-size: 24px;
+    line-height: 32px;
+    letter-spacing: -0.4px;
+  }
+
+  .grid {
+    gap: 16px;
+  }
+
+  .questionButton {
+    padding: 14px 12px;
+    gap: 12px;
+  }
+
+  .questionText {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .answerText {
+    font-size: 14px;
+    line-height: 22px;
+    padding: 12px;
+    padding-top: 8px;
+  }
+
+  .icon {
+    margin-top: 0;
+  }
+}
+
+/* Mobile - Extra Small (375px and below) */
+@media (max-width: 375px) {
+  .title {
+    font-size: 22px;
+    line-height: 28px;
+  }
+
+  .questionButton {
+    padding: 12px 10px;
+  }
+
+  .questionText {
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  .answerText {
+    font-size: 13px;
+    line-height: 20px;
+    padding: 10px;
+    padding-top: 6px;
+  }
+}

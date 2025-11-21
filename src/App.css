@@ -1,0 +1,12 @@
+/**
+ * App-specific styles
+ * Additional styles that don't fit in global or component-level CSS
+ */
+
+/* Add any app-level overrides here if needed */
+
+/* Remove vertical gaps between immediate section blocks on the page */
+.noSectionGaps > * {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}

@@ -1,0 +1,232 @@
+/**
+ * RewardsChartSection Styles
+ * Tiered referral rewards bar chart with animation
+ */
+
+.section {
+  position: relative;
+  width: 100%;
+  background-color: #000000;
+  border-top: 1px solid #ffffff;
+  border-top-opacity: 0.1;
+  padding: 80px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  width: 100%;
+  max-width: 1016px;
+}
+
+.chartWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 348px;
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Grid and scale styling */
+.gridGroup {
+}
+
+.scaleLabel {
+  font-family: 'GT Walsheim Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  fill: #ffffff;
+  opacity: 0.6;
+}
+
+.scaleLine {
+  stroke: #ffffff;
+  stroke-width: 1;
+  stroke-dasharray: 2, 4;
+  opacity: 0.2;
+}
+
+.baselineLine {
+  stroke: #ffffff;
+  stroke-width: 1.5;
+  opacity: 0.3;
+}
+
+/* Bars group */
+.barsGroup {
+}
+
+.bar {
+  fill: url(#barGradient);
+  filter: drop-shadow(0 2px 8px rgba(96, 143, 249, 0.2));
+  transition: filter 0.3s ease;
+}
+
+.bar:hover {
+  filter: drop-shadow(0 4px 16px rgba(96, 143, 249, 0.4));
+}
+
+/* Bar styling with gradient - defined inline in SVG */
+.bar {
+  fill: #608ff9;
+  border-radius: 4px;
+}
+
+/* SVG rounded corners approximation using rect with rx/ry in component */
+@supports (rx: 4px) {
+  .bar {
+    rx: 4px;
+    ry: 4px;
+  }
+}
+
+/* Amount labels above bars */
+.amountLabel {
+  font-family: 'GT Walsheim Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  fill: #608ff9;
+  opacity: 0.9;
+}
+
+/* Tier labels below chart */
+.tierLabel {
+  font-family: 'GT Walsheim Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  fill: #ffffff;
+  opacity: 0.7;
+}
+
+/* Subtitle */
+.subtitle {
+  font-family: 'GT Walsheim Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #ffffff;
+  text-align: center;
+  margin: 0;
+  letter-spacing: 0.3px;
+  opacity: 0.85;
+}
+
+/* Responsive Design */
+
+/* Tablet - Large (1024px and below) */
+@media (max-width: 1024px) {
+  .section {
+    padding: 60px 24px;
+  }
+
+  .subtitle {
+    font-size: 16px;
+  }
+}
+
+/* Tablet - Medium (768px and below) */
+@media (max-width: 768px) {
+  .section {
+    padding: 48px 20px;
+  }
+
+  .container {
+    gap: 24px;
+  }
+
+  .scaleLabel {
+    font-size: 12px;
+  }
+
+  .amountLabel {
+    font-size: 14px;
+  }
+
+  .tierLabel {
+    font-size: 12px;
+  }
+
+  .subtitle {
+    font-size: 15px;
+  }
+}
+
+/* Mobile - Large (640px and below) */
+@media (max-width: 640px) {
+  .section {
+    padding: 40px 16px;
+  }
+
+  .container {
+    gap: 20px;
+  }
+
+  .scaleLabel {
+    font-size: 11px;
+  }
+
+  .amountLabel {
+    font-size: 12px;
+  }
+
+  .tierLabel {
+    font-size: 11px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    padding: 0 12px;
+  }
+}
+
+/* Mobile - Small (480px and below) */
+@media (max-width: 480px) {
+  .section {
+    padding: 32px 12px;
+  }
+
+  .container {
+    gap: 16px;
+  }
+
+  .scaleLabel {
+    font-size: 10px;
+  }
+
+  .amountLabel {
+    font-size: 11px;
+  }
+
+  .tierLabel {
+    font-size: 10px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+  }
+}
+
+/* Mobile - Extra Small (375px and below) */
+@media (max-width: 375px) {
+  .section {
+    padding: 28px 12px;
+  }
+
+  .amountLabel {
+    font-size: 10px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+  }
+}
