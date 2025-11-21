@@ -1,26 +1,211 @@
 /**
- * HeroSection Styles - Hero Banner
- * Figma node: 1413:13348
+ * HeroSection Styles - US Mobile Protect Hero with Navigation
+ * Figma node: 2171:9951
  *
- * Design: Large hero banner with blue background, centered content,
- * headline, description, CTA button, and 4-column feature card grid
+ * Design: Clean header navigation with logo, menu, and action buttons,
+ * followed by a 4-column feature card grid section
  */
 
-/* Hero Section Container */
-.hero {
+/* ===========================
+   HEADER NAVIGATION STYLES
+   =========================== */
+
+/* Header Container */
+.header {
   width: 100%;
-  min-height: 615px;
-  background-color: #1a5df6;
+  height: 60px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.headerContainer {
+  width: 100%;
+  max-width: 1440px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 165px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+/* Logo */
+.logo {
+  flex-shrink: 0;
+}
+
+.logo a {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.logoText {
+  font-size: 20px;
+  font-weight: 700;
+  color: #000000;
+  letter-spacing: -0.5px;
+}
+
+/* Navigation Menu */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  flex: 1;
+  justify-content: center;
+}
+
+.navLink {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333333;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.navLink:hover {
+  color: #000000;
+}
+
+.navLink:focus-visible {
+  outline: 2px solid #0066cc;
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* Actions (Right Side Buttons) */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* Icon Buttons */
+.iconButton {
+  width: 35px;
+  height: 35px;
+  border: none;
+  background-color: transparent;
+  border-radius: 50%;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 60px 20px;
+  transition: background-color 0.2s ease;
+  padding: 0;
+  position: relative;
+}
+
+.iconButton:hover {
+  background-color: #f5f5f5;
+}
+
+.iconButton:focus-visible {
+  outline: 2px solid #0066cc;
+  outline-offset: 2px;
+}
+
+.iconPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333333;
+  position: relative;
+}
+
+/* Notification Dot */
+.notificationDot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  background-color: #ff0000;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+}
+
+/* Primary Button (Get Started) */
+.primaryButton {
+  height: 35px;
+  padding: 0 20px;
+  background-color: #0066cc;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.primaryButton:hover {
+  background-color: #0052a3;
+  transform: translateY(-1px);
+}
+
+.primaryButton:active {
+  transform: translateY(0);
+}
+
+.primaryButton:focus-visible {
+  outline: 2px solid #0066cc;
+  outline-offset: 3px;
+}
+
+/* Secondary Button (Sign In) */
+.secondaryButton {
+  height: 35px;
+  padding: 0 18px;
+  background-color: transparent;
+  color: #0066cc;
+  font-size: 14px;
+  font-weight: 600;
+  border: 2px solid #0066cc;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.secondaryButton:hover {
+  background-color: #f0f7ff;
+}
+
+.secondaryButton:active {
+  background-color: #e0f0ff;
+}
+
+.secondaryButton:focus-visible {
+  outline: 2px solid #0066cc;
+  outline-offset: 3px;
+}
+
+/* ===========================
+   FEATURE SECTION STYLES
+   =========================== */
+
+/* Feature Section Container */
+.featureSection {
+  width: 100%;
+  padding: 80px 20px;
+  background-color: #fafafa;
 }
 
 /* Content Container */
 .container {
   width: 100%;
-  max-width: 1440px;
+  max-width: 1110px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -28,170 +213,206 @@
   gap: 60px;
 }
 
-/* Main Content Area (headline, description, button) */
-.content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-  max-width: 680px;
-  text-align: center;
-}
-
-/* Headline */
-.headline {
-  font-size: 48px;
+/* Section Title */
+.sectionTitle {
+  font-size: 40px;
   font-weight: 700;
   line-height: 1.2;
-  color: #ffffff;
+  color: #000000;
   margin: 0;
-}
-
-/* Description */
-.description {
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.6;
-  color: #ffffff;
-  margin: 0;
-  max-width: 450px;
-}
-
-/* CTA Button */
-.ctaButton {
-  background-color: #ffffff;
-  color: #1a5df6;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 12px 28px;
-  border: none;
-  border-radius: 28px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 16px;
-}
-
-.ctaButton:hover {
-  background-color: #f0f0f0;
-  transform: translateY(-1px);
-}
-
-.ctaButton:active {
-  transform: translateY(0);
-}
-
-.ctaButton:focus-visible {
-  outline: 3px solid #ffffff;
-  outline-offset: 3px;
+  text-align: center;
 }
 
 /* Feature Cards Grid */
 .featureCards {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  gap: 99px;
   width: 100%;
-  max-width: 1200px;
 }
 
 /* Individual Card */
 .card {
   background-color: #ffffff;
   border-radius: 16px;
-  padding: 24px;
+  padding: 32px 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  min-height: 120px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  align-items: center;
+  text-align: center;
+  gap: 24px;
+  min-height: 236px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Icon Placeholder */
-.iconPlaceholder {
-  width: 48px;
-  height: 48px;
-  background-color: #e0e0e0;
-  border-radius: 12px;
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
 }
 
-/* Card Label */
-.cardLabel {
-  font-size: 14px;
-  font-weight: 500;
+/* Card Icon */
+.cardIcon {
+  width: 80px;
+  height: 80px;
+  background-color: #f0f7ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0066cc;
+  flex-shrink: 0;
+}
+
+/* Card Title */
+.cardTitle {
+  font-size: 18px;
+  font-weight: 700;
   line-height: 1.4;
-  color: #1a1a1a;
+  color: #000000;
   margin: 0;
 }
 
-/* Responsive Design */
+/* Card Description */
+.cardDescription {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: #666666;
+  margin: 0;
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+   =========================== */
 
 /* Tablet (768px - 1023px) */
 @media (max-width: 1023px) {
-  .hero {
-    min-height: auto;
-    padding: 40px 20px;
+  .headerContainer {
+    padding: 0 40px;
+  }
+
+  .nav {
+    gap: 30px;
+  }
+
+  .navLink {
+    font-size: 13px;
+  }
+
+  .featureSection {
+    padding: 60px 20px;
   }
 
   .container {
     gap: 40px;
   }
 
-  .headline {
-    font-size: 36px;
-  }
-
-  .description {
-    font-size: 15px;
+  .sectionTitle {
+    font-size: 32px;
   }
 
   .featureCards {
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    gap: 40px;
+  }
+
+  .card {
+    min-height: auto;
   }
 }
 
 /* Mobile (< 768px) */
 @media (max-width: 767px) {
-  .hero {
-    padding: 32px 16px;
+  .header {
+    height: auto;
+    position: relative;
+  }
+
+  .headerContainer {
+    flex-direction: column;
+    padding: 16px 20px;
+    gap: 16px;
+    height: auto;
+  }
+
+  .logo {
+    width: 100%;
+    text-align: center;
+  }
+
+  .nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+  }
+
+  .navLink {
+    font-size: 12px;
+  }
+
+  .actions {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .featureSection {
+    padding: 40px 16px;
   }
 
   .container {
     gap: 32px;
   }
 
-  .headline {
+  .sectionTitle {
     font-size: 28px;
-  }
-
-  .description {
-    font-size: 14px;
-  }
-
-  .ctaButton {
-    font-size: 13px;
-    padding: 10px 24px;
-    width: 100%;
-    max-width: 280px;
   }
 
   .featureCards {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 24px;
   }
 
   .card {
-    padding: 20px;
+    padding: 24px 20px;
+  }
+
+  .cardIcon {
+    width: 64px;
+    height: 64px;
+  }
+
+  .cardTitle {
+    font-size: 16px;
+  }
+
+  .cardDescription {
+    font-size: 13px;
   }
 }
 
 /* Small Mobile (< 375px) */
 @media (max-width: 374px) {
-  .headline {
+  .sectionTitle {
     font-size: 24px;
   }
 
-  .description {
+  .navLink {
+    font-size: 11px;
+  }
+
+  .primaryButton,
+  .secondaryButton {
     font-size: 13px;
+    height: 32px;
+    padding: 0 16px;
   }
 }

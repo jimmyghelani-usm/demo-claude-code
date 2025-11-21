@@ -23,9 +23,10 @@ import { figma, linear, playwright } from './mcp';
 
 ### Required Agent Delegation ⚠️ NON-NEGOTIABLE
 After implementing ANY component:
-1. **Launch BOTH agents in PARALLEL** using a single message with multiple Task tool calls
+1. **Launch ALL RELEVANT agents in PARALLEL** using a single message with multiple Task tool calls
 2. **storybook-expert**: Required for reusable UI components
 3. **react-component-tester**: Required for ALL components
+4. **playwright-dev-tester**: To ensure designs match implementation
 4. **DO NOT wait** for completion - continue with your workflow
 5. Provide complete context: file path, props, variants, states, interactions, edge cases
 
