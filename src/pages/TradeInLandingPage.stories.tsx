@@ -11,9 +11,10 @@ import { TradeInLandingPage } from './TradeInLandingPage';
  * ## Page Structure
  * 1. **Header** (Fixed) - Logo, navigation, and action buttons
  * 2. **Hero Section** - Main headline, value proposition, and CTA
- * 3. **How It Works Section** - 3-step process explanation with video
- * 4. **FAQ Section** - Comprehensive FAQ with accordion cards
- * 5. **Footer** - Footer links and social media
+ * 3. **Coming Soon Section** - Email capture for upcoming features
+ * 4. **How It Works Section** - 3-step process explanation with video
+ * 5. **FAQ Section** - Comprehensive FAQ with accordion cards
+ * 6. **Footer** - Footer links and social media
  *
  * ## User Flow
  * - Land on page → Read value proposition in hero
@@ -180,7 +181,7 @@ export const PageStructure: Story = {
               textAlign: 'left',
             }}
           >
-            <strong>3. How It Works Section</strong> - 3-step process with video demo
+            <strong>3. Coming Soon Section</strong> - Email capture for new features
           </div>
           <div
             style={{
@@ -190,7 +191,7 @@ export const PageStructure: Story = {
               textAlign: 'left',
             }}
           >
-            <strong>4. FAQ Section</strong> - 8 questions in two-column layout
+            <strong>4. How It Works Section</strong> - 3-step process with video demo
           </div>
           <div
             style={{
@@ -200,7 +201,17 @@ export const PageStructure: Story = {
               textAlign: 'left',
             }}
           >
-            <strong>5. Footer</strong> - 60px height, footer links, social media
+            <strong>5. FAQ Section</strong> - 8 questions in two-column layout
+          </div>
+          <div
+            style={{
+              padding: '16px',
+              background: 'rgba(255,255,255,0.1)',
+              borderRadius: '8px',
+              textAlign: 'left',
+            }}
+          >
+            <strong>6. Footer</strong> - 60px height, footer links, social media
           </div>
         </div>
       </div>

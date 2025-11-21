@@ -37,34 +37,40 @@ class FigmaDirectClient {
     }
 
     // Initialize with proper Accept headers for Streamable HTTP protocol
-    const response = await fetch(this.url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json, text/event-stream',
-      },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        method: 'initialize',
-        params: {
-          protocolVersion: '2024-11-05',
-          capabilities: {},
-          clientInfo: {
-            name: 'figma-mcp-client',
-            version: '1.0.0',
-          },
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
+    try {
+      const response = await fetch(this.url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json, text/event-stream',
         },
-        id: this.messageId++,
-      }),
-    });
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'initialize',
+          params: {
+            protocolVersion: '2024-11-05',
+            capabilities: {},
+            clientInfo: {
+              name: 'figma-mcp-client',
+              version: '1.0.0',
+            },
+          },
+          id: this.messageId++,
+        }),
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Initialization failed: HTTP ${response.status} - ${errorText}`);
-    }
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Initialization failed: HTTP ${response.status} - ${errorText}`);
+      }
 
-    // Response might be SSE stream, parse it
-    const responseText = await response.text();
+      // Response might be SSE stream, parse it
+      const responseText = await response.text();
 
     // Simple SSE parser - look for data: lines
     let initData: any = null;
@@ -107,51 +113,64 @@ class FigmaDirectClient {
       this.sessionId = sessionHeader;
     }
 
-    // Send initialized notification
-    await fetch(this.url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(this.sessionId ? { 'Mcp-Session-Id': this.sessionId } : {}),
-      },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        method: 'notifications/initialized',
-        params: {},
-      }),
-    });
+      // Send initialized notification
+      await fetch(this.url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(this.sessionId ? { 'Mcp-Session-Id': this.sessionId } : {}),
+        },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'notifications/initialized',
+          params: {},
+        }),
+      });
 
-    this.initialized = true;
+      this.initialized = true;
+    } catch (error: unknown) {
+      clearTimeout(timeoutId);
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error('Figma MCP initialization timeout');
+      }
+      throw error;
+    }
   }
 
   async callTool(request: { name: string; arguments?: Record<string, any> }): Promise<any> {
     await this.ensureInitialized();
 
-    const response = await fetch(this.url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json, text/event-stream',
-        ...(this.sessionId ? { 'Mcp-Session-Id': this.sessionId } : {}),
-      },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        method: 'tools/call',
-        params: {
-          name: request.name,
-          arguments: request.arguments || {},
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout for tool calls
+
+    try {
+      const response = await fetch(this.url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json, text/event-stream',
+          ...(this.sessionId ? { 'Mcp-Session-Id': this.sessionId } : {}),
         },
-        id: this.messageId++,
-      }),
-    });
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'tools/call',
+          params: {
+            name: request.name,
+            arguments: request.arguments || {},
+          },
+          id: this.messageId++,
+        }),
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
 
-    // Parse response (might be SSE or JSON)
-    const responseText = await response.text();
-    let data: any = null;
+      // Parse response (might be SSE or JSON)
+      const responseText = await response.text();
+      let data: any = null;
 
     if (responseText.startsWith('event:') || responseText.startsWith('data:')) {
       const lines = responseText.split('\n');
@@ -173,38 +192,51 @@ class FigmaDirectClient {
       throw new Error('Failed to parse tool call response');
     }
 
-    if (data.error) {
-      throw new Error(`MCP Error ${data.error.code}: ${data.error.message || JSON.stringify(data.error)}`);
-    }
+      if (data.error) {
+        throw new Error(`MCP Error ${data.error.code}: ${data.error.message || JSON.stringify(data.error)}`);
+      }
 
-    return data.result;
+      return data.result;
+    } catch (error: unknown) {
+      clearTimeout(timeoutId);
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error('Figma MCP tool call timeout');
+      }
+      throw error;
+    }
   }
 
   async listTools(): Promise<any> {
     await this.ensureInitialized();
 
-    const response = await fetch(this.url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json, text/event-stream',
-        ...(this.sessionId ? { 'Mcp-Session-Id': this.sessionId } : {}),
-      },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        method: 'tools/list',
-        params: {},
-        id: this.messageId++,
-      }),
-    });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
+    try {
+      const response = await fetch(this.url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json, text/event-stream',
+          ...(this.sessionId ? { 'Mcp-Session-Id': this.sessionId } : {}),
+        },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'tools/list',
+          params: {},
+          id: this.messageId++,
+        }),
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
 
-    // Parse response (might be SSE or JSON)
-    const responseText = await response.text();
-    let data: any = null;
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      // Parse response (might be SSE or JSON)
+      const responseText = await response.text();
+      let data: any = null;
 
     if (responseText.startsWith('event:') || responseText.startsWith('data:')) {
       const lines = responseText.split('\n');
@@ -226,11 +258,18 @@ class FigmaDirectClient {
       throw new Error('Failed to parse tools list response');
     }
 
-    if (data.error) {
-      throw new Error(`MCP Error: ${data.error.message || JSON.stringify(data.error)}`);
-    }
+      if (data.error) {
+        throw new Error(`MCP Error: ${data.error.message || JSON.stringify(data.error)}`);
+      }
 
-    return data.result;
+      return data.result;
+    } catch (error: unknown) {
+      clearTimeout(timeoutId);
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error('Figma MCP list tools timeout');
+      }
+      throw error;
+    }
   }
 
   async close(): Promise<void> {
@@ -351,7 +390,19 @@ export async function getMCPClient(serverName: keyof typeof MCP_SERVERS): Promis
 }
 
 /**
- * Call an MCP tool on a specific server
+ * Timeout wrapper for MCP calls (default 5 seconds)
+ */
+async function withTimeout<T>(promise: Promise<T>, ms: number = 5000): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error('MCP_TIMEOUT')), ms)
+    ),
+  ]);
+}
+
+/**
+ * Call an MCP tool on a specific server with automatic timeout protection
  */
 export async function callMCPTool<T = any>(
   serverName: keyof typeof MCP_SERVERS,
@@ -360,10 +411,13 @@ export async function callMCPTool<T = any>(
 ): Promise<T> {
   const client = await getMCPClient(serverName);
 
-  const result = await client.callTool({
-    name: toolName,
-    arguments: args,
-  });
+  const result = await withTimeout(
+    client.callTool({
+      name: toolName,
+      arguments: args,
+    }),
+    5000 // 5 second timeout for all MCP calls
+  );
 
   // Parse and return the result
   if (result.content && Array.isArray(result.content) && result.content.length > 0) {

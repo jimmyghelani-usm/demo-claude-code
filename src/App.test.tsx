@@ -1,40 +1,31 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { describe, it, expect } from 'vitest'
-import App from './App'
+import { render, screen } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
+import App from './App';
 
 describe('App', () => {
-  it('renders the main heading', () => {
-    render(<App />)
-    expect(screen.getByText(/Vite \+ React \+ TypeScript/i)).toBeInTheDocument()
-  })
+  it('renders the TradeInLandingPage', () => {
+    render(<App />);
+    // Check that the hero section is rendered (part of TradeInLandingPage)
+    expect(screen.getByText(/Lorem ipsum dolor amet/i)).toBeInTheDocument();
+  });
 
-  it('renders the counter button with initial count', () => {
-    render(<App />)
+  it('renders the hero section with correct content', () => {
+    render(<App />);
+    expect(screen.getByText(/Lorem ipsum dolor amet/i)).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: /count is 0/i })
-    ).toBeInTheDocument()
-  })
+      screen.getByText(/Trade in your device and get the latest model with instant credit/i)
+    ).toBeInTheDocument();
+  });
 
-  it('increments count when button is clicked', () => {
-    render(<App />)
-    const button = screen.getByRole('button', { name: /count is 0/i })
+  it('renders the CTA button', () => {
+    render(<App />);
+    expect(screen.getByRole('button', { name: /Get started/i })).toBeInTheDocument();
+  });
 
-    fireEvent.click(button)
+  it('renders the FAQ section', () => {
+    render(<App />);
     expect(
-      screen.getByRole('button', { name: /count is 1/i })
-    ).toBeInTheDocument()
-
-    fireEvent.click(button)
-    expect(
-      screen.getByRole('button', { name: /count is 2/i })
-    ).toBeInTheDocument()
-  })
-
-  it('displays the features list', () => {
-    render(<App />)
-    expect(screen.getByText(/Configured with:/i)).toBeInTheDocument()
-    expect(
-      screen.getByText(/Vite for lightning-fast builds/i)
-    ).toBeInTheDocument()
-  })
-})
+      screen.getByText(/You've got questions, we've got answers!/i)
+    ).toBeInTheDocument();
+  });
+});

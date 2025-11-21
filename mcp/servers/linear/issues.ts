@@ -1,5 +1,7 @@
 /**
  * Linear Issues Wrappers
+ *
+ * Uses MCP when available, falls back to GraphQL API on connection errors.
  */
 
 import { callMCPTool } from '../../mcp-client.js';
@@ -9,6 +11,12 @@ import {
   CreateIssueParams,
   UpdateIssueParams,
 } from './types.js';
+import {
+  getIssueGraphQL,
+  listIssuesGraphQL,
+  createIssueGraphQL,
+  updateIssueGraphQL,
+} from './graphql-fallback.js';
 
 /**
  * Retrieve detailed information about an issue by ID
@@ -19,7 +27,16 @@ import {
  * ```
  */
 export async function getIssue(params: GetIssueParams): Promise<any> {
-  return callMCPTool('linear-server', 'get_issue', params);
+  try {
+    return await callMCPTool('linear-server', 'get_issue', params);
+  } catch (error: any) {
+    // Fall back to GraphQL API if MCP fails
+    if (error.message?.includes('ETIMEDOUT') || error.message?.includes('Connection closed') || error.message?.includes('MCP_TIMEOUT')) {
+      console.log('[Linear] MCP timeout, using GraphQL API fallback');
+      return await getIssueGraphQL(params);
+    }
+    throw error;
+  }
 }
 
 /**
@@ -32,7 +49,15 @@ export async function getIssue(params: GetIssueParams): Promise<any> {
  * ```
  */
 export async function listIssues(params: ListIssuesParams = {}): Promise<any> {
-  return callMCPTool('linear-server', 'list_issues', params);
+  try {
+    return await callMCPTool('linear-server', 'list_issues', params);
+  } catch (error: any) {
+    if (error.message?.includes('ETIMEDOUT') || error.message?.includes('Connection closed') || error.message?.includes('MCP_TIMEOUT')) {
+      console.log('[Linear] MCP timeout, using GraphQL API fallback');
+      return await listIssuesGraphQL(params);
+    }
+    throw error;
+  }
 }
 
 /**
@@ -49,7 +74,15 @@ export async function listIssues(params: ListIssuesParams = {}): Promise<any> {
  * ```
  */
 export async function createIssue(params: CreateIssueParams): Promise<any> {
-  return callMCPTool('linear-server', 'create_issue', params);
+  try {
+    return await callMCPTool('linear-server', 'create_issue', params);
+  } catch (error: any) {
+    if (error.message?.includes('ETIMEDOUT') || error.message?.includes('Connection closed') || error.message?.includes('MCP_TIMEOUT')) {
+      console.log('[Linear] MCP timeout, using GraphQL API fallback');
+      return await createIssueGraphQL(params);
+    }
+    throw error;
+  }
 }
 
 /**
@@ -65,5 +98,13 @@ export async function createIssue(params: CreateIssueParams): Promise<any> {
  * ```
  */
 export async function updateIssue(params: UpdateIssueParams): Promise<any> {
-  return callMCPTool('linear-server', 'update_issue', params);
+  try {
+    return await callMCPTool('linear-server', 'update_issue', params);
+  } catch (error: any) {
+    if (error.message?.includes('ETIMEDOUT') || error.message?.includes('Connection closed') || error.message?.includes('MCP_TIMEOUT')) {
+      console.log('[Linear] MCP timeout, using GraphQL API fallback');
+      return await updateIssueGraphQL(params);
+    }
+    throw error;
+  }
 }

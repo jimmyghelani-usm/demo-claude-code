@@ -1,0 +1,311 @@
+/* Design tokens based on Figma specifications FE-432 */
+:root {
+  /* Colors - FE-432 specifications */
+  --coming-soon-bg: #1d5ff6; /* Primary blue background */
+  --coming-soon-white: #ffffff;
+  --coming-soon-circle-bg: #e1e3e6; /* Decorative circle */
+  --coming-soon-border: rgba(26, 93, 246, 0.15);
+
+  /* Typography */
+  --font-family: 'GT Walsheim Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica',
+    'Arial', sans-serif;
+
+  /* Spacing - Desktop */
+  --desktop-container-width: 1440px;
+  --desktop-banner-height: 600px;
+  --desktop-banner-top: 104px;
+
+  /* Spacing - Mobile */
+  --mobile-padding: 24px;
+  --mobile-content-width: 327px;
+
+  /* Border radius */
+  --border-radius-badge: 6px;
+  --border-radius-input: 8px;
+  --border-radius-button: 15px;
+  --border-radius-circle-mobile: 20px;
+  --border-radius-circle-desktop: 50px;
+
+  /* Touch targets */
+  --touch-target-height: 50px;
+}
+
+/* Coming Soon section container */
+.comingSoon {
+  background-color: transparent;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  min-height: 592px;
+}
+
+/* Main container */
+.container {
+  background-color: var(--coming-soon-bg);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 101px var(--mobile-padding) 50px;
+  min-height: 551px;
+  margin-top: 41px;
+}
+
+/* Content wrapper */
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: var(--mobile-content-width);
+  position: relative;
+  z-index: 1;
+}
+
+/* Decorative circle at top */
+.decorativeCircle {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 81px;
+  height: 81px;
+  background-color: var(--coming-soon-circle-bg);
+  border-radius: var(--border-radius-circle-mobile);
+}
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 26px;
+  background-color: var(--coming-soon-bg);
+  border: 0.5px solid var(--coming-soon-border);
+  border-radius: var(--border-radius-badge);
+  font-family: var(--font-family), sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--coming-soon-white);
+  margin-bottom: 25px;
+}
+
+/* Main heading - Mobile: 24px */
+.heading {
+  font-family: var(--font-family), sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 35.5px;
+  letter-spacing: -0.2px;
+  color: var(--coming-soon-white);
+  margin: 0 0 20px 0;
+  padding: 0;
+  max-width: 100%;
+}
+
+/* Decorative line separator */
+.decorativeLine {
+  width: 218px;
+  height: 3px;
+  background-color: var(--coming-soon-white);
+  margin-bottom: 32px;
+  opacity: 0.3;
+  transform: rotate(180deg);
+}
+
+/* Description text - Mobile: 16px/24px */
+.description {
+  font-family: var(--font-family), sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  color: var(--coming-soon-white);
+  margin: 0 0 36px 0;
+  max-width: 100%;
+}
+
+/* Form wrapper */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+}
+
+/* Input wrapper for error handling */
+.inputWrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Email input - Mobile: 327px × 50px */
+.emailInput {
+  width: 100%;
+  height: var(--touch-target-height);
+  background-color: transparent;
+  border: 0.5px solid var(--coming-soon-border);
+  border-radius: var(--border-radius-input);
+  padding: 0 16px;
+  font-family: var(--font-family), sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--coming-soon-white);
+  transition: all 0.2s ease-in-out;
+}
+
+.emailInput::placeholder {
+  color: var(--coming-soon-white);
+  opacity: 0.7;
+}
+
+.emailInput:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.emailInput:focus {
+  outline: none;
+  border-color: var(--coming-soon-white);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.emailInput[aria-invalid='true'] {
+  border-color: #ff4444;
+}
+
+/* Error message */
+.error {
+  display: block;
+  font-family: var(--font-family), sans-serif;
+  font-size: 12px;
+  color: #ff4444;
+  background-color: var(--coming-soon-white);
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-top: 4px;
+  text-align: left;
+}
+
+/* Submit button - Mobile: 327px × 50px */
+.submitButton {
+  width: 100%;
+  height: var(--touch-target-height);
+  background-color: var(--coming-soon-white);
+  color: var(--coming-soon-bg);
+  border: none;
+  border-radius: var(--border-radius-button);
+  font-family: var(--font-family), sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.submitButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.submitButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.submitButton:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+
+/* Visually hidden label for accessibility */
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Desktop breakpoint (768px and up) */
+@media (min-width: 768px) {
+  .comingSoon {
+    min-height: 704px;
+  }
+
+  .container {
+    max-width: var(--desktop-container-width);
+    margin: var(--desktop-banner-top) auto 0;
+    min-height: var(--desktop-banner-height);
+    padding: 115px 40px 80px;
+  }
+
+  .content {
+    max-width: 899px;
+  }
+
+  .decorativeCircle {
+    width: 208px;
+    height: 208px;
+    border-radius: var(--border-radius-circle-desktop);
+    border: 0.5px solid var(--coming-soon-border);
+    top: -104px;
+    left: 616px;
+    transform: translateX(0);
+  }
+
+  .badge {
+    margin-bottom: 30px;
+  }
+
+  .heading {
+    font-size: 30px;
+    line-height: 32px;
+    margin-bottom: 24px;
+  }
+
+  .decorativeLine {
+    width: 255px;
+    height: 3px;
+    margin-bottom: 13px;
+  }
+
+  .description {
+    font-size: 24px;
+    line-height: 30px;
+    margin-bottom: 48px;
+  }
+
+  .form {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 21px;
+    max-width: 431px;
+    margin: 0 auto;
+  }
+
+  .inputWrapper {
+    flex: 1;
+    max-width: 252px;
+  }
+
+  .emailInput {
+    width: 252px;
+  }
+
+  .submitButton {
+    width: 158px;
+    flex-shrink: 0;
+  }
+}
+
+/* Large desktop (1200px and up) */
+@media (min-width: 1200px) {
+  .container {
+    padding: 100px 40px;
+  }
+}

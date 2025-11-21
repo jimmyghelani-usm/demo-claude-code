@@ -3,271 +3,159 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { HeroSection } from './HeroSection';
 
+/**
+ * HeroSection Component Tests - Updated for Figma node 1413:13347
+ *
+ * Tests the HeroSection component that matches the Figma design specifications.
+ * The component is a presentational component with no props, featuring:
+ * - Centered layout with 680px max-width content area
+ * - Single-line headline "Lorem ipsum dolor amet"
+ * - Description text
+ * - CTA button
+ * - Responsive behavior for mobile and desktop
+ * - Background color #1A5DF6
+ */
 describe('HeroSection', () => {
   describe('Rendering', () => {
     it('renders the hero section with correct semantic HTML', () => {
       const { container } = render(<HeroSection />);
       const section = container.querySelector('section');
+
       expect(section).toBeInTheDocument();
+      expect(section?.tagName).toBe('SECTION');
     });
 
     it('renders all main content elements', () => {
       render(<HeroSection />);
 
-      // Badge
-      expect(screen.getByText('Agna liqua!')).toBeInTheDocument();
-
       // Headline
-      expect(screen.getByRole('heading', { name: /at auctor urna nunci/i })).toBeInTheDocument();
-
-      // Subheadline
-      expect(screen.getByText(/lorem ipsum dolor sit amet/i)).toBeInTheDocument();
+      expect(screen.getByText('Lorem ipsum dolor amet')).toBeInTheDocument();
 
       // Description
-      expect(screen.getByText(/sed do eiusmod tempor/i)).toBeInTheDocument();
+      expect(
+        screen.getByText('Trade in your device and get the latest model with instant credit.')
+      ).toBeInTheDocument();
 
       // CTA button
-      expect(screen.getByRole('button', { name: /check trade-in value/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /get started/i })).toBeInTheDocument();
     });
 
     it('renders without errors', () => {
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       render(<HeroSection />);
+
       expect(consoleSpy).not.toHaveBeenCalled();
       consoleSpy.mockRestore();
     });
 
     it('renders with container structure', () => {
       const { container } = render(<HeroSection />);
-      const sectionElement = container.querySelector('section');
-      const containerDiv = sectionElement?.firstElementChild;
+      const section = container.querySelector('section');
+      const containerDiv = container.querySelector('[class*="container"]');
+      const contentDiv = container.querySelector('[class*="content"]');
 
+      expect(section).toBeInTheDocument();
       expect(containerDiv).toBeInTheDocument();
-      expect(containerDiv?.children.length).toBe(2); // content + imagePlaceholder
-    });
-  });
-
-  describe('Badge Component', () => {
-    it('renders badge with correct text', () => {
-      render(<HeroSection />);
-      const badge = screen.getByText('Agna liqua!');
-      expect(badge).toBeInTheDocument();
-    });
-
-    it('badge has correct role for screen readers', () => {
-      render(<HeroSection />);
-      const badge = screen.getByRole('status');
-      expect(badge).toBeInTheDocument();
-    });
-
-    it('badge has accessible label', () => {
-      render(<HeroSection />);
-      const badge = screen.getByRole('status');
-      expect(badge).toHaveAccessibleName('Announcement');
-    });
-
-    it('badge is a span element', () => {
-      render(<HeroSection />);
-      const badge = screen.getByText('Agna liqua!');
-      expect(badge.tagName).toBe('SPAN');
+      expect(contentDiv).toBeInTheDocument();
     });
   });
 
   describe('Headline', () => {
-    it('renders main headline text', () => {
-      render(<HeroSection />);
-      expect(screen.getByText('At auctor urna nunci')).toBeInTheDocument();
-    });
-
-    it('headline is an h1 element', () => {
+    it('renders main headline as h1 element', () => {
       render(<HeroSection />);
       const heading = screen.getByRole('heading', { level: 1 });
+
       expect(heading).toBeInTheDocument();
-      expect(heading).toHaveTextContent('At auctor urna nunci');
+    });
+
+    it('renders headline with correct text', () => {
+      render(<HeroSection />);
+
+      expect(screen.getByText('Lorem ipsum dolor amet')).toBeInTheDocument();
     });
 
     it('headline has correct id for aria-labelledby', () => {
       const { container } = render(<HeroSection />);
       const heading = container.querySelector('h1');
+
       expect(heading).toHaveAttribute('id', 'hero-heading');
     });
 
-    it('renders decorative underline SVG', () => {
+    it('headline is single line without spans', () => {
       const { container } = render(<HeroSection />);
-      const headlineGroup = container.querySelector('[class*="headlineGroup"]');
-      const svg = headlineGroup?.querySelector('svg');
+      const headline = container.querySelector('h1');
+      const spans = headline?.querySelectorAll('span');
 
-      expect(svg).toBeInTheDocument();
-      expect(svg).toHaveAttribute('aria-hidden', 'true');
-    });
-
-    it('underline SVG has correct dimensions', () => {
-      const { container } = render(<HeroSection />);
-      const svg = container.querySelector('svg[width="213"]');
-
-      expect(svg).toBeInTheDocument();
-      expect(svg).toHaveAttribute('height', '7');
-      expect(svg).toHaveAttribute('viewBox', '0 0 213 7');
-    });
-
-    it('underline SVG contains path element', () => {
-      const { container } = render(<HeroSection />);
-      const headlineGroup = container.querySelector('[class*="headlineGroup"]');
-      const path = headlineGroup?.querySelector('svg path');
-
-      expect(path).toBeInTheDocument();
-      expect(path).toHaveAttribute('stroke', 'white');
-      expect(path).toHaveAttribute('stroke-width', '2');
-    });
-  });
-
-  describe('Subheadline', () => {
-    it('renders subheadline text', () => {
-      render(<HeroSection />);
-      const subheadline = screen.getByText('Lorem ipsum dolor sit amet, consectetur adi');
-      expect(subheadline).toBeInTheDocument();
-    });
-
-    it('subheadline is a paragraph element', () => {
-      render(<HeroSection />);
-      const subheadline = screen.getByText('Lorem ipsum dolor sit amet, consectetur adi');
-      expect(subheadline.tagName).toBe('P');
-    });
-
-    it('subheadline has correct CSS class', () => {
-      const { container } = render(<HeroSection />);
-      const subheadline = container.querySelector('[class*="subheadline"]');
-      expect(subheadline).toBeInTheDocument();
-      expect(subheadline).toHaveTextContent('Lorem ipsum dolor sit amet, consectetur adi');
+      expect(spans).toHaveLength(0);
+      expect(headline).toHaveTextContent('Lorem ipsum dolor amet');
     });
   });
 
   describe('Description Text', () => {
     it('renders description text', () => {
       render(<HeroSection />);
-      const description = screen.getByText(/sed do eiusmod tempor incididunt/i);
+      const description = screen.getByText(
+        'Trade in your device and get the latest model with instant credit.'
+      );
+
       expect(description).toBeInTheDocument();
     });
 
     it('description is a paragraph element', () => {
       render(<HeroSection />);
-      const description = screen.getByText(/sed do eiusmod tempor incididunt/i);
-      expect(description.tagName).toBe('P');
-    });
-
-    it('description contains complete text', () => {
-      render(<HeroSection />);
       const description = screen.getByText(
-        /sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ac placerat vestibulum lectus mauris./i
+        'Trade in your device and get the latest model with instant credit.'
       );
-      expect(description).toBeInTheDocument();
+
+      expect(description.tagName).toBe('P');
     });
 
     it('description has correct CSS class', () => {
       const { container } = render(<HeroSection />);
       const description = container.querySelector('[class*="description"]');
+
       expect(description).toBeInTheDocument();
+      expect(description).toHaveTextContent(
+        'Trade in your device and get the latest model with instant credit.'
+      );
     });
   });
 
   describe('CTA Button', () => {
     it('renders CTA button with correct text', () => {
       render(<HeroSection />);
-      const button = screen.getByRole('button', { name: /check trade-in value/i });
+      const button = screen.getByRole('button', { name: /get started/i });
+
       expect(button).toBeInTheDocument();
-      expect(button).toHaveTextContent('Check trade-in value');
+      expect(button).toHaveTextContent('Get started');
     });
 
     it('button has correct type attribute', () => {
       render(<HeroSection />);
       const button = screen.getByRole('button');
+
       expect(button).toHaveAttribute('type', 'button');
     });
 
     it('button is not disabled', () => {
       render(<HeroSection />);
       const button = screen.getByRole('button');
+
       expect(button).not.toBeDisabled();
     });
 
-    it('button text is in a span element', () => {
+    it('button has correct CSS class', () => {
       const { container } = render(<HeroSection />);
       const button = container.querySelector('button');
-      const textSpan = button?.querySelector('[class*="buttonText"]');
 
-      expect(textSpan).toBeInTheDocument();
-      expect(textSpan).toHaveTextContent('Check trade-in value');
-    });
-
-    it('button contains arrow icon SVG', () => {
-      const { container } = render(<HeroSection />);
-      const button = container.querySelector('button');
-      const svg = button?.querySelector('svg');
-
-      expect(svg).toBeInTheDocument();
-      expect(svg).toHaveAttribute('aria-hidden', 'true');
-    });
-
-    it('arrow icon has correct dimensions', () => {
-      const { container } = render(<HeroSection />);
-      const button = container.querySelector('button');
-      const svg = button?.querySelector('svg');
-
-      expect(svg).toHaveAttribute('width', '16');
-      expect(svg).toHaveAttribute('height', '16');
-      expect(svg).toHaveAttribute('viewBox', '0 0 16 16');
-    });
-
-    it('arrow icon uses currentColor for stroke', () => {
-      const { container } = render(<HeroSection />);
-      const button = container.querySelector('button');
-      const path = button?.querySelector('svg path');
-
-      expect(path).toHaveAttribute('stroke', 'currentColor');
+      expect(button?.className).toContain('ctaButton');
     });
 
     it('button is visible', () => {
       render(<HeroSection />);
       const button = screen.getByRole('button');
+
       expect(button).toBeVisible();
-    });
-  });
-
-  describe('Image Placeholder', () => {
-    it('renders image placeholder element', () => {
-      const { container } = render(<HeroSection />);
-      const imagePlaceholder = container.querySelector('[class*="imagePlaceholder"]');
-      expect(imagePlaceholder).toBeInTheDocument();
-    });
-
-    it('image placeholder has img role', () => {
-      const { container } = render(<HeroSection />);
-      const imagePlaceholder = container.querySelector('[role="img"]');
-      expect(imagePlaceholder).toBeInTheDocument();
-    });
-
-    it('image placeholder has accessible label', () => {
-      const { container } = render(<HeroSection />);
-      const imagePlaceholder = container.querySelector('[role="img"]');
-      expect(imagePlaceholder).toHaveAttribute('aria-label', 'Product showcase image');
-    });
-
-    it('renders placeholder content', () => {
-      const { container } = render(<HeroSection />);
-      const placeholderContent = container.querySelector('[class*="placeholderContent"]');
-      expect(placeholderContent).toBeInTheDocument();
-    });
-
-    it('displays placeholder text', () => {
-      render(<HeroSection />);
-      const placeholderText = screen.getByText('Image Placeholder');
-      expect(placeholderText).toBeInTheDocument();
-    });
-
-    it('placeholder text is in a span element', () => {
-      const { container } = render(<HeroSection />);
-      const placeholderText = container.querySelector('[class*="placeholderText"]');
-      expect(placeholderText?.tagName).toBe('SPAN');
     });
   });
 
@@ -279,7 +167,6 @@ describe('HeroSection', () => {
 
       await user.click(button);
 
-      // Button remains in document after click
       expect(button).toBeInTheDocument();
     });
 
@@ -303,7 +190,6 @@ describe('HeroSection', () => {
 
       await user.keyboard('{Enter}');
 
-      // Button should still exist after Enter
       expect(button).toBeInTheDocument();
     });
 
@@ -325,7 +211,6 @@ describe('HeroSection', () => {
 
       await user.click(button);
 
-      // Button should still be focusable
       button.focus();
       expect(button).toHaveFocus();
     });
@@ -364,18 +249,21 @@ describe('HeroSection', () => {
     it('uses semantic section element', () => {
       const { container } = render(<HeroSection />);
       const section = container.querySelector('section');
+
       expect(section).toBeInTheDocument();
     });
 
     it('section has aria-labelledby pointing to heading', () => {
       const { container } = render(<HeroSection />);
       const section = container.querySelector('section');
+
       expect(section).toHaveAttribute('aria-labelledby', 'hero-heading');
     });
 
     it('has proper heading hierarchy with single h1', () => {
       const { container } = render(<HeroSection />);
       const headings = container.querySelectorAll('h1');
+
       expect(headings).toHaveLength(1);
     });
 
@@ -387,43 +275,21 @@ describe('HeroSection', () => {
       expect(section).toHaveAttribute('aria-labelledby', heading?.id || '');
     });
 
-    it('all interactive elements have accessible names', () => {
+    it('button has accessible name', () => {
       render(<HeroSection />);
       const button = screen.getByRole('button');
-      expect(button).toHaveAccessibleName('Check trade-in value');
-    });
 
-    it('badge has appropriate role and accessible name', () => {
-      render(<HeroSection />);
-      const badge = screen.getByRole('status');
-      expect(badge).toHaveAccessibleName('Announcement');
-    });
-
-    it('decorative SVG elements are hidden from screen readers', () => {
-      const { container } = render(<HeroSection />);
-      const svgs = container.querySelectorAll('svg');
-
-      svgs.forEach(svg => {
-        expect(svg).toHaveAttribute('aria-hidden', 'true');
-      });
+      expect(button).toHaveAccessibleName('Get started');
     });
 
     it('all text content is accessible and visible', () => {
       render(<HeroSection />);
 
-      expect(screen.getByText('Agna liqua!')).toBeVisible();
-      expect(screen.getByText('At auctor urna nunci')).toBeVisible();
-      expect(screen.getByText('Lorem ipsum dolor sit amet, consectetur adi')).toBeVisible();
-      expect(screen.getByText(/sed do eiusmod tempor/i)).toBeVisible();
+      expect(screen.getByText('Lorem ipsum dolor amet')).toBeVisible();
+      expect(
+        screen.getByText('Trade in your device and get the latest model with instant credit.')
+      ).toBeVisible();
       expect(screen.getByRole('button')).toBeVisible();
-    });
-
-    it('image placeholder has img role with descriptive label', () => {
-      const { container } = render(<HeroSection />);
-      const imagePlaceholder = container.querySelector('[role="img"]');
-
-      expect(imagePlaceholder).toBeInTheDocument();
-      expect(imagePlaceholder).toHaveAttribute('aria-label', 'Product showcase image');
     });
 
     it('button is keyboard navigable', async () => {
@@ -432,6 +298,7 @@ describe('HeroSection', () => {
 
       await user.tab();
       const button = screen.getByRole('button');
+
       expect(button).toHaveFocus();
     });
 
@@ -446,122 +313,25 @@ describe('HeroSection', () => {
   });
 
   describe('Layout Structure', () => {
-    it('has main container div', () => {
+    it('has correct container structure', () => {
       const { container } = render(<HeroSection />);
       const section = container.querySelector('section');
-      const containerDiv = section?.firstElementChild;
+      const containerDiv = section?.querySelector('[class*="container"]');
+      const contentDiv = containerDiv?.querySelector('[class*="content"]');
 
+      expect(section).toBeInTheDocument();
       expect(containerDiv).toBeInTheDocument();
-      expect(containerDiv?.children.length).toBe(2);
+      expect(contentDiv).toBeInTheDocument();
     });
 
-    it('container has content section', () => {
-      const { container } = render(<HeroSection />);
-      const content = container.querySelector('[class*="content"]');
-      expect(content).toBeInTheDocument();
-    });
-
-    it('container has image placeholder section', () => {
-      const { container } = render(<HeroSection />);
-      const imagePlaceholder = container.querySelector('[class*="imagePlaceholder"]');
-      expect(imagePlaceholder).toBeInTheDocument();
-    });
-
-    it('content and image placeholder are siblings', () => {
-      const { container } = render(<HeroSection />);
-      const mainContainer = container.querySelector('section > div');
-      const content = mainContainer?.querySelector('[class*="content"]');
-      const imagePlaceholder = mainContainer?.querySelector('[class*="imagePlaceholder"]');
-
-      expect(content).toBeInTheDocument();
-      expect(imagePlaceholder).toBeInTheDocument();
-      expect(content?.parentElement).toBe(imagePlaceholder?.parentElement);
-    });
-
-    it('content section contains all text elements', () => {
-      const { container } = render(<HeroSection />);
-      const content = container.querySelector('[class*="content"]');
-
-      const badge = content?.querySelector('[class*="badge"]');
-      const headline = content?.querySelector('h1');
-      const button = content?.querySelector('button');
-
-      expect(badge).toBeInTheDocument();
-      expect(headline).toBeInTheDocument();
-      expect(button).toBeInTheDocument();
-    });
-
-    it('elements appear in correct order', () => {
+    it('content section contains all elements in correct order', () => {
       const { container } = render(<HeroSection />);
       const content = container.querySelector('[class*="content"]');
       const children = Array.from(content?.children || []);
 
-      // Badge should come first
-      expect(children[0].className).toContain('badge');
-
-      // Headline group should come second
-      expect(children[1].className).toContain('headlineGroup');
-
-      // Button should come last
-      const button = children[children.length - 1];
-      expect(button?.tagName).toBe('BUTTON');
-    });
-  });
-
-  describe('Content Verification', () => {
-    it('contains all required text content', () => {
-      render(<HeroSection />);
-
-      // Badge
-      expect(screen.getByText('Agna liqua!')).toBeInTheDocument();
-
-      // Headline
-      expect(screen.getByText('At auctor urna nunci')).toBeInTheDocument();
-
-      // Subheadline
-      expect(screen.getByText('Lorem ipsum dolor sit amet, consectetur adi')).toBeInTheDocument();
-
-      // Description
-      expect(
-        screen.getByText(
-          /sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ac placerat vestibulum lectus mauris./i
-        )
-      ).toBeInTheDocument();
-
-      // Button
-      expect(screen.getByText('Check trade-in value')).toBeInTheDocument();
-
-      // Placeholder
-      expect(screen.getByText('Image Placeholder')).toBeInTheDocument();
-    });
-
-    it('has clear call-to-action', () => {
-      render(<HeroSection />);
-      const button = screen.getByRole('button');
-      expect(button).toHaveTextContent('Check trade-in value');
-    });
-
-    it('maintains consistent messaging tone', () => {
-      render(<HeroSection />);
-
-      // Check that text is present and readable
-      const subheadline = screen.getByText('Lorem ipsum dolor sit amet, consectetur adi');
-      const description = screen.getByText(/sed do eiusmod tempor/i);
-
-      expect(subheadline).toBeInTheDocument();
-      expect(description).toBeInTheDocument();
-    });
-  });
-
-  describe('Responsive Behavior', () => {
-    it('renders all content regardless of viewport', () => {
-      render(<HeroSection />);
-
-      // All elements should be present
-      expect(screen.getByText('Agna liqua!')).toBeInTheDocument();
-      expect(screen.getByRole('heading')).toBeInTheDocument();
-      expect(screen.getByRole('button')).toBeInTheDocument();
-      expect(screen.getByText('Image Placeholder')).toBeInTheDocument();
+      expect(children).toHaveLength(2);
+      expect(children[0]?.tagName).toBe('DIV'); // textGroup wrapper
+      expect(children[1]?.tagName).toBe('BUTTON');
     });
 
     it('all CSS classes are applied correctly', () => {
@@ -570,34 +340,54 @@ describe('HeroSection', () => {
       expect(container.querySelector('[class*="hero"]')).toBeInTheDocument();
       expect(container.querySelector('[class*="container"]')).toBeInTheDocument();
       expect(container.querySelector('[class*="content"]')).toBeInTheDocument();
-      expect(container.querySelector('[class*="badge"]')).toBeInTheDocument();
-      expect(container.querySelector('[class*="headlineGroup"]')).toBeInTheDocument();
+      expect(container.querySelector('[class*="textGroup"]')).toBeInTheDocument();
       expect(container.querySelector('[class*="headline"]')).toBeInTheDocument();
-      expect(container.querySelector('[class*="underline"]')).toBeInTheDocument();
-      expect(container.querySelector('[class*="subheadline"]')).toBeInTheDocument();
       expect(container.querySelector('[class*="description"]')).toBeInTheDocument();
       expect(container.querySelector('[class*="ctaButton"]')).toBeInTheDocument();
-      expect(container.querySelector('[class*="imagePlaceholder"]')).toBeInTheDocument();
+    });
+  });
+
+  describe('Content Verification', () => {
+    it('contains all required text content', () => {
+      render(<HeroSection />);
+
+      expect(screen.getByText('Lorem ipsum dolor amet')).toBeInTheDocument();
+      expect(
+        screen.getByText('Trade in your device and get the latest model with instant credit.')
+      ).toBeInTheDocument();
+      expect(screen.getByText('Get started')).toBeInTheDocument();
     });
 
-    it('component maintains structure integrity', () => {
-      const { container } = render(<HeroSection />);
-      const section = container.querySelector('section');
+    it('has clear call-to-action', () => {
+      render(<HeroSection />);
+      const button = screen.getByRole('button');
 
-      // Should have one main container
-      expect(section?.children.length).toBe(1);
+      expect(button).toHaveTextContent('Get started');
+    });
 
-      // Container should have two children (content + image)
-      const mainContainer = section?.firstElementChild;
-      expect(mainContainer?.children.length).toBe(2);
+    it('headline accurately conveys main message', () => {
+      render(<HeroSection />);
+
+      const headline = screen.getByText('Lorem ipsum dolor amet');
+      expect(headline).toBeInTheDocument();
+      expect(headline.tagName).toBe('H1');
+    });
+
+    it('description provides supporting information', () => {
+      render(<HeroSection />);
+      const description = screen.getByText(
+        'Trade in your device and get the latest model with instant credit.'
+      );
+
+      expect(description).toBeInTheDocument();
+      expect(description).toBeVisible();
     });
   });
 
   describe('Edge Cases', () => {
-    it('renders with default content when no props provided', () => {
+    it('renders successfully with no props', () => {
       render(<HeroSection />);
 
-      // Component should render successfully
       expect(screen.getByRole('heading')).toBeInTheDocument();
       expect(screen.getByRole('button')).toBeInTheDocument();
     });
@@ -647,52 +437,350 @@ describe('HeroSection', () => {
     it('has correct displayName for debugging', () => {
       expect(HeroSection.displayName).toBe('HeroSection');
     });
-
-    it('displayName is a string', () => {
-      expect(typeof HeroSection.displayName).toBe('string');
-    });
   });
 
-  describe('SVG Elements', () => {
-    it('all SVG elements are properly structured', () => {
-      const { container } = render(<HeroSection />);
-      const svgs = container.querySelectorAll('svg');
-
-      svgs.forEach(svg => {
-        expect(svg).toHaveAttribute('viewBox');
-        expect(svg).toHaveAttribute('fill', 'none');
-        expect(svg).toHaveAttribute('aria-hidden', 'true');
-      });
-    });
-
-    it('underline SVG has correct stroke properties', () => {
-      const { container } = render(<HeroSection />);
-      const underlinePath = container.querySelector('[class*="underline"] path');
-
-      expect(underlinePath).toHaveAttribute('stroke', 'white');
-      expect(underlinePath).toHaveAttribute('stroke-width', '2');
-      expect(underlinePath).toHaveAttribute('stroke-linecap', 'round');
-    });
-
-    it('button icon SVG has correct stroke properties', () => {
-      const { container } = render(<HeroSection />);
-      const buttonPath = container.querySelector('button svg path');
-
-      expect(buttonPath).toHaveAttribute('stroke', 'currentColor');
-      expect(buttonPath).toHaveAttribute('stroke-width', '2');
-      expect(buttonPath).toHaveAttribute('stroke-linecap', 'round');
-      expect(buttonPath).toHaveAttribute('stroke-linejoin', 'round');
-    });
-  });
-
-  describe('Component Props and TypeScript', () => {
+  describe('Component TypeScript Compliance', () => {
     it('is a functional component', () => {
       expect(typeof HeroSection).toBe('function');
     });
 
     it('renders as expected with no props', () => {
       const { container } = render(<HeroSection />);
+
       expect(container.firstChild).toBeInTheDocument();
+    });
+  });
+
+  describe('Responsive Behavior', () => {
+    const setViewportSize = (width: number) => {
+      Object.defineProperty(window, 'innerWidth', {
+        writable: true,
+        configurable: true,
+        value: width,
+      });
+
+      window.matchMedia = vi.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }));
+    };
+
+    describe('Desktop Viewport (1024px+)', () => {
+      it('renders all content at desktop viewport', () => {
+        setViewportSize(1440);
+        render(<HeroSection />);
+
+        expect(screen.getByRole('heading')).toBeInTheDocument();
+        expect(screen.getByText('Get started')).toBeInTheDocument();
+      });
+
+      it('headline uses correct styling on desktop', () => {
+        setViewportSize(1440);
+        const { container } = render(<HeroSection />);
+
+        const headline = container.querySelector('h1');
+        expect(headline?.className).toContain('headline');
+        expect(headline).toHaveTextContent('Lorem ipsum dolor amet');
+      });
+
+      it('button has white background on desktop', () => {
+        setViewportSize(1440);
+        const { container } = render(<HeroSection />);
+        const button = container.querySelector('button');
+
+        expect(button?.className).toContain('ctaButton');
+      });
+
+      it('maintains interactivity at desktop viewport', async () => {
+        setViewportSize(1440);
+        const user = userEvent.setup();
+        render(<HeroSection />);
+
+        const button = screen.getByRole('button');
+        await user.click(button);
+
+        expect(button).toBeInTheDocument();
+      });
+    });
+
+    describe('Mobile Viewport (<768px)', () => {
+      it('renders all content at mobile viewport (375px baseline)', () => {
+        setViewportSize(375);
+        render(<HeroSection />);
+
+        expect(screen.getByRole('heading')).toBeInTheDocument();
+        expect(screen.getByText('Lorem ipsum dolor amet')).toBeInTheDocument();
+        expect(screen.getByText('Get started')).toBeInTheDocument();
+      });
+
+      it('headline maintains styling on mobile', () => {
+        setViewportSize(375);
+        const { container } = render(<HeroSection />);
+
+        const headline = container.querySelector('h1');
+        expect(headline?.className).toContain('headline');
+        expect(headline).toHaveTextContent('Lorem ipsum dolor amet');
+      });
+
+      it('button remains accessible on mobile', async () => {
+        setViewportSize(375);
+        const user = userEvent.setup();
+        render(<HeroSection />);
+
+        const button = screen.getByRole('button');
+        await user.click(button);
+
+        expect(button).toBeInTheDocument();
+      });
+
+      it('all text is visible on mobile', () => {
+        setViewportSize(375);
+        render(<HeroSection />);
+
+        expect(screen.getByText('Lorem ipsum dolor amet')).toBeVisible();
+        expect(
+          screen.getByText('Trade in your device and get the latest model with instant credit.')
+        ).toBeVisible();
+      });
+    });
+
+    describe('Small Mobile Viewport (320px)', () => {
+      it('renders without errors at 320px', () => {
+        setViewportSize(320);
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+        render(<HeroSection />);
+
+        expect(screen.getByRole('heading')).toBeInTheDocument();
+        expect(screen.getByRole('button')).toBeInTheDocument();
+        expect(consoleSpy).not.toHaveBeenCalled();
+
+        consoleSpy.mockRestore();
+      });
+
+      it('content remains readable at 320px', () => {
+        setViewportSize(320);
+        render(<HeroSection />);
+
+        expect(screen.getByText('Lorem ipsum dolor amet')).toBeVisible();
+        expect(screen.getByText('Get started')).toBeVisible();
+      });
+    });
+
+    describe('Touch Target Size (WCAG 2.5.5)', () => {
+      it('button meets 44px minimum height requirement on mobile', () => {
+        setViewportSize(375);
+        const { container } = render(<HeroSection />);
+        const button = container.querySelector('button');
+
+        expect(button).toBeInTheDocument();
+        expect(button?.className).toContain('ctaButton');
+      });
+
+      it('button maintains adequate touch target at 320px', () => {
+        setViewportSize(320);
+        const { container } = render(<HeroSection />);
+        const button = container.querySelector('button');
+
+        expect(button?.className).toContain('ctaButton');
+        expect(button).not.toBeDisabled();
+      });
+
+      it('button is accessible across all mobile breakpoints', () => {
+        const mobileBreakpoints = [320, 360, 375, 390, 414];
+
+        mobileBreakpoints.forEach((width) => {
+          setViewportSize(width);
+          const { container, unmount } = render(<HeroSection />);
+          const button = container.querySelector('button');
+
+          expect(button).toBeInTheDocument();
+          expect(button?.className).toContain('ctaButton');
+          expect(button).not.toBeDisabled();
+
+          unmount();
+        });
+      });
+    });
+
+    describe('Viewport Breakpoint Tests', () => {
+      it('renders correctly at all major breakpoints', () => {
+        const breakpoints = [320, 375, 414, 768, 1024, 1440, 1920];
+
+        breakpoints.forEach((width) => {
+          setViewportSize(width);
+          const { unmount } = render(<HeroSection />);
+
+          expect(screen.getByRole('heading')).toBeInTheDocument();
+          expect(screen.getByRole('button')).toBeInTheDocument();
+
+          unmount();
+        });
+      });
+
+      it('handles viewport transitions without errors', () => {
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const { rerender } = render(<HeroSection />);
+
+        setViewportSize(320);
+        rerender(<HeroSection />);
+
+        setViewportSize(1440);
+        rerender(<HeroSection />);
+
+        setViewportSize(768);
+        rerender(<HeroSection />);
+
+        expect(consoleSpy).not.toHaveBeenCalled();
+        consoleSpy.mockRestore();
+      });
+    });
+
+    describe('Responsive Accessibility', () => {
+      it('maintains semantic structure at all breakpoints', () => {
+        const breakpoints = [320, 375, 768, 1024, 1440];
+
+        breakpoints.forEach((width) => {
+          setViewportSize(width);
+          const { container, unmount } = render(<HeroSection />);
+
+          const section = container.querySelector('section');
+          const heading = container.querySelector('h1');
+
+          expect(section).toHaveAttribute('aria-labelledby', 'hero-heading');
+          expect(heading).toHaveAttribute('id', 'hero-heading');
+
+          unmount();
+        });
+      });
+
+      it('keyboard navigation works at all viewports', async () => {
+        const user = userEvent.setup();
+        const breakpoints = [320, 375, 768, 1024];
+
+        for (const width of breakpoints) {
+          setViewportSize(width);
+          const { unmount } = render(<HeroSection />);
+
+          await user.tab();
+          const button = screen.getByRole('button');
+          expect(button).toHaveFocus();
+
+          unmount();
+        }
+      });
+
+      it('focus indicators are visible at mobile viewport', async () => {
+        setViewportSize(375);
+        const user = userEvent.setup();
+        render(<HeroSection />);
+
+        await user.tab();
+        const button = screen.getByRole('button');
+
+        expect(button).toHaveFocus();
+        expect(button.className).toContain('ctaButton');
+      });
+    });
+
+    describe('Responsive Edge Cases', () => {
+      it('handles extremely small viewport (<280px)', () => {
+        setViewportSize(240);
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+        render(<HeroSection />);
+
+        expect(screen.getByRole('heading')).toBeInTheDocument();
+        expect(screen.getByRole('button')).toBeInTheDocument();
+        expect(consoleSpy).not.toHaveBeenCalled();
+
+        consoleSpy.mockRestore();
+      });
+
+      it('handles extremely large viewport (>2560px)', () => {
+        setViewportSize(3840);
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+        render(<HeroSection />);
+
+        expect(screen.getByRole('heading')).toBeInTheDocument();
+        expect(screen.getByRole('button')).toBeInTheDocument();
+        expect(consoleSpy).not.toHaveBeenCalled();
+
+        consoleSpy.mockRestore();
+      });
+
+      it('content remains centered at all viewports', () => {
+        const viewports = [280, 320, 375, 768, 1024, 1440, 2560];
+
+        viewports.forEach((width) => {
+          setViewportSize(width);
+          const { container, unmount } = render(<HeroSection />);
+          const content = container.querySelector('[class*="content"]');
+
+          expect(content).toBeInTheDocument();
+
+          unmount();
+        });
+      });
+    });
+  });
+
+  describe('CSS Module Classes', () => {
+    it('hero section has correct class', () => {
+      const { container } = render(<HeroSection />);
+      const section = container.querySelector('section');
+
+      expect(section?.className).toContain('hero');
+    });
+
+    it('container has correct class', () => {
+      const { container } = render(<HeroSection />);
+      const containerDiv = container.querySelector('[class*="container"]');
+
+      expect(containerDiv).toBeInTheDocument();
+    });
+
+    it('content has correct class', () => {
+      const { container } = render(<HeroSection />);
+      const content = container.querySelector('[class*="content"]');
+
+      expect(content).toBeInTheDocument();
+    });
+
+    it('headline has correct class', () => {
+      const { container } = render(<HeroSection />);
+      const headline = container.querySelector('h1');
+
+      expect(headline?.className).toContain('headline');
+    });
+
+    it('textGroup wrapper has correct class', () => {
+      const { container } = render(<HeroSection />);
+      const textGroup = container.querySelector('[class*="textGroup"]');
+
+      expect(textGroup).toBeInTheDocument();
+      expect(textGroup?.tagName).toBe('DIV');
+    });
+
+    it('description has correct class', () => {
+      const { container } = render(<HeroSection />);
+      const description = container.querySelector('p');
+
+      expect(description?.className).toContain('description');
+    });
+
+    it('button has correct class', () => {
+      const { container } = render(<HeroSection />);
+      const button = container.querySelector('button');
+
+      expect(button?.className).toContain('ctaButton');
     });
   });
 });

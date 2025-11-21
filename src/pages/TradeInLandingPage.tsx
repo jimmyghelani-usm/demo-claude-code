@@ -1,6 +1,6 @@
 import React from 'react';
 import { Header, Footer } from '@/components/layout';
-import { HeroSection, HowItWorksSection, FAQSection } from '@/components/sections';
+import { HeroSection, ComingSoonSection, HowItWorksSection, FAQSection } from '@/components/sections';
 import styles from './TradeInLandingPage.module.css';
 
 /**
@@ -15,6 +15,13 @@ export const TradeInLandingPage: React.FC = () => {
       <main className={styles.main}>
         <HeroSection />
         <HowItWorksSection />
+        <ComingSoonSection
+          badge="Coming Soon"
+          heading="Exciting features on the way!"
+          description="We're working on something special. Be the first to know when we launch new features designed to make your trade-in experience even better."
+          placeholder="Enter your email address"
+          buttonText="Notify me"
+        />
         <FAQSection />
       </main>
 

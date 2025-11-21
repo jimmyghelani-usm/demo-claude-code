@@ -169,6 +169,133 @@ await linear.updateIssue({
 });
 ```
 
+### MCP Execution Files (`mcp/tests/`)
+
+**Critical Rules for Creating MCP Execution Scripts:**
+
+**1. ALWAYS Check for Reusable Scripts First:**
+Before creating a new execution file in `mcp/tests/`, explore the directory to find existing reusable scripts:
+```bash
+# List available execution scripts
+ls mcp/tests/
+```
+
+**Reusable Scripts Currently Available:**
+- `get-issue.ts` - Fetch Linear issue by ID: `npx tsx mcp/tests/get-issue.ts <issue-id>`
+
+**2. Analyze Both Server Wrappers AND Execution Scripts:**
+When working with MCP:
+- First explore `mcp/servers/` for available MCP wrapper functions
+- Then explore `mcp/tests/` for existing execution patterns
+- Reuse existing scripts when possible, adapt if needed
+
+**3. Creating New Execution Scripts:**
+
+**Reusable scripts** (keep in `mcp/tests/`):
+- Accept command-line arguments for flexibility
+- Solve general-purpose problems
+- Can be used across multiple tickets/workflows
+- Examples: `get-issue.ts`, future: `update-issue.ts`, `analyze-design.ts`
+
+**One-off scripts** (temporary, must be deleted):
+- Hardcoded values (specific issue IDs, node IDs)
+- Ticket-specific logic
+- Test/debugging purposes
+- Must be deleted after successful execution
+
+**4. One-Off Script Pattern (Always Delete After Use):**
+
+If you must create a one-off script:
+```typescript
+// mcp/tests/temp-task-name.ts
+import { config } from 'dotenv';
+import { linear } from '../index.js';
+
+config();
+
+async function executeTask() {
+  try {
+    // ... hardcoded task-specific logic ...
+    console.log('✓ Task complete');
+  } catch (error) {
+    console.error('Error:', error);
+    process.exit(1);
+  }
+}
+
+executeTask();
+```
+
+**CRITICAL**: After successful execution, delete the file immediately:
+```bash
+rm mcp/tests/temp-task-name.ts
+```
+
+**5. Reusable Script Pattern (Keep in Repository):**
+
+Create reusable scripts with CLI arguments:
+```typescript
+// mcp/tests/update-issue.ts
+import { config } from 'dotenv';
+import { linear } from '../index.js';
+
+config();
+
+async function updateIssue(issueId: string, state: string, comment: string) {
+  try {
+    const result = await linear.updateIssue({
+      id: issueId,
+      state,
+      comment
+    });
+    console.log('✓ Issue updated:', result);
+  } catch (error) {
+    console.error('Error:', error);
+    process.exit(1);
+  }
+}
+
+const [issueId, state, comment] = process.argv.slice(2);
+if (!issueId || !state) {
+  console.error('Usage: npx tsx mcp/tests/update-issue.ts <issue-id> <state> [comment]');
+  process.exit(1);
+}
+
+updateIssue(issueId, state, comment || '');
+```
+
+**6. Cleanup Policy:**
+
+Automatically delete one-off scripts in these scenarios:
+- After workflow completion (e.g., `/implement-linear` command cleanup step)
+- Test files prefixed with `test-*`, `analyze-*`, `extract-*`, `process-*` (unless truly reusable)
+- Any file with hardcoded ticket IDs (`update-fe-431.ts`, `extract-coming-soon.ts`)
+
+**7. Performance Note - Timeout Handling:**
+
+All MCP calls have automatic timeout protection:
+- Default timeout: 5 seconds (configurable in `mcp-client.ts`)
+- Figma tool calls: 10 seconds
+- Linear MCP server: Falls back to GraphQL API on timeout (expected behavior)
+- Playwright: Standard 5 second timeout
+
+If you see `[Linear] MCP timeout, using GraphQL API fallback`, this is **normal** and **working as designed**. The GraphQL fallback ensures reliable operation.
+
+**8. Best Practices:**
+
+✅ **DO:**
+- Check `mcp/tests/` for existing scripts before creating new ones
+- Use CLI arguments for reusable scripts
+- Add clear usage instructions in error messages
+- Delete one-off scripts after successful execution
+- Keep `mcp/tests/` directory clean (only reusable utilities)
+
+❌ **DON'T:**
+- Create multiple similar scripts for the same task
+- Leave hardcoded test files in the repository
+- Create execution files without checking for existing patterns
+- Accumulate technical debt in `mcp/tests/`
+
 ### ESLint Configuration
 
 **Flat Config Format** (`eslint.config.js`):
