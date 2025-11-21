@@ -57,4 +57,16 @@ export default [// Ignore patterns
   languageOptions: {
     globals: globals.node,
   },
+}, // Configuration for MCP servers directory
+{
+  files: ['servers/**/*.{ts,js}'],
+  languageOptions: {
+    globals: {
+      ...globals.node,
+    },
+  },
+  rules: {
+    'no-console': 'off', // Allow console.log in server code
+    '@typescript-eslint/no-explicit-any': 'off', // Allow any types for MCP responses
+  },
 }, ...storybook.configs["flat/recommended"]];
