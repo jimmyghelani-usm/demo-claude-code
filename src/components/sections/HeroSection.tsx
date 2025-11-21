@@ -2,56 +2,73 @@ import React from 'react';
 import styles from './HeroSection.module.css';
 
 /**
- * HeroSection component - Updated to match Figma design node 1413:13347
+ * HeroSection component - Hero Banner
+ * Updated to match Figma design node 1413:13348
  *
  * Figma Reference:
- * - Desktop: node-id 1413:13347 (1440px × 615px, centered content)
+ * - Node: 1413:13348 (1440px × 615px, hero banner)
  *
- * Layout:
- * - Desktop: Centered content with 680px max width
- * - Mobile: Single-column centered content with responsive padding
+ * Design Specifications (node 1413:13348):
+ * - Background: #1A5DF6 (vibrant blue)
+ * - Text Color: #FFFFFF (white)
+ * - Height: 615px
+ * - Layout: Centered content with headline, description, CTA button, and feature cards
  *
- * Design Specifications (node 1413:13347):
- * - Container: 1440px × 615px
- * - Hero Content Area: 680px width (centered)
- * - Background: #1A5DF6 (primary blue)
- * - Heading: 52px/54px, Letter Spacing: -1.2px, Color: #FFFFFF
- * - Font: GT Walsheim Pro Bold
- * - Description: 24px/30px, Color: #FFFFFF
- * - CTA Button: 162px × 50px, Border Radius: 15px
- * - Button: White background, #1A5DF6 text, Bold 16px
- * - Spacing: 36px vertical gap between elements, 4px between heading/subheading
+ * Components:
+ * - Headline: "Lorem ipsum dolor amet" (white, bold, ~48px)
+ * - Description: Supporting text (white, regular, ~16px)
+ * - CTA Button: White background, blue text, pill-shaped
+ * - Feature Cards: 4-column grid with icon placeholders and labels
  *
  * Features:
- * - Background: #1A5DF6 (primary blue)
- * - Typography: GT Walsheim Pro font family
- * - White text throughout
- * - CTA button: white background with blue text
- * - WCAG 2.1 AA accessible with semantic HTML
- * - Mobile-first responsive design
+ * - Full-width hero banner
+ * - Semantic HTML with WCAG 2.1 AA accessibility
+ * - Responsive design with mobile breakpoints
+ * - Centered content layout
  */
 export const HeroSection: React.FC = () => {
   return (
     <section className={styles.hero} aria-labelledby="hero-heading">
       <div className={styles.container}>
         <div className={styles.content}>
-          {/* Text group with 4px gap */}
-          <div className={styles.textGroup}>
-            {/* Main headline */}
-            <h1 id="hero-heading" className={styles.headline}>
-              Lorem ipsum dolor amet
-            </h1>
+          {/* Headline */}
+          <h1 id="hero-heading" className={styles.headline}>
+            Lorem ipsum dolor amet
+          </h1>
 
-            {/* Subheading/Description text */}
-            <p className={styles.description}>
-              Trade in your device and get the latest model with instant credit.
-            </p>
-          </div>
+          {/* Description */}
+          <p className={styles.description}>
+            Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ac placerat
+            vestibulum lectus mauris.
+          </p>
 
           {/* CTA Button */}
           <button className={styles.ctaButton} type="button">
-            Get started
+            nullam vehic
           </button>
+        </div>
+
+        {/* Feature Cards */}
+        <div className={styles.featureCards}>
+          <div className={styles.card}>
+            <div className={styles.iconPlaceholder} aria-hidden="true" />
+            <p className={styles.cardLabel}>Commodo viverra</p>
+          </div>
+
+          <div className={styles.card}>
+            <div className={styles.iconPlaceholder} aria-hidden="true" />
+            <p className={styles.cardLabel}>Eaestas sed sed risus</p>
+          </div>
+
+          <div className={styles.card}>
+            <div className={styles.iconPlaceholder} aria-hidden="true" />
+            <p className={styles.cardLabel}>Et maanis parturient</p>
+          </div>
+
+          <div className={styles.card}>
+            <div className={styles.iconPlaceholder} aria-hidden="true" />
+            <p className={styles.cardLabel}>Amet tellu sadioliscin</p>
+          </div>
         </div>
       </div>
     </section>

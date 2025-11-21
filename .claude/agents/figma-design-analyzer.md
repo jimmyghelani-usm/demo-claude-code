@@ -14,18 +14,27 @@ color: orange
 ```typescript
 import { figma } from './mcp';
 
-// Primary tool - generates code for Figma nodes
+// STEP 1 (ALWAYS FIRST): Capture screenshot for visual analysis
+const screenshot = await figma.getScreenshot({
+  nodeId: '2171-13039',
+  filename: 'docs/project/temp-figma-screenshot.png'  // Temporary location
+});
+// Then use Read tool to view screenshot visually
+
+// STEP 2: Extract design context and specifications
 await figma.getDesignContext({
   nodeId: '2171-13039',              // From URL: node-id=XXXX-XXXXX → XXXX:XXXXX
   clientFrameworks: 'react',
   clientLanguages: 'typescript'
 });
 
-// Other tools
+// STEP 3: Additional tools as needed
 await figma.getVariableDefs({ nodeId: '2171-13039' });  // Design variables
-await figma.getScreenshot({ nodeId: '2171-13039' });     // Visual capture
 await figma.getMetadata({ nodeId: '2171-13039' });       // Node structure
 await figma.createDesignSystemRules({ nodeId: '2171-13039' });  // Design system
+
+// STEP 4 (ALWAYS LAST): Clean up screenshot after analysis
+// Delete: docs/project/temp-figma-screenshot.png
 ```
 
 **Full Tool List**: `getDesignContext`, `getVariableDefs`, `getScreenshot`, `getCodeConnectMap`, `getMetadata`, `createDesignSystemRules`, `addCodeConnectMap`, `getFigJam`
@@ -63,32 +72,40 @@ Extract and document everything relevant for implementation:
 
 ## Methodology
 
-**Phase 1: Discovery**
-- Connect to Figma file using MCP tools
-- Identify all relevant frames, components, artboards
-- Understand structure and organization
-- Note design system or component library usage
+**Phase 1: Screenshot Capture (ALWAYS DO THIS FIRST)**
+- **CRITICAL**: Use `figma.getScreenshot()` to capture visual screenshot of the component
+- Save screenshot to temporary location: `docs/project/temp-figma-screenshot.png`
+- **Use Read tool to analyze the screenshot visually**
+- Visual analysis provides context MCP data might miss (layout, visual hierarchy, spacing)
 
-**Phase 2: Extraction**
-- Systematically analyze each screen/component
-- Document every visual property with exact values
-- Capture spacing relationships and layout rules
-- Extract text content and formatting
-- Identify interactive elements and states
-- Note design annotations or developer notes
+**Phase 2: MCP Data Extraction**
+- Use `figma.getDesignContext()` to extract component specs, colors, typography
+- Use `figma.getVariableDefs()` if design system variables are used
+- Use `figma.getMetadata()` for component structure and hierarchy
+- Cross-reference MCP data with screenshot to ensure accuracy
 
-**Phase 3: Asset Management**
+**Phase 3: Visual Analysis & Synthesis**
+- Analyze screenshot for:
+  - Exact colors (hex codes from MCP data + visual verification)
+  - Typography sizing and hierarchy (visual spacing, alignment)
+  - Layout structure (flexbox/grid patterns, responsive behavior)
+  - Component positioning and relationships
+  - Interactive states (if visible in screenshot)
+  - Spacing patterns (margins, padding, gaps)
+- Combine visual observations with MCP data for complete specification
+
+**Phase 4: Asset & Component Documentation**
 - List all images and specifications
 - Document required formats and resolutions
 - Note SVG icons and usage contexts
 - Identify custom graphics or illustrations
+- Organize into logical sections for implementation
 
-**Phase 4: Synthesis**
-- Organize into logical sections
-- Highlight patterns and reusable elements
-- Note design decisions impacting implementation
-- Identify technical challenges
-- Create prioritized implementation roadmap (if multiple screens)
+**Phase 5: Cleanup (ALWAYS DO THIS LAST)**
+- **CRITICAL**: After compiling all specifications and before returning response:
+  - Delete the temporary screenshot: `rm docs/project/temp-figma-screenshot.png`
+  - Confirm deletion in your response
+- Keep repository clean - screenshots are only needed during analysis
 
 ## Output Format - CRITICAL: Return Context, Not Files
 
@@ -145,4 +162,18 @@ Be proactive identifying design patterns that can be abstracted into reusable co
 
 Your goal: Provide a complete implementation blueprint that eliminates guesswork and enables pixel-perfect frontend development.
 
-**CRITICAL REMINDER**: Return all design specifications in your response message as structured text. DO NOT create markdown documentation files. The orchestrator needs your analysis as direct context, not file references.
+**CRITICAL REMINDERS**:
+1. **Screenshots**: ALWAYS capture screenshot FIRST, analyze it visually, then DELETE it LAST
+2. **No Files**: Return all design specifications in your response message as structured text. DO NOT create markdown documentation files.
+3. **Cleanup**: Before returning your response, delete `docs/project/temp-figma-screenshot.png` and confirm deletion
+4. **Context, Not Files**: The orchestrator needs your analysis as direct context, not file references
+
+**Screenshot Workflow Summary**:
+```
+1. Take screenshot → docs/project/temp-figma-screenshot.png
+2. Read screenshot with Read tool (visual analysis)
+3. Extract MCP data (getDesignContext, etc.)
+4. Synthesize specifications from visual + data
+5. DELETE screenshot: rm docs/project/temp-figma-screenshot.png
+6. Return specifications in response (no markdown files)
+```
