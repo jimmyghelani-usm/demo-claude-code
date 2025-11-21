@@ -123,6 +123,7 @@ async function designToIssues(nodeId: string, teamId: string) {
 
 **✅ WORKING:** Uses custom `FigmaDirectClient` to bypass SDK validation. See [`FIGMA_MCP_SUCCESS.md`](../docs/mcp/setup/FIGMA_MCP_SUCCESS.md) for implementation details.
 
+**Available Tools:**
 - `getDesignContext()` - Generate UI code for nodes
 - `getVariableDefs()` - Get design system variables
 - `getScreenshot()` - Capture node screenshots
@@ -132,7 +133,17 @@ async function designToIssues(nodeId: string, teamId: string) {
 - `createDesignSystemRules()` - Generate design system rules
 - `getFigJam()` - Get FigJam content
 
-**Requirements:** Figma Desktop app running with Dev Mode (Shift+D) and MCP server enabled.
+**Connection Options:**
+
+**1. Figma Desktop (Current Default: `figma-desktop`)**
+- **Endpoint:** `http://127.0.0.1:3845/mcp` (local)
+- **Requirements:** Figma Desktop app running with Dev Mode (Shift+D) and MCP server enabled
+- **Pros:** Works for programmatic access, no OAuth needed
+- **Cons:** Requires desktop app to be running, local only
+- **Status:** ✅ Working with custom `FigmaDirectClient`
+
+**Switching Between Servers:**
+Edit wrappers in `servers/figma/*.ts` to use either `'figma-desktop'` or `'figma-remote'` in `callMCPTool()` calls.
 
 ### Playwright (`servers/playwright/`)
 

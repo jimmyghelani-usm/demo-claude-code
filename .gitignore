@@ -46,11 +46,3 @@ Thumbs.db
 
 *storybook.log
 storybook-static
-
-# Screenshot directories (track structure, not images)
-docs/temp/figma-screenshots/*.png
-docs/temp/figma-screenshots/*.jpg
-docs/temp/playwright-screenshots/*.png
-docs/temp/playwright-screenshots/*.jpg
-!docs/temp/figma-screenshots/.gitkeep
-!docs/temp/playwright-screenshots/.gitkeep

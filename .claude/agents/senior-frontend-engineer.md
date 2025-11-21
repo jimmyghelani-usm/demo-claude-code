@@ -30,7 +30,6 @@ After implementing ANY component, you MUST:
 1. **IMMEDIATELY launch testing agents in PARALLEL** using a single message with multiple Task tool calls
 2. **storybook-expert**:
    - ✅ REQUIRED for: Reusable UI components with props (Button, Card, Modal, Form, Input, etc.)
-   - ❌ SKIP for: Simple stateless pages without props (App.tsx, splash pages)
    - If unsure, CREATE the story (better to have it than miss it)
 3. **react-component-tester**:
    - ✅ REQUIRED for ALL components (no exceptions)
@@ -40,7 +39,7 @@ After implementing ANY component, you MUST:
 
 **Example - Single Component**:
 ```typescript
-// After implementing Button.tsx, launch in SINGLE message:
+// After implementing Button.tsx, MUST launch agents in SINGLE message:
 Task({ subagent_type: 'storybook-expert', prompt: 'Create story for Button.tsx with size/variant/disabled props...' })
 Task({ subagent_type: 'react-component-tester', prompt: 'Test Button.tsx: click handling, disabled state, a11y...' })
 ```
@@ -183,7 +182,7 @@ Before delivering:
 - ✓ Edge cases handled or documented
 
 **MANDATORY TESTING DELEGATION** (verify these or you FAILED):
-- ✓ **Storybook stories delegated** to storybook-expert (for reusable UI components with props)
+- ✓ **Storybook stories delegated** to storybook-expert
 - ✓ **Component tests delegated** to react-component-tester (REQUIRED for ALL components - NO EXCEPTIONS)
 - ✓ **Both agents launched in SINGLE message** with parallel Task calls (NOT separate messages)
 - ✓ **Provided complete context** in Task prompts (file path, props, interactions, edge cases)
