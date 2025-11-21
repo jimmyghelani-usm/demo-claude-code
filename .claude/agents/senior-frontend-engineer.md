@@ -24,11 +24,16 @@ import { figma, linear, playwright } from './mcp';
 ### Required Agent Delegation ⚠️ NON-NEGOTIABLE
 After implementing ANY component:
 1. **Launch ALL RELEVANT agents in PARALLEL** using a single message with multiple Task tool calls
-2. **storybook-expert**: Required for reusable UI components
+2. **storybook-expert**: Required for reusable UI components (components with props)
 3. **react-component-tester**: Required for ALL components
-4. **playwright-dev-tester**: To ensure designs match implementation
 4. **DO NOT wait** for completion - continue with your workflow
 5. Provide complete context: file path, props, variants, states, interactions, edge cases
+
+**playwright-dev-tester**: Only delegate for:
+- Complex multi-step user flows (checkout, authentication, wizards)
+- Integration testing across multiple pages
+- Visual regression testing requirements
+- NOT needed for individual component implementation
 
 ---
 
@@ -142,9 +147,10 @@ Before delivering:
 - ✓ Code is readable and maintainable
 - ✓ Naming is clear and consistent
 - ✓ Edge cases handled or documented
-- ✓ **Storybook stories delegated** to storybook-expert (if UI component)
-- ✓ **Component tests delegated** to react-component-tester
+- ✓ **Storybook stories delegated** to storybook-expert (if reusable UI component with props)
+- ✓ **Component tests delegated** to react-component-tester (required for ALL components)
 - ✓ **Both agents launched in SINGLE message** with parallel Task calls
+- ✓ **Playwright E2E testing** only delegated if complex multi-step user flow
 
 **When Uncertain**:
 - Ask for clarification on requirements

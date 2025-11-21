@@ -50,12 +50,12 @@ cd servers && npx tsc --noEmit                    # Type-check server code
 ### Frontend Structure
 
 **Component Organization:**
-- `src/components/ui/` - Reusable UI components (Button, IconButton)
-- `src/components/sections/` - Page sections (HeroSection, FAQSection, HowItWorksSection)
-- All components have corresponding `.stories.tsx` and `.test.tsx` files
+- Create components in appropriate directories: `src/components/ui/` for reusable UI components, `src/components/sections/` for page sections
+- All reusable UI components MUST have corresponding `.stories.tsx` and `.test.tsx` files
+- All components (reusable or not) MUST have `.test.tsx` files
 
 **Import Aliases:**
-- Use `@/` for all src imports: `import { Button } from '@/components/ui'`
+- Use `@/` for all src imports: `import { Component } from '@/components/ui'`
 - Configured in `vite.config.ts` and `tsconfig.app.json`
 
 **Testing Setup:**
@@ -316,22 +316,32 @@ If you see `[Linear] MCP timeout, using GraphQL API fallback`, this is **normal*
 3. Use `@/` imports for internal dependencies
 
 **REQUIRED: Testing & Documentation (use agent delegation):**
-4. **Storybook Stories** - REQUIRED for reusable UI components
+4. **Storybook Stories** - REQUIRED for reusable UI components with props
    - Use Task tool to delegate to `storybook-expert` agent
    - Provide complete component context (props, variants, states, interactions)
-   - Agent creates comprehensive stories with args, controls, and play functions
+   - Agent creates comprehensive stories with args/controls for interactive exploration
+   - **When to include Storybook**:
+     - ✅ Reusable UI components (Button, Card, Modal, Form, etc.) with props
+     - ❌ Simple stateless pages/App components without props
 
 5. **Component Tests** - REQUIRED for ALL components
    - Use Task tool to delegate to `react-component-tester` agent
    - Provide component context (file path, props, behaviors, edge cases)
    - Agent creates tests using Vitest + React Testing Library
    - Tests must cover user interactions, conditional rendering, and accessibility
+   - **Every component** (reusable or not) needs test coverage
+
+6. **E2E Testing** - CONDITIONAL for complex user flows only
+   - Use Task tool to delegate to `playwright-dev-tester` agent
+   - Only needed for: multi-step flows, authentication, checkout processes, integration testing
+   - NOT needed for individual component implementation
 
 **Important Notes:**
-- ALL components MUST have tests (either Storybook interaction tests OR Vitest functional tests)
-- Delegate to agents in parallel when creating multiple components
+- ALL components MUST have Vitest tests
+- Reusable UI components MUST also have Storybook stories with args/controls
+- Delegate to testing agents in parallel when creating multiple components
 - Continue with other work after delegation; don't wait for agents to complete
-- The `senior-frontend-engineer` agent is configured to automatically trigger both testing agents
+- The `senior-frontend-engineer` agent is configured to automatically trigger storybook-expert and react-component-tester agents
 
 ### Working with MCP Wrappers
 
@@ -365,10 +375,13 @@ return components;
 
 ### Storybook Integration
 
-- Stories use CSF3 format with args and controls
-- Interaction tests defined in play functions
+- Stories use CSF3 format with args and controls (for components with props)
+- **Args/controls** enable interactive exploration of component props in Storybook UI
+- Interaction tests defined in play functions (for interactive components)
 - A11y addon enabled for accessibility testing
 - Stories can be tested with `npm run test:storybook`
+- **When to create stories**: Reusable UI components with props (Button, Card, Modal, Form, etc.)
+- **When to skip stories**: Simple stateless pages/App components without props
 
 ## TypeScript Configuration
 
@@ -451,15 +464,22 @@ Always use `@/` for src imports in frontend code. Do not use relative paths like
 
 ## Testing Strategy
 
-**Component Tests:**
+**Component Tests** (Required for ALL components):
 - Focus on user interactions and outcomes
 - Use React Testing Library queries (getByRole, getByText)
 - Test accessibility (ARIA attributes, keyboard navigation)
+- Every component must have a `.test.tsx` file
 
-**Storybook Stories:**
-- Document all component states and variants
-- Include interaction tests in play functions
-- Use args for interactive controls
+**Storybook Stories** (Required for reusable UI components):
+- Document all component states and variants with args/controls
+- Use args to enable interactive prop exploration in Storybook UI
+- Include interaction tests in play functions (for interactive components)
+- Create stories for reusable components with props, skip for stateless pages
+
+**E2E Tests with Playwright** (Conditional):
+- Use for complex multi-step user flows (authentication, checkout, wizards)
+- Use for integration testing across multiple pages
+- Skip for individual component testing (covered by Vitest + Storybook)
 
 **MCP Wrapper Tests:**
 - Test actual MCP connections with `test-simple.ts`

@@ -146,13 +146,26 @@ Provide:
 
 1. **Import Rule**: ALWAYS use `import { userEvent, within, expect } from 'storybook/test'` - NEVER use `@storybook/test`
 
-2. **Play Functions**: Consider project setup before adding play functions:
-   - If the project lacks `storybook/test` or has import issues, create visual-only stories without play functions
-   - For this project: Prefer simple viewport-based stories over complex interaction tests
-   - Visual stories are often sufficient for component documentation
+2. **Args & Controls - Decision Framework**:
+   - **Reusable UI Components with Props** (Button, Card, Modal, Form, etc.):
+     - ✅ MUST implement args/argTypes with full controls
+     - ✅ Create multiple story variants showing different prop combinations
+     - ✅ Add play functions for interactive behaviors (click handlers, form submission, etc.)
+     - Example: Button with size, variant, disabled, onClick props → Full args with controls
 
-3. **CSF Next**: For CSF Next factory pattern (Storybook 8.4+), use `.extend()` for story composition
+   - **Simple Stateless Pages/App Components** (App.tsx, splash pages, static layouts):
+     - ❌ Skip args/controls (no props to control)
+     - ✅ Create single Default story showcasing the visual design
+     - ❌ Skip play functions unless there's actual user interaction to test
+     - Example: Hello World splash page → Simple visual story, no args needed
 
-4. **Module Mocking**: For advanced module mocking patterns, refer to Storybook docs
+3. **Play Functions**: Add play functions for:
+   - Components with user interactions (clicks, typing, form submission)
+   - Components with state changes (toggle, expand/collapse, modal open/close)
+   - Skip play functions for purely visual/static components
 
-You create production-ready, maintainable stories that serve as both documentation and development tools.
+4. **CSF Next**: For CSF Next factory pattern (Storybook 8.4+), use `.extend()` for story composition
+
+5. **Module Mocking**: For advanced module mocking patterns, refer to Storybook docs
+
+You create production-ready, maintainable stories that serve as both documentation and development tools. **Always include args/controls for reusable components** - Storybook's power comes from interactive component exploration.
