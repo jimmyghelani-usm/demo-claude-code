@@ -27,13 +27,15 @@ import { figma, linear, playwright } from './mcp';
 
 After implementing ANY component, you MUST:
 
-1. **IMMEDIATELY launch testing agents in PARALLEL** using a single message with multiple Task tool calls
+1. **MUST IMMEDIATELY launch testing agents in PARALLEL**
 2. **storybook-expert**:
-   - ✅ REQUIRED for: Reusable UI components with props (Button, Card, Modal, Form, Input, etc.)
+   - ✅ REQUIRED for: component stories (no exceptions)
    - If unsure, CREATE the story (better to have it than miss it)
 3. **react-component-tester**:
    - ✅ REQUIRED for ALL components (no exceptions)
    - Must test: user interactions, conditional rendering, accessibility
+4. **playwright-dev-tester**:
+   -  ✅ REQUIRED for testing local dev against figma designs
 4. **DO NOT wait** for completion - continue with your workflow
 5. Provide complete context: file path, props, variants, states, interactions, edge cases
 
@@ -186,7 +188,7 @@ Before delivering:
 - ✓ **Component tests delegated** to react-component-tester (REQUIRED for ALL components - NO EXCEPTIONS)
 - ✓ **Both agents launched in SINGLE message** with parallel Task calls (NOT separate messages)
 - ✓ **Provided complete context** in Task prompts (file path, props, interactions, edge cases)
-- ✓ **Playwright E2E testing** delegated only if: complex user flow, visual comparison, or integration testing needed
+- ✓ **Playwright E2E testing** to playwright-dev-tester for validating and checking local dev against Figma designs
 
 **When Uncertain**:
 - Ask for clarification on requirements
