@@ -128,6 +128,50 @@ Task({
 
 **Wait for ALL implementations and their testing agents to complete before proceeding.**
 
+**4D: Integrate Components into App (AUTOMATIC & REQUIRED)** ⚠️ NON-NEGOTIABLE
+
+After implementation completes, YOU (the orchestrator) MUST integrate components so they render in the browser:
+
+1. **Read current App.tsx**: Check what's currently rendered
+2. **Update App.tsx** to import and mount new component(s):
+   ```typescript
+   // src/App.tsx
+   import { HeroSection } from '@/components/sections';
+   import './App.css';
+
+   function App() {
+     return (
+       <main>
+         <HeroSection />
+       </main>
+     );
+   }
+
+   export default App;
+   ```
+
+3. **Multiple Components**: Stack in App.tsx or create a demo page:
+   ```typescript
+   // Stack approach
+   import { HeroSection, Navigation, Footer } from '@/components/sections';
+
+   function App() {
+     return (
+       <main>
+         <Navigation />
+         <HeroSection />
+         <Footer />
+       </main>
+     );
+   }
+   ```
+
+4. **Run type-check**: Verify integration with `npm run type-check`
+
+5. **Inform user**: Component is now visible at http://localhost:3000
+
+**Why This Step Exists**: The senior-frontend-engineer agent creates the component, but YOU (orchestrator) must integrate it into App.tsx so users can immediately see their work in the browser.
+
 ## Step 5: Verification (After Implementation)
 After implementation is complete:
 

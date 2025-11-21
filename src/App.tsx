@@ -1,12 +1,16 @@
-import { CountdownPage } from '@/components/sections';
+import { ReferralRewardsHero } from '@/components/sections';
 import './App.css';
 
 /**
  * Main App component
- * Countdown marketing page for Linear ticket FE-433
+ * Displays ReferralRewardsHero component from Figma design (node 2172:3290)
  */
 function App() {
-  return <CountdownPage />;
+  return (
+    <main>
+      <ReferralRewardsHero />
+    </main>
+  );
 }
 
 export default App;

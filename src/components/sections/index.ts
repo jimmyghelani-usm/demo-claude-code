@@ -7,3 +7,4 @@ export { CountdownPage } from './CountdownPage';
 export { Navigation } from './Navigation';
 export { HeroSection } from './HeroSection';
 export { CountdownTimer } from './CountdownTimer';
+export { ReferralRewardsHero } from './ReferralRewardsHero';

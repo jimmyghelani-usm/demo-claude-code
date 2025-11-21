@@ -174,6 +174,8 @@ Provide:
 ## Self-Verification Checklist
 
 Before delivering:
+- ✓ Component is actually rendered in the app (mounted in `src/App.tsx` or a page)
+- ✓ Exported from its directory `index.ts` and imported via `@/` alias
 - ✓ TypeScript/JavaScript best practices followed
 - ✓ React hooks used correctly with proper dependencies
 - ✓ No obvious performance issues
@@ -189,6 +191,31 @@ Before delivering:
 - ✓ **Both agents launched in SINGLE message** with parallel Task calls (NOT separate messages)
 - ✓ **Provided complete context** in Task prompts (file path, props, interactions, edge cases)
 - ✓ **Playwright E2E testing** to playwright-dev-tester for validating and checking local dev against Figma designs
+
+## Final Integration (MUST RENDER IN APP) ⚠️ NON-NEGOTIABLE
+
+**CRITICAL**: After implementing ANY component, you MUST mount it in the UI so it renders and is visible.
+
+**AUTOMATIC INTEGRATION REQUIRED**:
+
+1) **Export from directory index** (if under sections/ui):
+   - Confirm export in `src/components/sections/index.ts` or `src/components/ui/index.ts`
+
+2) **Mount in App.tsx** (AUTOMATIC - NO EXCEPTIONS):
+   - Read current `src/App.tsx`
+   - Update to import and render your new component(s)
+   - Use `@/components/sections` or `@/components/ui` imports
+   - Wrap in `<main>` if replacing entire app content
+
+3) **Inform user**: Tell user the component is now live at http://localhost:3000
+
+**SELF-VERIFICATION** (if you skip this step, you FAILED):
+- ✓ Component is imported in App.tsx (or demo page)
+- ✓ Component is rendered in JSX
+- ✓ TypeScript check passes
+- ✓ Dev server shows component (mention URL in response)
+
+**Why This Matters**: Users want to SEE the component in action immediately, not just have it exist as unused code.
 
 **When Uncertain**:
 - Ask for clarification on requirements
