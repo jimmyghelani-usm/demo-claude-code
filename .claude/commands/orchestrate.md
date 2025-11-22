@@ -3,146 +3,163 @@ description: Universal orchestrator for multi-agent workflows. Coordinates Linea
 argument-hint: linear <ticket-id> | figma <url> [url ...] | prd <requirements> [--figma <url> ...] [--implement]
 ---
 
-# Orchestrate Multi-Agent Workflows
+# Execute Multi-Agent Workflow
 
-You are a workflow orchestrator. Parse user arguments, determine workflow type, then return an explicit delegation plan for the main orchestrator to execute agents in parallel.
+You are executing a workflow orchestrator. Parse the user's arguments to determine which workflow to execute, then follow the steps below. Invoke agents explicitly with Task() using exact agent names as string literals.
 
-## Workflow Types
+## Workflow Selection
 
-**1. Linear** (`/orchestrate linear ENG-123`)
-- Fetch Linear ticket → Extract Figma URLs → Analyze designs → Implement → Test → Mount → Update ticket
+Determine workflow type from first argument:
+- **`linear <ticket-id>`** - Fetch Linear ticket, extract Figma URLs, analyze designs, implement, test, mount, update ticket
+- **`figma <url> [url2 ...]`** - Analyze Figma designs, implement, test, mount
+- **`prd <requirements>`** - Generate PRD, optionally analyze Figma (--figma), optionally implement (--implement)
 
-**2. Figma** (`/orchestrate figma "https://figma.com/file/..."`)
-- Analyze Figma designs → Implement → Test → Mount
+## Linear Workflow: `/orchestrate linear ENG-123`
 
-**3. PRD** (`/orchestrate prd "Build OAuth" [--figma url] [--implement]`)
-- Generate PRD → (optional) Analyze Figma → (optional) Implement → (optional) Test
+1. Fetch Linear ticket `ENG-123` using mcp/tests/get-issue.ts
+2. Parse response to extract:
+   - Issue ID, title, description, labels
+   - Figma URLs (if any) from description
+3. Analyze the issue to determine component count and complexity
+4. **If Figma URLs found:**
+   - Task("figma-design-analyzer", { figmaUrls, linearIssue })
+   - Launch in parallel for each URL
+   - Wait for all to complete
+5. **Then implement using specs:**
+   - Task("senior-frontend-engineer", { figmaSpecs, linearIssue, idx: 0 })
+   - Task("senior-frontend-engineer", { figmaSpecs, linearIssue, idx: 1 })
+   - Launch in parallel for each spec
+   - Wait for all to complete
+6. Run type checks and tests: `npm run type-check && npm run test:run`
+7. **Run visual tests:**
+   - Task("playwright-dev-tester", { figmaSpecs, implementations, linearIssue })
+8. Mount components: `npm run mount` (or manual App.tsx update)
+9. Clean temporary files: `rm -rf mcp/tests/temp-* docs/temp/*`
+10. Update Linear ticket: `linear update ENG-123 --state Done --comment "✅ Implementation complete. Live at http://localhost:3000"`
 
-## Your Role
+## Figma Workflow: `/orchestrate figma "https://figma.com/file/...?node-id=2171:13039"`
 
-1. **Parse arguments** - Determine workflow type and extract parameters
-2. **Handle orchestrator operations** - Execute fetch_linear, analyze, cmd, mount, cleanup, update_linear directly
-3. **Return delegations** - Return explicit `delegations` array of agents to invoke in parallel
+1. Parse Figma URLs from arguments
+2. Extract node IDs from each URL
+3. **Analyze all designs in parallel:**
+   - Task("figma-design-analyzer", { figmaUrls: ["url1"], ... })
+   - Task("figma-design-analyzer", { figmaUrls: ["url2"], ... })
+   - Launch all at once, wait for all to complete
+4. **Implement all components in parallel:**
+   - Task("senior-frontend-engineer", { figmaSpecs, idx: 0 })
+   - Task("senior-frontend-engineer", { figmaSpecs, idx: 1 })
+   - Launch all at once, wait for all to complete
+5. Run type checks and tests: `npm run type-check && npm run test:run`
+6. **Run visual tests:**
+   - Task("playwright-dev-tester", { figmaSpecs, implementations })
+7. Mount components: `npm run mount`
+8. Clean temporary files: `rm -rf mcp/tests/temp-* docs/temp/*`
 
-## Return Format
+## PRD Workflow: `/orchestrate prd "Build OAuth 2.0 authentication"`
 
-Always return JSON with this structure:
+1. **Generate PRD (always first):**
+   - Task("prd-writer", { requirements: "Build OAuth 2.0 authentication" })
+   - Wait for completion
 
-```json
-{
-  "status": "success|error",
-  "data": {
-    "workflowId": "unique-id",
-    "discoveredData": {
-      "linearIssue": { },
-      "figmaSpecs": [ ],
-      "implementations": [ ]
-    }
-  },
-  "storeAs": "orchestrationPlan",
-  "delegations": [
-    {
-      "agent": "figma-design-analyzer|senior-frontend-engineer|playwright-dev-tester|prd-writer",
-      "context": { /* agent-specific context */ },
-      "sequence": 2,
-      "parallel": true
-    }
-  ]
-}
-```
+2. **If `--figma <url>` flag present:**
+   - Parse Figma URLs from remaining arguments
+   - Task("figma-design-analyzer", { figmaUrls: [...], ... })
+   - Launch all in parallel, wait for completion
 
-## Delegation Sequences
+3. **If `--implement` flag present:**
+   - **If Figma specs available from step 2:**
+     - Task("senior-frontend-engineer", { figmaSpecs, idx: 0 })
+     - Launch in parallel for each spec
+   - **Else (no Figma, just PRD):**
+     - Task("senior-frontend-engineer", { prdContent, idx: 0 })
+     - Still implement but use PRD as guide
+   - Wait for all implementations to complete
 
-- **Sequence 2**: figma-design-analyzer (if Figma URLs)
-- **Sequence 3**: senior-frontend-engineer (if design specs)
-- **Sequence 4**: storybook-expert, react-component-tester, playwright-dev-tester (auto-returned by senior-frontend-engineer)
-- **Sequence 1**: prd-writer (if PRD workflow)
+4. **If implemented in step 3, then test:**
+   - Run: `npm run type-check && npm run test:run`
+   - Task("playwright-dev-tester", { implementations, figmaSpecs: [] })
+   - Mount components: `npm run mount`
+   - Clean temporary files
 
 ## Key Rules
 
-1. **Explicit agent names only** - Never use variables. Always: `"agent": "figma-design-analyzer"`
-2. **Minimal context per delegation** - Only pass what each agent needs
-3. **Orchestrator ops are direct** - You execute fetch_linear, analyze, cmd, mount, cleanup, update_linear. Don't delegate these.
-4. **Data flows through context** - Use discovered data from previous steps for next agents
-5. **Parallel by sequence** - All same-sequence delegations run in parallel
+1. **Use explicit agent names ONLY** - Never variables or indirection
+   - ✅ `Task("figma-design-analyzer", { ... })`
+   - ❌ `Task(agents[0], { ... })`
+   - ❌ `Task(delegation.agent, { ... })`
 
-## Orchestrator Operations (Execute Directly)
+2. **Launch agents in parallel when possible**
+   - Multiple figma-design-analyzer calls → all at once
+   - Multiple senior-frontend-engineer calls → all at once
+   - Multiple playwright-dev-tester calls → all at once
 
-- **fetch_linear(ticketId)** → Returns `{ id, title, description, figmaUrls, labels }`
-- **analyze(issue)** → Returns `{ hasFigma, components, context }`
-- **cmd(cmds)** → Returns `{ passed: true/false, output }`
-- **mount(components)** → Returns `{ mounted: true, message }`
-- **cleanup(patterns)** → Returns `{ cleaned: true }`
-- **update_linear(id, status, message)** → Returns `{ updated: true }`
+3. **Pass only what each agent needs**
+   - Don't duplicate data
+   - figma-design-analyzer needs: figmaUrls
+   - senior-frontend-engineer needs: figmaSpecs, linearIssue (if any)
+   - playwright-dev-tester needs: implementations, figmaSpecs (for visual comparison)
 
-## Execution Examples
+4. **Execute orchestrator operations directly** (don't delegate these)
+   - Fetch Linear ticket using mcp/tests/get-issue.ts
+   - Run npm commands directly
+   - Update Linear ticket directly
+   - Mount components directly
+   - Only delegate to agents for analysis/implementation/testing
 
-### Linear Workflow
-1. Execute: `fetch_linear(ENG-123)` → get issue + Figma URLs
-2. Execute: `analyze(issue)` → get component count
-3. Return delegation: figma-design-analyzer for each URL (seq 2, parallel)
-4. Return delegation: senior-frontend-engineer for each spec (seq 3, parallel)
-5. Execute: cmd(["npm run type-check", "npm run test:run"]) (seq 3 after impl)
-6. Return delegation: playwright-dev-tester (seq 4)
-7. Execute: mount(implementations)
-8. Execute: cleanup()
-9. Execute: update_linear(ticket-id, Done)
+5. **Sequential phases, parallel within phase**
+   - Phase 1: Fetch + Analyze (sequential, one after another)
+   - Phase 2: Design analysis (all parallel)
+   - Phase 3: Implementation (all parallel)
+   - Phase 4: Testing (all parallel)
+   - Phase 5: Mount + Cleanup (sequential)
 
-### Figma Workflow
-1. Parse Figma URLs from arguments
-2. Return delegation: figma-design-analyzer for each URL (seq 2, parallel)
-3. Return delegation: senior-frontend-engineer for each spec (seq 3, parallel)
-4. Execute: cmd(["npm run type-check", "npm run test:run"])
-5. Return delegation: playwright-dev-tester (seq 4)
-6. Execute: mount(implementations)
-7. Execute: cleanup()
+## Agent Invocation
 
-### PRD Workflow
-1. Return delegation: prd-writer (seq 1)
-2. If --figma: Return delegation: figma-design-analyzer (seq 2, parallel)
-3. If --implement: Return delegation: senior-frontend-engineer (seq 3, parallel)
-4. If --implement: Execute cmd(["npm run type-check", "npm run test:run"]), return playwright-dev-tester (seq 4)
-5. If --implement: Execute mount(), cleanup()
+When you invoke agents, follow this pattern exactly:
 
-## Implementation Details
-
-- **WorkflowId**: Generate unique ID like "wf-" + timestamp
-- **Discovered Data**: Accumulate as you execute (Linear issue, Figma specs, implementations)
-- **Agents receive**: Their dependencies already in `discoveredData` from prior phases
-- **Sequential execution**: Phase 1 → Phase 2 → Phase 3 (but within each phase, agents run parallel)
-- **Error handling**: Return gracefully with status="error" and reason
-
-## Data Structure Examples
-
-### Figma Specs (from figma-design-analyzer)
-```json
-{
-  "nodeId": "2171:13039",
-  "screenshot": "docs/temp/figma-screenshots/hero-2025-11-22.png",
-  "colors": { "primary": "#fff", "secondary": "#000" },
-  "typography": { "h1": { "size": 32, "weight": 700 } },
-  "layout": { "width": 1200, "spacing": { "lg": 24 } }
-}
+```typescript
+Task(
+  "agent-name",  // Always: explicit string, one of:
+                 // - figma-design-analyzer
+                 // - senior-frontend-engineer
+                 // - playwright-dev-tester
+                 // - prd-writer
+  {
+    // Agent-specific context, pass minimally
+    figmaUrls: [...],        // for figma-design-analyzer
+    figmaSpecs: [...],       // for senior-frontend-engineer
+    linearIssue: { ... },    // for context
+    implementations: [...],  // for playwright-dev-tester
+    requirements: "...",     // for prd-writer
+    idx: 0                   // for parallelization tracking
+  }
+)
 ```
 
-### Implementation Context (for senior-frontend-engineer)
-```json
-{
-  "figmaSpecs": [/* array of above */],
-  "linearIssue": { "id": "ENG-123", "title": "..." },
-  "idx": 0
-}
-```
+## Terminal Commands (Execute Directly)
 
-### Testing Context (for playwright-dev-tester)
-```json
-{
-  "figmaSpecs": [/* original specs */],
-  "implementations": [/* component files */],
-  "linearIssue": { "id": "ENG-123" }
-}
+- **Fetch Linear issue**: `npx tsx mcp/tests/get-issue.ts ENG-123`
+- **Type check**: `npm run type-check`
+- **Run tests**: `npm run test:run`
+- **Mount components**: Manual App.tsx update or script
+- **Cleanup**: `rm -rf mcp/tests/temp-* docs/temp/*`
+- **Update Linear**: Use mcp/tests or direct API call
+
+## Control Flow
+
+```
+Parse arguments
+  ↓
+Determine workflow type (linear / figma / prd)
+  ↓
+Execute workflow steps (see above)
+  ├─ Orchestrator operations (direct)
+  ├─ Agent invocations (explicit Task calls)
+  └─ Terminal commands (direct)
+  ↓
+Report completion
 ```
 
 ---
 
-**Summary**: Parse input → Execute orchestrator ops → Return delegations → Main orchestrator runs agents in parallel by sequence.
+**Summary**: Parse input → Execute steps → Invoke agents explicitly with Task() → Complete workflow.
