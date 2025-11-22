@@ -1,5 +1,6 @@
 ---
 description: Complete workflow - Linear ticket → PRD → Figma → Implementation → Testing (use this for end-to-end ticket completion)
+argument-hint: <ticket-id>
 ---
 
 # Linear → Implementation Workflow

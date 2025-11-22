@@ -1,5 +1,6 @@
 ---
 description: Create a standalone PRD with optional implementation (for planning/review or full execution)
+argument-hint: <requirements> [--figma <url> ...] [--implement]
 ---
 
 # PRD Creation with Optional Implementation

@@ -1,5 +1,6 @@
 ---
 description: Extract Figma designs and implement with testing (use when you have Figma URLs and want implementation)
+argument-hint: <figma-url> [figma-url2 ...]
 ---
 
 # Figma Design → Implementation Workflow

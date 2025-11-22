@@ -1,7 +1,6 @@
 ---
-description: |
-  Universal orchestrator for all multi-agent workflows. Single command for complete end-to-end execution.
-  Usage: /orchestrate workflow-name [arguments]
+description: Universal orchestrator for all multi-agent workflows. Single command for complete end-to-end execution.
+argument-hint: workflow-name [arguments]
 ---
 
 # Universal Orchestrator: Execute Multi-Agent Workflows
