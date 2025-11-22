@@ -1,0 +1,130 @@
+name: figma-to-implementation
+version: 1.0
+description: |
+  Convert Figma designs to fully implemented, tested, and deployed React components.
+  Workflow: Figma URLs → Design analysis → Implementation → Testing → Deployment
+
+phases:
+  # PHASE 1: DISCOVERY
+  - id: discovery
+    name: "Discovery - Parse Figma URLs"
+    type: discovery
+    tasks:
+      - id: parse_urls
+        agent: orchestrator
+        operation: analyze_context
+        input:
+          figmaUrls: "{{parameters.figmaUrls}}"
+        output:
+          storeAs: workflowContext
+
+  # PHASE 2: DESIGN ANALYSIS (Parallel - one analyzer per design)
+  - id: design_analysis
+    name: "Design Analysis - Extract Specs from Figma"
+    type: processing
+    tasks:
+      - id: analyze_designs
+        agent: figma-design-analyzer
+        operation: delegate
+        parallel: true
+        input:
+          context:
+            figmaUrls: "{{parameters.figmaUrls}}"
+            clientFrameworks: "react"
+            clientLanguages: "typescript"
+        output:
+          storeAs: figmaSpecs[]
+
+  # PHASE 3: IMPLEMENTATION (Parallel - one engineer per design)
+  - id: implementation
+    name: "Implementation - Build Components"
+    type: implementation
+    tasks:
+      - id: implement_components
+        agent: senior-frontend-engineer
+        operation: delegate
+        parallel: true
+        input:
+          context:
+            figmaSpecs: "$from.figmaSpecs"
+            componentIndex: "{{loop.index}}"
+        output:
+          storeAs: implementations[]
+
+  # PHASE 4: VERIFICATION
+  - id: verification
+    name: "Verification - Type Check & Tests"
+    type: verification
+    tasks:
+      - id: type_check
+        agent: orchestrator
+        operation: execute_command
+        input:
+          commands:
+            - "npm run type-check"
+        output:
+          storeAs: typeCheckResult
+
+      - id: run_tests
+        agent: orchestrator
+        operation: execute_command
+        input:
+          commands:
+            - "npm run test:run"
+        output:
+          storeAs: testResult
+
+      - id: visual_verification
+        agent: playwright-dev-tester
+        operation: delegate
+        input:
+          context:
+            figmaSpecs: "$from.figmaSpecs"
+            implementations: "$from.implementations"
+        output:
+          storeAs: visualTestResult
+
+  # PHASE 5: INTEGRATION
+  - id: integration
+    name: "Integration - Mount Components in App"
+    type: implementation
+    tasks:
+      - id: mount_components
+        agent: orchestrator
+        operation: mount_component
+        input:
+          components: "$from.implementations"
+        output:
+          storeAs: mountResult
+
+  # PHASE 6: CLEANUP
+  - id: cleanup
+    name: "Cleanup - Remove Temporary Files"
+    type: verification
+    errorRecovery: skip
+    tasks:
+      - id: cleanup_files
+        agent: orchestrator
+        operation: cleanup
+        input:
+          patterns:
+            - "mcp/tests/temp-*.ts"
+            - "mcp/tests/test-*.ts"
+            - "mcp/tests/analyze-*.ts"
+            - "docs/project/*-design-spec*.md"
+        output:
+          storeAs: cleanupResult
+
+  # PHASE 7: COMPLETION
+  - id: completion
+    name: "Completion - Report Results"
+    type: verification
+    tasks:
+      - id: report_completion
+        agent: orchestrator
+        operation: execute_command
+        input:
+          commands:
+            - "echo '✅ Figma → Implementation workflow complete!' && date"
+        output:
+          storeAs: completionLog

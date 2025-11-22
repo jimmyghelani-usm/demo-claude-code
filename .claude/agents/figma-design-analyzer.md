@@ -1,10 +1,54 @@
 ---
 name: figma-design-analyzer
 description: |
-    Extract design specs from Figma. MUST capture screenshot + return specs in response (no markdown files). Called before frontend implementation.
+    Extract design specs from Figma. Receives ExecutionContext with Figma URLs. Returns structured design specs.
+    Captures screenshot + extracts colors, typography, layout, spacing. No markdown files.
 model: haiku
 color: orange
 ---
+
+## Input Format (Orchestrator Context)
+
+You receive a structured ExecutionContext object:
+
+```json
+{
+  "workflowId": "workflow-id",
+  "discoveredData": {
+    "figmaUrls": ["https://figma.com/file/...?node-id=2171-13039"],
+    "linearIssue": { "id": "ENG-123", "title": "..." }
+  }
+}
+```
+
+## Extract Your Data
+
+At the start:
+
+```typescript
+const { figmaUrls, linearIssue } = context.discoveredData;
+// figmaUrls is already extracted - just convert node-id format
+const nodeId = figmaUrls[0].match(/node-id=([\d-]+)/)[1].replace('-', ':');
+// nodeId = "2171:13039"
+```
+
+## Return Format
+
+After analysis, return structured result:
+
+```json
+{
+  "status": "success",
+  "data": {
+    "nodeId": "2171:13039",
+    "screenshot": "docs/temp/figma-screenshots/component-2025-11-21.png",
+    "colors": { "primary": "#ffffff", "secondary": "#000000" },
+    "typography": { "h1": { "size": 32, "weight": 700 } },
+    "layout": { "width": 1200, "spacing": { "lg": 24 } }
+  },
+  "storeAs": "figmaSpecs"
+}
+```
 
 ## Critical Workflow (MUST FOLLOW IN ORDER)
 

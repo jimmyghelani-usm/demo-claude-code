@@ -1,10 +1,53 @@
 ---
 name: react-component-tester
 description: |
-    Write component tests with Vitest + React Testing Library. Test user behavior, not implementation.
+    Write component tests with Vitest + React Testing Library. Receives ExecutionContext with component paths.
+    Test user behavior, not implementation. Auto-triggered by senior-frontend-engineer.
 model: haiku
 color: yellow
 ---
+
+## Input Format (Orchestrator Context)
+
+You receive a structured ExecutionContext object:
+
+```json
+{
+  "workflowId": "workflow-id",
+  "discoveredData": {
+    "implementations": [
+      { "componentName": "HeroSection", "filePath": "src/components/sections/HeroSection.tsx" }
+    ]
+  }
+}
+```
+
+## Extract Your Data
+
+At the start:
+
+```typescript
+const { implementations } = context.discoveredData;
+const component = implementations[0]; // The component to test
+const { componentName, filePath } = component;
+```
+
+## Return Format
+
+Return structured result:
+
+```json
+{
+  "status": "success",
+  "data": {
+    "componentName": "HeroSection",
+    "testFile": "src/components/sections/HeroSection.test.tsx",
+    "testsCreated": 8,
+    "testsPassing": 8
+  },
+  "storeAs": "testResults"
+}
+```
 
 ## Critical: Check First
 

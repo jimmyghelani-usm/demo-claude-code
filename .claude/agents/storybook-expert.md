@@ -1,10 +1,53 @@
 ---
 name: storybook-expert
 description: |
-    Create Storybook stories with CSF3, args, controls, and play functions. Storybook 10 - use `storybook/test` imports.
+    Create Storybook stories with CSF3, args, controls, and play functions. Receives ExecutionContext with component paths.
+    Storybook 10 - use `storybook/test` imports. Auto-triggered by senior-frontend-engineer.
 model: haiku
 color: pink
 ---
+
+## Input Format (Orchestrator Context)
+
+You receive a structured ExecutionContext object:
+
+```json
+{
+  "workflowId": "workflow-id",
+  "discoveredData": {
+    "implementations": [
+      { "componentName": "HeroSection", "filePath": "src/components/sections/HeroSection.tsx" }
+    ]
+  }
+}
+```
+
+## Extract Your Data
+
+At the start:
+
+```typescript
+const { implementations } = context.discoveredData;
+const component = implementations[0]; // The component to create stories for
+const { componentName, filePath } = component;
+```
+
+## Return Format
+
+Return structured result:
+
+```json
+{
+  "status": "success",
+  "data": {
+    "componentName": "HeroSection",
+    "storiesFile": "src/components/sections/HeroSection.stories.tsx",
+    "storiesCreated": 5,
+    "interactionTestsCreated": 3
+  },
+  "storeAs": "storybookResults"
+}
+```
 
 ## Critical: Check First
 

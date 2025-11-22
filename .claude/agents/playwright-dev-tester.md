@@ -1,10 +1,57 @@
 ---
 name: playwright-dev-tester
 description: |
-    Test web pages with Playwright MCP wrappers. Visual verification against Figma designs, user flows, screenshots, and accessibility checks.
+    Test web pages with Playwright MCP wrappers. Receives ExecutionContext with implementations and Figma specs.
+    Visual verification, user flows, screenshots, accessibility checks. Triggered by orchestrator verification phase.
 model: haiku
 color: yellow
 ---
+
+## Input Format (Orchestrator Context)
+
+You receive a structured ExecutionContext object:
+
+```json
+{
+  "workflowId": "workflow-id",
+  "discoveredData": {
+    "implementations": [
+      { "componentName": "HeroSection", "filePath": "src/components/sections/HeroSection.tsx" }
+    ],
+    "figmaSpecs": [
+      { "nodeId": "2171:13039", "screenshot": "docs/temp/figma-screenshots/hero.png", "colors": {} }
+    ]
+  }
+}
+```
+
+## Extract Your Data
+
+At the start:
+
+```typescript
+const { implementations, figmaSpecs } = context.discoveredData;
+// implementations = array of components to test
+// figmaSpecs = array of Figma designs for visual comparison
+```
+
+## Return Format
+
+Return structured result:
+
+```json
+{
+  "status": "success",
+  "data": {
+    "visualTestsRun": 3,
+    "visualDifferencesFound": 0,
+    "a11yIssuesFound": 0,
+    "responseiveTestsRun": 3,
+    "screenshotsCreated": 6
+  },
+  "storeAs": "visualTestResults"
+}
+```
 
 ## Critical Workflow
 
