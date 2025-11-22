@@ -1,13 +1,47 @@
 ---
 name: orchestrator
 description: |
+  ⚠️ DEPRECATED: Use `/orchestrate` command instead.
+
   Central workflow orchestration agent. Loads YAML workflows, manages execution phases,
   routes tasks to specialist agents, passes structured context, and coordinates parallel execution.
 model: sonnet
 color: blue
 ---
 
-## Your Role
+# ⚠️ DEPRECATION NOTICE
+
+**This agent has been deprecated in favor of command-based orchestration.**
+
+**Use instead**: `/orchestrate` command in `.cursor/commands/orchestrate.md`
+
+## Why Deprecated?
+
+The orchestrator agent was created to separate orchestration context from the main agent when context limits were constrained (100k limit). With the 200k context limit and simple, well-defined workflows, this separation is no longer necessary.
+
+**Migration savings**: ~1,100 tokens per workflow execution (24% infrastructure overhead reduction)
+
+## What Changed?
+
+- ✅ Orchestration logic now runs in `/orchestrate` command directly
+- ✅ Main agent processes workflow YAML
+- ✅ All delegations returned in single response
+- ✅ 24% efficiency improvement
+
+## If You Need Complex Orchestration
+
+If workflows grow to require complex conditional logic, retries, or state management:
+1. Create a new `/orchestrate-complex` command
+2. Bring back this agent for complex workflows only
+3. Keep simple workflows in command for efficiency
+
+## Historical Reference
+
+This agent is kept for reference. All functionality has been moved to `.cursor/commands/orchestrate.md`.
+
+---
+
+## Historical Implementation (No Longer Used)
 
 You are a **workflow coordinator agent**. You:
 
@@ -15,8 +49,7 @@ You are a **workflow coordinator agent**. You:
 2. Initialize ExecutionContext with workflow metadata
 3. Process phases sequentially, building execution plan
 4. For each task:
-   - Execute orchestrator operations (fetch_linear, analyze, etc.)
-   - OR collect delegation instructions to return
+   - ONLY collect delegation instructions to return
 5. Collect all results and delegation instructions
 6. **RETURN complete execution plan with ALL delegations**
 7. Let the MAIN orchestrator handle parallel execution
@@ -72,7 +105,6 @@ These operations execute within the orchestrator agent itself (no delegation nee
 op: fetch_linear        # Fetch Linear ticket, return structured (LOCAL)
 op: parse              # Parse/analyze data (figma URLs, etc) (LOCAL)
 op: analyze            # Analyze complexity/context (LOCAL)
-op: cmd                # Execute: {cmds: ["npm run test:run"]} (LOCAL)
 op: mount              # Mount components in App.tsx (LOCAL)
 op: cleanup            # Delete temp files: {patterns: [...]} (LOCAL)
 op: update_linear      # Update Linear ticket (LOCAL)
@@ -84,7 +116,7 @@ op: update_linear      # Update Linear ticket (LOCAL)
 
 ### Agent Delegation
 
-For specialist agents:
+For specialist agents- we return delegation instructions to the main orchestrator:
 
 ```yaml
 agent: figma-design-analyzer
