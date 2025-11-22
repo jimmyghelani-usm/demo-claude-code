@@ -69,7 +69,7 @@ Creates PRD and optionally implements based on requirements.
 ## How It Works
 
 ### Step 1: Load Workflow Definition
-The orchestrator loads the appropriate YAML workflow from `workflows/` directory:
+The `/orchestrate` command loads the appropriate YAML workflow from `workflows/` directory (lazy loading):
 - `workflows/linear-to-implementation.yaml`
 - `workflows/figma-to-implementation.yaml`
 - `workflows/prd-with-implementation.yaml`
@@ -85,23 +85,32 @@ Creates structured context object containing:
 ### Step 3: Execute Phases Sequentially
 For each phase defined in workflow:
 1. Check gate condition (skip if false)
-2. Execute or delegate each task
-3. Collect results in structured format
-4. Store data for next phase
-5. Handle errors per recovery policy
+2. For tasks with `agent: orchestrator`: Execute locally (fetch_linear, analyze, cmd, mount, cleanup, update_linear)
+3. For tasks with `agent: name`: Collect delegation instruction (explicit format)
+4. Collect results in structured format
+5. Store data for next phase
+6. Handle errors per recovery policy
 
-### Step 4: Automatic Agent Triggering
-Some agents auto-trigger based on previous results:
-- `senior-frontend-engineer` auto-triggers `storybook-expert` + `react-component-tester`
-- `playwright-dev-tester` triggered by verification phase
-- `mcp-execution-agent` handles all MCP operations
+### Step 4: Return Execution Plan
+Returns complete delegation plan containing:
+- All discovered data from orchestrator operations
+- Explicit delegations array (agent, context, sequence, parallel)
+- Full execution trace
+- Status and metadata
 
-### Step 5: Return Complete Results
-Returns structured execution context containing:
-- Full trace of all phases
-- All discovered data
-- All agent results
-- Completion status
+### Step 5: Main Orchestrator Executes Delegations
+The main orchestrator (outside agent system) handles delegation execution:
+1. Groups delegations by sequence number
+2. Launches same-sequence agents in parallel
+3. Some agents return sub-delegations (storybook-expert, react-component-tester, playwright-dev-tester)
+4. Sub-delegations automatically queued for next phase
+5. Results merged back into context
+6. Process continues until all delegations complete
+
+**Auto-Triggering** works through delegation returns:
+- `senior-frontend-engineer` returns delegations for `storybook-expert` + `react-component-tester`
+- `playwright-dev-tester` returned as delegation from verification phase
+- `mcp-execution-agent` used for all MCP operations
 
 ---
 
@@ -312,28 +321,33 @@ errorRecovery: halt  # Stop entire workflow
 ## Architecture
 
 ```
-/orchestrate command
+/orchestrate command (OPTIMIZED - Direct Execution)
   │
   ├─→ Parse arguments (workflow name, parameters)
   │
-  ├─→ Load workflow YAML from workflows/
+  ├─→ Load workflow YAML from workflows/ (lazy loading)
   │
-  ├─→ Delegate to orchestrator agent:
-  │   "Workflow: linear-to-implementation
-  │    Parameters: {ticketId: ENG-123}
-  │    Context: [full ExecutionContext]"
-  │
-  ├─→ Orchestrator executes phases:
-  │   - Orchestrator operations (fetch, mount, execute)
-  │   - Specialist agent delegations (figma, implementation, testing)
-  │   - Parallel execution management
+  ├─→ Execute phases directly in command context:
+  │   - Orchestrator operations (fetch_linear, analyze, cmd, mount, cleanup, update_linear)
+  │   - Specialist agent delegations (explicit format with sequence numbers)
+  │   - Parallel execution management (delegations returned)
   │   - Error handling & recovery
   │
-  └─→ Return complete execution context
-     - All discovered data
-     - All agent results
-     - Execution trace
-     - Status (success/error/partial)
+  ├─→ Return complete execution plan:
+  │   - All discovered data
+  │   - Explicit delegations array (agent, context, sequence, parallel)
+  │   - Execution trace
+  │   - Status (success/error/partial)
+  │
+  └─→ Main orchestrator executes delegations:
+      - Group by sequence number
+      - Launch same-sequence agents in parallel
+      - Collect results and sub-delegations
+      - Merge data for next phase
+      - Continue until complete
+
+NOTE: Previous versions delegated to orchestrator agent.
+      This version processes directly (saves 1,100 tokens per workflow - 24% improvement).
 ```
 
 ---
