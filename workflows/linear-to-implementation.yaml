@@ -1,187 +1,80 @@
 name: linear-to-implementation
 version: 1.0
-description: |
-  Convert Linear ticket to fully implemented, tested, and deployed components.
-  Workflow: Linear ticket → PRD (optional) → Figma analysis → Implementation → Testing → Completion
 
 phases:
-  # PHASE 1: DISCOVERY
-  - id: discovery
-    name: "Discovery - Fetch Ticket & Analyze"
-    type: discovery
+  - id: discover
     tasks:
-      - id: fetch_ticket
+      - id: fetch
         agent: orchestrator
-        operation: fetch_linear_issue
-        input:
-          ticketId: "{{parameters.ticketId}}"
-        output:
-          storeAs: linearIssue
+        op: fetch_linear
+        in: {ticketId: "{{p.ticketId}}"}
+        out: linearIssue
 
-      - id: analyze_context
+      - id: analyze
         agent: orchestrator
-        operation: analyze_context
-        input:
-          issue: "$from.linearIssue"
-        output:
-          storeAs: workflowContext
+        op: analyze
+        in: {issue: "$from.linearIssue"}
+        out: context
 
-  # PHASE 2: PRD GENERATION (Optional)
-  - id: prd_generation
-    name: "PRD Generation - Document Requirements"
-    type: processing
-    gateCondition: "{{parameters.withPRD}}"
-    errorRecovery: skip
+  - id: design
+    gate: "$from.context.hasFigma"
+    error: skip
     tasks:
-      - id: generate_prd
-        agent: prd-writer
-        operation: delegate
-        input:
-          context:
-            issueTitle: "$from.linearIssue.title"
-            issueDescription: "$from.linearIssue.description"
-            clientFrameworks: "react"
-            clientLanguages: "typescript"
-        output:
-          storeAs: prd
-
-  # PHASE 3: DESIGN ANALYSIS (Parallel if multiple designs)
-  - id: design_analysis
-    name: "Design Analysis - Extract Specs from Figma"
-    type: processing
-    gateCondition: "$from.workflowContext.hasFigmaDesigns"
-    errorRecovery: skip
-    tasks:
-      - id: analyze_designs
+      - id: analyze
         agent: figma-design-analyzer
-        operation: delegate
         parallel: true
-        input:
-          context:
-            figmaUrls: "$from.linearIssue.figmaUrls"
-            clientFrameworks: "react"
-            clientLanguages: "typescript"
-        output:
-          storeAs: figmaSpecs[]
+        in: {urls: "$from.linearIssue.figmaUrls", fw: "react", lang: "ts"}
+        out: "figmaSpecs[]"
 
-  # PHASE 4: IMPLEMENTATION (Parallel - one engineer per component)
-  - id: implementation
-    name: "Implementation - Build Components"
-    type: implementation
-    gateCondition: "$from.workflowContext.componentCount > 0"
+  - id: impl
+    gate: "$from.context.components > 0"
     tasks:
-      - id: implement_components
+      - id: build
         agent: senior-frontend-engineer
-        operation: delegate
         parallel: true
-        input:
-          context:
-            figmaSpecs: "$from.figmaSpecs"
-            prd: "$from.prd"
-            linearIssue: "$from.linearIssue"
-            componentIndex: "{{loop.index}}"
-        output:
-          storeAs: implementations[]
+        in: {specs: "$from.figmaSpecs", issue: "$from.linearIssue", idx: "{{loop}}"}
+        out: "impls[]"
 
-  # PHASE 5: VERIFICATION
-  - id: verification
-    name: "Verification - Type Check & Tests"
-    type: verification
+  - id: verify
     tasks:
-      - id: type_check
+      - id: type
         agent: orchestrator
-        operation: execute_command
-        input:
-          commands:
-            - "npm run type-check"
-        output:
-          storeAs: typeCheckResult
+        op: cmd
+        in: {cmds: ["npm run type-check"]}
+        out: typeRes
 
-      - id: run_tests
+      - id: test
         agent: orchestrator
-        operation: execute_command
-        input:
-          commands:
-            - "npm run test:run"
-        output:
-          storeAs: testResult
+        op: cmd
+        in: {cmds: ["npm run test:run"]}
+        out: testRes
 
-      - id: visual_verification
+      - id: visual
         agent: playwright-dev-tester
-        operation: delegate
-        input:
-          context:
-            figmaSpecs: "$from.figmaSpecs"
-            implementations: "$from.implementations"
-        output:
-          storeAs: visualTestResult
+        in: {specs: "$from.figmaSpecs", impls: "$from.impls"}
+        out: visualRes
 
-  # PHASE 6: INTEGRATION
-  - id: integration
-    name: "Integration - Mount Components in App"
-    type: implementation
+  - id: integrate
     tasks:
-      - id: mount_components
+      - id: mount
         agent: orchestrator
-        operation: mount_component
-        input:
-          components: "$from.implementations"
-        output:
-          storeAs: mountResult
+        op: mount
+        in: {comps: "$from.impls"}
+        out: mounted
 
-  # PHASE 7: CLEANUP
   - id: cleanup
-    name: "Cleanup - Remove Temporary Files"
-    type: verification
-    errorRecovery: skip
+    error: skip
     tasks:
-      - id: cleanup_files
+      - id: clean
         agent: orchestrator
-        operation: cleanup
-        input:
-          patterns:
-            - "mcp/tests/temp-*.ts"
-            - "mcp/tests/test-*.ts"
-            - "mcp/tests/analyze-*.ts"
-            - "docs/project/*-design-spec*.md"
-        output:
-          storeAs: cleanupResult
+        op: cleanup
+        in: {patterns: ["mcp/tests/temp-*", "docs/project/*-spec*.md"]}
+        out: cleaned
 
-  # PHASE 8: COMPLETION
-  - id: completion
-    name: "Completion - Report Results"
-    type: verification
+  - id: done
     tasks:
-      - id: update_linear
+      - id: update
         agent: orchestrator
-        operation: update_linear_issue
-        input:
-          ticketId: "$from.linearIssue.id"
-          status: "Done"
-          comment: |
-            ✅ Implementation complete!
-
-            Components implemented: {{implementations.length}}
-            Tests: All passing
-            Type-check: Passed
-            Live: http://localhost:3000
-
-            Changes:
-            - Components mounted in src/App.tsx
-            - Storybook stories created
-            - Unit tests created and passing
-            - Visual tests completed
-            - Screenshots: docs/temp/playwright-screenshots/
-
-            Workflow duration: {{totalDuration}}
-        output:
-          storeAs: updateLinearResult
-
-      - id: log_completion
-        agent: orchestrator
-        operation: execute_command
-        input:
-          commands:
-            - "echo '✅ Workflow complete: {{workflowName}}' && date"
-        output:
-          storeAs: completionLog
+        op: update_linear
+        in: {id: "$from.linearIssue.id", status: "Done", msg: "✅ Implementation complete. Live at http://localhost:3000"}
+        out: updated

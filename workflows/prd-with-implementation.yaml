@@ -1,142 +1,79 @@
 name: prd-with-implementation
 version: 1.0
-description: |
-  Create PRD and optionally implement based on user choice.
-  Workflow: Requirements → PRD generation → (Optional) Figma analysis → (Optional) Implementation
 
 phases:
-  # PHASE 1: PRD GENERATION
-  - id: prd_generation
-    name: "PRD Generation - Create Product Requirements"
-    type: processing
+  - id: prd
     tasks:
-      - id: generate_prd
+      - id: gen
         agent: prd-writer
-        operation: delegate
-        input:
-          context:
-            requirements: "{{parameters.requirements}}"
-        output:
-          storeAs: prd
+        in: {reqs: "{{p.reqs}}"}
+        out: prd
 
-  # PHASE 2: DESIGN ANALYSIS (Optional - if Figma URLs provided)
-  - id: design_analysis
-    name: "Design Analysis - Extract Specs from Figma"
-    type: processing
-    gateCondition: "{{parameters.figmaUrls != null && parameters.figmaUrls.length > 0}}"
-    errorRecovery: skip
+  - id: design
+    gate: "{{p.urls != null && p.urls.length > 0}}"
+    error: skip
     tasks:
-      - id: analyze_designs
+      - id: analyze
         agent: figma-design-analyzer
-        operation: delegate
         parallel: true
-        input:
-          context:
-            figmaUrls: "{{parameters.figmaUrls}}"
-            prd: "$from.prd"
-            clientFrameworks: "react"
-            clientLanguages: "typescript"
-        output:
-          storeAs: figmaSpecs[]
+        in: {urls: "{{p.urls}}", prd: "$from.prd", fw: "react", lang: "ts"}
+        out: "figmaSpecs[]"
 
-  # PHASE 3: IMPLEMENTATION (Optional - if flagged)
-  - id: implementation
-    name: "Implementation - Build Components"
-    type: implementation
-    gateCondition: "{{parameters.withImplementation}}"
-    errorRecovery: skip
+  - id: impl
+    gate: "{{p.impl}}"
+    error: skip
     tasks:
-      - id: implement_components
+      - id: build
         agent: senior-frontend-engineer
-        operation: delegate
         parallel: true
-        input:
-          context:
-            figmaSpecs: "$from.figmaSpecs"
-            prd: "$from.prd"
-            componentIndex: "{{loop.index}}"
-        output:
-          storeAs: implementations[]
+        in: {specs: "$from.figmaSpecs", prd: "$from.prd", idx: "{{loop}}"}
+        out: "impls[]"
 
-  # PHASE 4: VERIFICATION (Only if implementation runs)
-  - id: verification
-    name: "Verification - Type Check & Tests"
-    type: verification
-    gateCondition: "{{parameters.withImplementation}}"
-    errorRecovery: skip
+  - id: verify
+    gate: "{{p.impl}}"
+    error: skip
     tasks:
-      - id: type_check
+      - id: type
         agent: orchestrator
-        operation: execute_command
-        input:
-          commands:
-            - "npm run type-check"
-        output:
-          storeAs: typeCheckResult
+        op: cmd
+        in: {cmds: ["npm run type-check"]}
+        out: typeRes
 
-      - id: run_tests
+      - id: test
         agent: orchestrator
-        operation: execute_command
-        input:
-          commands:
-            - "npm run test:run"
-        output:
-          storeAs: testResult
+        op: cmd
+        in: {cmds: ["npm run test:run"]}
+        out: testRes
 
-      - id: visual_verification
+      - id: visual
         agent: playwright-dev-tester
-        operation: delegate
-        input:
-          context:
-            figmaSpecs: "$from.figmaSpecs"
-            implementations: "$from.implementations"
-        output:
-          storeAs: visualTestResult
+        in: {specs: "$from.figmaSpecs", impls: "$from.impls"}
+        out: visualRes
 
-  # PHASE 5: INTEGRATION (Only if implementation runs)
-  - id: integration
-    name: "Integration - Mount Components in App"
-    type: implementation
-    gateCondition: "{{parameters.withImplementation}}"
-    errorRecovery: skip
+  - id: integrate
+    gate: "{{p.impl}}"
+    error: skip
     tasks:
-      - id: mount_components
+      - id: mount
         agent: orchestrator
-        operation: mount_component
-        input:
-          components: "$from.implementations"
-        output:
-          storeAs: mountResult
+        op: mount
+        in: {comps: "$from.impls"}
+        out: mounted
 
-  # PHASE 6: CLEANUP (Only if implementation runs)
   - id: cleanup
-    name: "Cleanup - Remove Temporary Files"
-    type: verification
-    gateCondition: "{{parameters.withImplementation}}"
-    errorRecovery: skip
+    gate: "{{p.impl}}"
+    error: skip
     tasks:
-      - id: cleanup_files
+      - id: clean
         agent: orchestrator
-        operation: cleanup
-        input:
-          patterns:
-            - "mcp/tests/temp-*.ts"
-            - "mcp/tests/test-*.ts"
-            - "mcp/tests/analyze-*.ts"
-            - "docs/project/*-design-spec*.md"
-        output:
-          storeAs: cleanupResult
+        op: cleanup
+        in: {patterns: ["mcp/tests/temp-*", "docs/project/*-spec*.md"]}
+        out: cleaned
 
-  # PHASE 7: COMPLETION
-  - id: completion
-    name: "Completion - Report Results"
-    type: verification
+  - id: done
     tasks:
-      - id: report_completion
+      - id: report
         agent: orchestrator
-        operation: execute_command
-        input:
-          commands:
-            - "echo '✅ PRD workflow complete!' && date"
-        output:
-          storeAs: completionLog
+        op: cmd
+        in: {cmds: ["echo '✅ PRD workflow complete' && date"]}
+        out: logged
