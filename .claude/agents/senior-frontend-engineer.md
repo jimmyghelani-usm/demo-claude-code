@@ -59,11 +59,33 @@ After implementation, return structured result:
     "componentName": "HeroSection",
     "filePath": "src/components/sections/HeroSection.tsx",
     "exportPath": "src/components/sections/index.ts",
-    "stories": true,
-    "tests": true,
     "description": "Responsive hero section with CTA button"
   },
-  "storeAs": "implementations"
+  "storeAs": "implementations",
+  "delegations": [
+    {
+      "agent": "storybook-expert",
+      "context": {
+        "implementations": [{"componentName": "HeroSection", "filePath": "src/components/sections/HeroSection.tsx"}]
+      },
+      "parallel": true
+    },
+    {
+      "agent": "react-component-tester",
+      "context": {
+        "implementations": [{"componentName": "HeroSection", "filePath": "src/components/sections/HeroSection.tsx"}]
+      },
+      "parallel": true
+    },
+    {
+      "agent": "playwright-dev-tester",
+      "context": {
+        "implementations": [{"componentName": "HeroSection", "filePath": "src/components/sections/HeroSection.tsx"}],
+        "figmaSpecs": "$from.figmaSpecs"
+      },
+      "parallel": true
+    }
+  ]
 }
 ```
 
@@ -80,11 +102,14 @@ After implementation, return structured result:
    - Render in JSX (wrap in `<main>` if full page)
    - Run `npm run type-check`
 
-3. **Delegate to other agents** :
+3. **Return delegation instructions**:
 
-   Use 'storybook-expert' agent to create stories and write tests in play functions for each story
-   use 'react-component-tester' agent to write and test functional tests
+   Include in your response `delegations` array with instructions for orchestrator:
+   - `storybook-expert` - to create stories and interaction tests
+   - `react-component-tester` - to write and run functional tests
+   - `playwright-dev-tester` - to verify visual accuracy against Figma (if design provided)
 
+   **Orchestrator will handle all sub-agent execution** - you just return the delegation instructions.
 
 4. **Tell user**: "Component live at http://localhost:3000"
 
@@ -163,13 +188,18 @@ Output Format: json
 
 ### 5. Delegation Rules
 
-**MUST Always delegate to**:
+**Return delegation instructions to orchestrator for**:
 - `storybook-expert` - For ALL components that need stories created or updated (NO EXCEPTIONS)
 - `react-component-tester` - For ALL components (NO EXCEPTIONS)
 - `playwright-dev-tester` - For visual verification against Figma designs
-- `mcp-execution-agent` - MUST be used whenever attempting to call or run MCP wrappers (`figma`, `linear`, `playwright`). Do not create one-off scripts; ask this agent to reuse or scaffold reusable CLI scripts under `mcp/tests/`.
+- `mcp-execution-agent` - MUST be used when you need MCP operations. Delegate with clear operation specification; don't call MCP wrappers directly.
 
-Provide complete context: file path, props, variants, states, interactions, edge cases.
+**DO NOT call these agents directly!** Return delegation context instead. The orchestrator will execute all delegations in parallel.
+
+**Delegation context should include**:
+- Component information (name, filePath)
+- Necessary specs or design data (figmaSpecs if provided)
+- Any other context this sub-agent needs
 
 ---
 

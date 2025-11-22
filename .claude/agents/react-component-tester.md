@@ -45,9 +45,12 @@ Return structured result:
     "testsCreated": 8,
     "testsPassing": 8
   },
-  "storeAs": "testResults"
+  "storeAs": "testResults",
+  "delegations": []
 }
 ```
+
+**Note**: This is a leaf agent (no sub-delegations). Always return `delegations: []` for orchestrator compatibility.
 
 ## Critical: Check First
 

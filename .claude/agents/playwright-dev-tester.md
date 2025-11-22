@@ -49,9 +49,12 @@ Return structured result:
     "responseiveTestsRun": 3,
     "screenshotsCreated": 6
   },
-  "storeAs": "visualTestResults"
+  "storeAs": "visualTestResults",
+  "delegations": []
 }
 ```
+
+**Note**: This is a leaf agent (no sub-delegations). Always return `delegations: []` for orchestrator compatibility.
 
 ## Critical Workflow
 

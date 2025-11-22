@@ -1,0 +1,136 @@
+.section {
+  width: 100%;
+  background-color: #0a0a0a;
+  padding: 80px 160px;
+}
+
+.container {
+  max-width: 1110px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+  align-items: center;
+}
+
+.title {
+  font-family: 'GT Walsheim Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 40px;
+  color: #ffffff;
+  text-align: center;
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 264px);
+  gap: 24px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.card {
+  background: linear-gradient(180deg, #181818 0%, rgba(25, 25, 25, 0.3) 100%);
+  border-radius: 16px;
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.iconContainer {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.iconPlaceholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+}
+
+.iconSvg {
+  width: 64px;
+  height: 64px;
+  background-color: #333;
+  border-radius: 8px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cardTitle {
+  font-family: 'GT Walsheim Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+  letter-spacing: 0.2px;
+  color: #ffffff;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.cardDescription {
+  font-family: 'GT Walsheim Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 18px;
+  line-height: 28px;
+  letter-spacing: 0.2px;
+  color: #f3f5f7;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .section {
+    padding: 60px 80px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 40px 24px;
+  }
+
+  .container {
+    gap: 48px;
+  }
+
+  .title {
+    font-size: 28px;
+    line-height: 36px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .card {
+    padding: 16px 20px;
+  }
+
+  .cardTitle {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .cardDescription {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}

@@ -45,9 +45,12 @@ Return structured result:
     "storiesCreated": 5,
     "interactionTestsCreated": 3
   },
-  "storeAs": "storybookResults"
+  "storeAs": "storybookResults",
+  "delegations": []
 }
 ```
+
+**Note**: This is a leaf agent (no sub-delegations). Always return `delegations: []` for orchestrator compatibility.
 
 ## Critical: Check First
 

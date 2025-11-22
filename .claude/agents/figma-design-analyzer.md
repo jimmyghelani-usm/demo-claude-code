@@ -46,9 +46,12 @@ After analysis, return structured result:
     "typography": { "h1": { "size": 32, "weight": 700 } },
     "layout": { "width": 1200, "spacing": { "lg": 24 } }
   },
-  "storeAs": "figmaSpecs"
+  "storeAs": "figmaSpecs",
+  "delegations": []
 }
 ```
+
+**Note**: This agent is a leaf agent (no sub-delegations). Always return `delegations: []` for orchestrator compatibility.
 
 ## Critical Workflow (MUST FOLLOW IN ORDER)
 

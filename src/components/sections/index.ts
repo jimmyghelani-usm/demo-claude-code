@@ -13,3 +13,5 @@ export { HowItWorksSection, type HowItWorksSectionProps, type HowItWorksStep } f
 export { RewardsChartSection, type RewardsChartSectionProps } from './RewardsChartSection';
 export { CTAFooterSection, type CTAFooterSectionProps, type FooterLink, type SocialIcon } from './CTAFooterSection';
 export { FAQSection, type FAQSectionProps, type FAQItem } from './FAQSection';
+export { GiveawayHero } from './GiveawayHero';
+export { MilestoneCards } from './MilestoneCards';

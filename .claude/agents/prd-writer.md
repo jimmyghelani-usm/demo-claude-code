@@ -45,9 +45,12 @@ Return structured result:
     "technicalNotes": "Use oidc-client library\nStore tokens in secure cookie...",
     "estimatedComplexity": "high"
   },
-  "storeAs": "prd"
+  "storeAs": "prd",
+  "delegations": []
 }
 ```
+
+**Note**: This agent is a leaf agent (no sub-delegations). Always return `delegations: []` for orchestrator compatibility.
 
 ## Integration with Linear & Workflow
 
