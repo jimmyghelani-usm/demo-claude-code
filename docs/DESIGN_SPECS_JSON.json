@@ -1,0 +1,513 @@
+{
+  "metadata": {
+    "designFile": "Marketing Page Components",
+    "nodeId": "1413-24025",
+    "componentName": "Business page - desktop",
+    "version": "1.0",
+    "analyzedDate": "2025-11-23",
+    "screenshotPath": "/docs/temp/figma-screenshots/figma-node-1413-24025-2025-11-23.png",
+    "viewport": {
+      "width": 1440,
+      "height": 6321,
+      "type": "desktop"
+    }
+  },
+  "colors": {
+    "primary": {
+      "name": "Brand/Main-Blue",
+      "hex": "#1D5FF6",
+      "usage": ["buttons", "links", "active_states", "icons"]
+    },
+    "primaryLight": {
+      "name": "Brand/Blue-ExtraLight",
+      "hex": "#E2E6F4",
+      "usage": ["section_backgrounds", "subtle_fills", "hover_states"]
+    },
+    "white": {
+      "name": "utility/white",
+      "hex": "#FFFFFF",
+      "usage": ["text_on_dark", "card_backgrounds", "contrast"]
+    },
+    "textDark": {
+      "name": "Grays/High",
+      "hex": "#586271",
+      "usage": ["headlines", "primary_text"]
+    },
+    "textMedium": {
+      "name": "Grays/High Medium",
+      "hex": "#8694AA",
+      "usage": ["body_text", "secondary_info", "muted_text"]
+    },
+    "textLight": {
+      "name": "Grays/Medium Low",
+      "hex": "#E1E3E6",
+      "usage": ["borders", "dividers", "subtle_elements"]
+    }
+  },
+  "typography": {
+    "fontFamily": "GT Walsheim Pro, sans-serif",
+    "styles": {
+      "h3Medium": {
+        "size": 32,
+        "weight": 600,
+        "lineHeight": 40,
+        "usage": "section_headings"
+      },
+      "h4": {
+        "size": 24,
+        "weight": 600,
+        "lineHeight": 32,
+        "usage": "card_titles"
+      },
+      "heading": {
+        "size": 18,
+        "weight": 600,
+        "lineHeight": 24,
+        "usage": "subsection_titles"
+      },
+      "body": {
+        "size": 16,
+        "weight": 400,
+        "lineHeight": 24,
+        "usage": "paragraph_text"
+      },
+      "caption": {
+        "size": 14,
+        "weight": 400,
+        "lineHeight": 18,
+        "usage": "labels_and_footer"
+      },
+      "buttonText": {
+        "size": 14,
+        "weight": 600,
+        "lineHeight": 18,
+        "usage": "button_labels",
+        "transform": "uppercase"
+      }
+    }
+  },
+  "spacing": {
+    "gridUnit": 8,
+    "containerMaxWidth": 1300,
+    "gutterWidth": 70,
+    "sections": {
+      "padding": {
+        "top": 80,
+        "bottom": 80,
+        "left": 70,
+        "right": 70
+      },
+      "gap": 40
+    },
+    "components": {
+      "padding": {
+        "default": 20,
+        "button": {
+          "vertical": 12,
+          "horizontal": 20
+        },
+        "card": 30
+      },
+      "gap": 16
+    },
+    "scale": {
+      "xs": 4,
+      "sm": 8,
+      "md": 16,
+      "lg": 32,
+      "xl": 40,
+      "xxl": 80
+    }
+  },
+  "components": {
+    "header": {
+      "height": 60,
+      "background": "#FFFFFF",
+      "position": "fixed",
+      "zIndex": 100,
+      "padding": 12,
+      "subComponents": {
+        "logo": {
+          "width": 80,
+          "height": 47,
+          "marginLeft": 12
+        },
+        "navigation": {
+          "fontSize": 14,
+          "fontWeight": 400,
+          "spacing": 50,
+          "items": ["PLANS", "NETWORKS", "HOW IT WORKS", "SHOP"]
+        },
+        "actions": {
+          "iconSize": 35,
+          "buttonSize": {
+            "width": 123,
+            "height": 35
+          },
+          "spacing": 20
+        }
+      }
+    },
+    "hero": {
+      "height": 800,
+      "width": 1440,
+      "containerWidth": 1300,
+      "backgroundImage": "hero-test 1",
+      "subComponents": {
+        "headline": {
+          "fontSize": 32,
+          "fontWeight": 600,
+          "lineHeight": 40,
+          "color": "#586271"
+        },
+        "subheadline": {
+          "fontSize": 16,
+          "fontWeight": 400,
+          "lineHeight": 24,
+          "color": "#8694AA"
+        },
+        "cta": {
+          "type": "button_primary",
+          "width": 211,
+          "height": 50
+        }
+      }
+    },
+    "pricingCard": {
+      "width": 297,
+      "height": 317,
+      "padding": 20,
+      "borderRadius": 12,
+      "background": "#FFFFFF",
+      "shadow": "0 4px 12px rgba(0, 0, 0, 0.12)",
+      "gridColumns": 3,
+      "gap": 16,
+      "subComponents": {
+        "price": {
+          "fontSize": 32,
+          "fontWeight": 600,
+          "color": "#1D5FF6"
+        },
+        "period": {
+          "fontSize": 14,
+          "fontWeight": 400,
+          "color": "#8694AA"
+        },
+        "featureList": {
+          "gap": 16,
+          "checkboxSize": 24
+        }
+      }
+    },
+    "button": {
+      "variants": {
+        "primary": {
+          "width": 211,
+          "height": 50,
+          "background": "#1D5FF6",
+          "textColor": "#FFFFFF",
+          "borderRadius": 8,
+          "fontSize": 14,
+          "fontWeight": 600,
+          "padding": {
+            "vertical": 12,
+            "horizontal": 20
+          },
+          "states": {
+            "default": "#1D5FF6",
+            "hover": "#1A4DD9",
+            "active": "#1639B2",
+            "disabled": "#E1E3E6"
+          }
+        },
+        "secondary": {
+          "width": 74,
+          "height": 35,
+          "background": "transparent",
+          "textColor": "#1D5FF6",
+          "borderRadius": 6,
+          "fontSize": 14,
+          "fontWeight": 600,
+          "states": {
+            "default": "transparent",
+            "hover": "#E2E6F4"
+          }
+        },
+        "icon": {
+          "width": 35,
+          "height": 35,
+          "background": "#FFFFFF",
+          "borderRadius": 8,
+          "icon": {
+            "size": 19,
+            "color": "#586271"
+          }
+        }
+      }
+    },
+    "accordion": {
+      "width": 540,
+      "heightClosed": 80,
+      "heightOpen": 200,
+      "padding": 20,
+      "borderRadius": 12,
+      "background": "#FFFFFF",
+      "gap": 16,
+      "gridColumns": 2,
+      "subComponents": {
+        "question": {
+          "fontSize": 16,
+          "fontWeight": 600,
+          "color": "#586271"
+        },
+        "answer": {
+          "fontSize": 14,
+          "fontWeight": 400,
+          "color": "#8694AA",
+          "lineHeight": 24,
+          "marginTop": 16
+        },
+        "icon": {
+          "size": 17,
+          "color": "#1D5FF6"
+        }
+      }
+    },
+    "deviceCard": {
+      "width": 297,
+      "height": 438,
+      "padding": 20,
+      "borderRadius": 12,
+      "background": "#FFFFFF",
+      "shadow": "0 4px 12px rgba(0, 0, 0, 0.12)",
+      "gridColumns": 3,
+      "gap": 16,
+      "subComponents": {
+        "image": {
+          "height": 160,
+          "marginTop": 20,
+          "maintainAspectRatio": true
+        },
+        "productName": {
+          "fontSize": 14,
+          "fontWeight": 400,
+          "color": "#8694AA",
+          "marginTop": 20
+        },
+        "price": {
+          "fontSize": 32,
+          "fontWeight": 600,
+          "color": "#1D5FF6",
+          "marginTop": 20
+        }
+      }
+    }
+  },
+  "effects": {
+    "shadows": {
+      "sm": "0 2px 4px rgba(0, 0, 0, 0.08)",
+      "md": "0 4px 12px rgba(0, 0, 0, 0.12)",
+      "lg": "0 8px 24px rgba(0, 0, 0, 0.16)"
+    },
+    "borderRadius": {
+      "cards": 12,
+      "buttons": 8,
+      "inputs": 6,
+      "small": 4,
+      "large": 16
+    },
+    "transitions": {
+      "default": "150ms ease-in-out",
+      "smooth": "300ms cubic-bezier(0.4, 0, 0.2, 1)"
+    }
+  },
+  "states": {
+    "button": {
+      "default": "solid blue",
+      "hover": "darker blue with shadow",
+      "active": "darkest blue",
+      "disabled": "gray with opacity",
+      "focus": "blue outline 2px"
+    },
+    "input": {
+      "default": "white background, light gray border",
+      "focus": "white background, blue border, blue shadow",
+      "error": "white background, red border",
+      "disabled": "gray background, gray text"
+    },
+    "accordion": {
+      "closed": "icon +, height 80px, answer hidden",
+      "open": "icon -, height expanded, answer visible",
+      "hover": "background light blue"
+    }
+  },
+  "responsive": {
+    "breakpoints": {
+      "mobile": {
+        "min": 0,
+        "max": 640
+      },
+      "tablet": {
+        "min": 641,
+        "max": 1024
+      },
+      "desktop": {
+        "min": 1025,
+        "max": null
+      }
+    },
+    "currentDesign": "desktop-1440px",
+    "constraints": {
+      "minWidth": 320,
+      "maxWidth": 1440,
+      "containerMaxWidth": 1300
+    },
+    "behavior": {
+      "gridColumns": {
+        "mobile": 1,
+        "tablet": 2,
+        "desktop": 3
+      },
+      "padding": {
+        "mobile": 16,
+        "tablet": 32,
+        "desktop": 70
+      }
+    }
+  },
+  "sections": [
+    {
+      "name": "Header",
+      "height": 60,
+      "position": "fixed",
+      "zIndex": 100,
+      "background": "#FFFFFF",
+      "components": ["Logo", "Navigation", "Actions"]
+    },
+    {
+      "name": "HeroSection",
+      "height": 800,
+      "padding": {
+        "top": 80,
+        "bottom": 80,
+        "horizontal": 70
+      },
+      "components": ["Headline", "Subheadline", "CTA Button", "Hero Image"]
+    },
+    {
+      "name": "PricingComparison",
+      "height": 630,
+      "padding": {
+        "top": 80,
+        "bottom": 80,
+        "horizontal": 70
+      },
+      "gridLayout": {
+        "columns": 3,
+        "gap": 16
+      },
+      "components": ["PricingCard x3"]
+    },
+    {
+      "name": "FAQAccordion",
+      "height": 700,
+      "padding": {
+        "top": 80,
+        "bottom": 80,
+        "horizontal": 70
+      },
+      "gridLayout": {
+        "columns": 2,
+        "gap": 16
+      },
+      "components": ["AccordionItem x8"]
+    },
+    {
+      "name": "DeviceShowcase",
+      "height": 430,
+      "padding": {
+        "top": 80,
+        "bottom": 80,
+        "horizontal": 70
+      },
+      "gridLayout": {
+        "columns": 3,
+        "gap": 16
+      },
+      "components": ["DeviceCard x3"]
+    },
+    {
+      "name": "NetworkCoverage",
+      "height": 651,
+      "padding": {
+        "top": 80,
+        "bottom": 80,
+        "horizontal": 70
+      },
+      "gridLayout": {
+        "columns": 2,
+        "gap": 40
+      },
+      "components": ["Content", "IllustrationGraphic"]
+    },
+    {
+      "name": "Footer",
+      "height": 300,
+      "padding": {
+        "top": 80,
+        "bottom": 80,
+        "horizontal": 70
+      },
+      "components": ["SocialLinks", "FooterLinks"]
+    }
+  ],
+  "assets": {
+    "images": [
+      {
+        "name": "hero-test 1",
+        "dimensions": {
+          "width": 1440,
+          "height": 738
+        },
+        "type": "illustration",
+        "description": "Rocket/spaceship hero background"
+      },
+      {
+        "name": "Device Images",
+        "types": ["iPhone", "XR variant"],
+        "description": "Product showcase images"
+      },
+      {
+        "name": "Network Coverage Graphic",
+        "description": "Circular ripple/coverage visualization"
+      }
+    ],
+    "icons": [
+      {
+        "name": "Search",
+        "size": 19,
+        "usage": "header"
+      },
+      {
+        "name": "Notification",
+        "size": 19,
+        "usage": "header"
+      },
+      {
+        "name": "Chevron",
+        "size": 17,
+        "usage": "accordion"
+      },
+      {
+        "name": "Checkmark",
+        "size": 24,
+        "usage": "feature_lists"
+      },
+      {
+        "name": "Social Icons",
+        "size": 19,
+        "platforms": ["Instagram", "Facebook", "LinkedIn", "Twitter"]
+      }
+    ]
+  }
+}

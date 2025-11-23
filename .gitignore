@@ -36,6 +36,10 @@ build
 # Testing
 coverage
 .nyc_output
+playwright-report
+test-results
+e2e/screenshots
+.auth
 
 # OS files
 Thumbs.db
@@ -46,3 +50,6 @@ Thumbs.db
 
 *storybook.log
 storybook-static
+
+# Hook execution logs
+.claude/hooks/logs/

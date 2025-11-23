@@ -1,0 +1,287 @@
+/**
+ * BusinessPageFooter Styles
+ * Footer with links and social icons
+ */
+
+.footer {
+  position: relative;
+  background-color: #ffffff;
+  border-top: 1px solid rgba(25, 35, 50, 0.1);
+  padding-top: 95px;
+  padding-bottom: 32px;
+  overflow: hidden;
+}
+
+/* Background Fade Overlay */
+.backgroundFade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0.667) 50%,
+    rgba(255, 255, 255, 0.5) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Content */
+.content {
+  position: relative;
+  z-index: 1;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 70px;
+}
+
+.contentInner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+/* Links Section */
+.linksSection {
+  display: flex;
+  gap: 40px;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.footerLink {
+  font-family: 'GT Walsheim Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #9ba1aa;
+  text-decoration: none;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.footerLink:hover {
+  color: #1d5ff6;
+}
+
+.footerLink:focus-visible {
+  outline: 2px solid #1d5ff6;
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* Social Icons Section */
+.socialSection {
+  display: flex;
+  gap: 20px;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.socialIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 31px;
+  height: 31px;
+  border-radius: 8px;
+  background-color: transparent;
+  color: #9ba1aa;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(155, 161, 170, 0.2);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.socialIcon:hover {
+  color: #1d5ff6;
+  border-color: #1d5ff6;
+  background-color: rgba(29, 95, 246, 0.05);
+}
+
+.socialIcon:focus-visible {
+  outline: 2px solid #1d5ff6;
+  outline-offset: 2px;
+}
+
+.iconContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* Copyright Section */
+.copyright {
+  position: relative;
+  z-index: 1;
+  max-width: 1440px;
+  margin: 32px auto 0;
+  padding: 0 70px;
+  text-align: center;
+  border-top: 1px solid rgba(25, 35, 50, 0.1);
+  padding-top: 24px;
+}
+
+.copyright p {
+  font-family: 'GT Walsheim Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #9ba1aa;
+  margin: 0;
+  letter-spacing: 0.4px;
+}
+
+/* Responsive Design */
+@media (max-width: 1440px) {
+  .content {
+    padding: 0 50px;
+  }
+
+  .copyright {
+    padding: 0 50px;
+  }
+
+  .contentInner {
+    gap: 30px;
+  }
+
+  .linksSection {
+    gap: 30px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .footer {
+    padding-top: 80px;
+    padding-bottom: 24px;
+  }
+
+  .content {
+    padding: 0 40px;
+  }
+
+  .copyright {
+    padding: 0 40px;
+  }
+
+  .contentInner {
+    gap: 24px;
+    align-items: center;
+  }
+
+  .linksSection {
+    gap: 24px;
+  }
+
+  .footerLink {
+    font-size: 11px;
+  }
+
+  .socialIcon {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .socialSection {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding-top: 60px;
+    padding-bottom: 20px;
+  }
+
+  .content {
+    padding: 0 24px;
+  }
+
+  .copyright {
+    padding: 0 24px;
+  }
+
+  .contentInner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+  }
+
+  .linksSection {
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+
+  .socialSection {
+    justify-content: center;
+  }
+
+  .footerLink {
+    font-size: 10px;
+    flex: 0 1 auto;
+  }
+
+  .socialIcon {
+    width: 26px;
+    height: 26px;
+    font-size: 11px;
+  }
+
+  .socialSection {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    padding-top: 50px;
+    padding-bottom: 16px;
+  }
+
+  .content {
+    padding: 0 16px;
+  }
+
+  .copyright {
+    padding: 0 16px;
+    padding-top: 16px;
+  }
+
+  .contentInner {
+    gap: 16px;
+  }
+
+  .linksSection {
+    gap: 12px;
+    font-size: 9px;
+  }
+
+  .footerLink {
+    font-size: 9px;
+    padding: 4px 8px;
+  }
+
+  .socialIcon {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+  }
+
+  .socialSection {
+    gap: 10px;
+  }
+
+  .copyright p {
+    font-size: 10px;
+  }
+}

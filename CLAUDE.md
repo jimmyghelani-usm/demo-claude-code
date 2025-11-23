@@ -526,8 +526,15 @@ The following documentation exists for reference but should NOT be read automati
 
 ## Important Constraints
 
-**Documentation Organization:**
-NEVER create markdown documentation files at the project root. Always place them in the organized `docs/` directory structure:
+**Token Efficiency - NO AUTO DOCUMENTATION:**
+NEVER automatically create `.md` documentation files unless explicitly requested by the user.
+Creating documentation consumes tokens unnecessarily. Only create `.md` files when:
+- User explicitly asks: "document X"
+- User asks: "create a guide for Y"
+- Architecture decisions need formal recording
+
+**Documentation Organization (if created):**
+Only place in organized `docs/` structure:
 - `docs/mcp/setup/` - MCP server setup guides, success stories, status updates
 - `docs/mcp/architecture/` - MCP architecture, implementation summaries, restructure plans
 - `docs/agents/` - Agent workflow analysis, testing requirements, agent coordination

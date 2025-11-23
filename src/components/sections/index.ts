@@ -15,3 +15,13 @@ export { CTAFooterSection, type CTAFooterSectionProps, type FooterLink, type Soc
 export { FAQSection, type FAQSectionProps, type FAQItem } from './FAQSection';
 export { GiveawayHero } from './GiveawayHero';
 export { MilestoneCards } from './MilestoneCards';
+export { CTASection, type CTASectionProps } from './CTASection';
+export { FeaturedSection } from './FeaturedSection';
+export { MultiStepForm } from './MultiStepForm';
+export { BusinessPageHeader } from './BusinessPageHeader';
+export { BusinessPageHero } from './BusinessPageHero';
+export { FAQAccordion, type FAQItem as FAQAccordionItem } from './FAQAccordion';
+export { BusinessPageFooter } from './BusinessPageFooter';
+export { PricingSection, type PricingSectionProps } from './PricingSection';
+export { DeviceShowcase, type DeviceShowcaseProps } from './DeviceShowcase';
+export { NetworkCoverage, type NetworkCoverageProps } from './NetworkCoverage';

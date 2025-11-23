@@ -25,31 +25,27 @@ describe('App', () => {
   })
 
   describe('rendering', () => {
-    it('renders the Referral Rewards hero heading as h1', () => {
+    it('renders the BusinessPageHeader', () => {
       render(<App />)
-      const heading = screen.getByRole('heading', {
-        name: /given out in referral rewards/i,
-        level: 1,
-      })
-      expect(heading).toBeInTheDocument()
+      expect(screen.getByText('US Mobile')).toBeInTheDocument()
     })
 
-    it('renders the subheading', () => {
+    it('renders the BusinessPageHero heading', () => {
       render(<App />)
       expect(
         screen.getByRole('heading', {
-          name: /still counting\. thousands of users are earning just by sharing\./i,
-          level: 2,
+          name: /welcome to us mobile/i,
+          level: 1,
         })
       ).toBeInTheDocument()
     })
 
     it('renders the CTA button', () => {
       render(<App />)
-      // Accessible name comes from aria-label on the button
+      // CTA button from CTASection component
       expect(
         screen.getByRole('button', {
-          name: /start earning referral rewards now/i,
+          name: /get started now/i,
         })
       ).toBeInTheDocument()
     })

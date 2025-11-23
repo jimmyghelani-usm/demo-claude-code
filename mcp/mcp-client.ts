@@ -13,6 +13,7 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { config } from 'dotenv';
+import open from 'open';
 
 // Load environment variables from .env file
 config();
@@ -20,15 +21,52 @@ config();
 /**
  * Lightweight Figma MCP client that bypasses SDK validation
  * This is a workaround for the schema validation error with Figma Desktop MCP server
+ * and handles OAuth for the remote Figma MCP server
  */
 class FigmaDirectClient {
   private url: string;
   private messageId = 1;
   private sessionId?: string;
   private initialized = false;
+  private oauthToken?: string;
 
-  constructor(url: string) {
+  constructor(url: string, oauthToken?: string) {
     this.url = url;
+    this.oauthToken = oauthToken;
+  }
+
+  private async handleOAuthRequired(): Promise<void> {
+    console.log('\n🔐 Figma Remote MCP Server requires OAuth authentication\n');
+    console.log('Opening Figma developer apps page...\n');
+
+    try {
+      // Open Figma developer apps page
+      await open('https://www.figma.com/developers/apps');
+
+      console.log('✅ Browser opened to: https://www.figma.com/developers/apps');
+      console.log('\n📋 Steps to authenticate:');
+      console.log('   1. Create a new app (if you don\'t have one)');
+      console.log('   2. Set up OAuth with these scopes:');
+      console.log('      • file_content:read');
+      console.log('      • files:read');
+      console.log('   3. Copy your OAuth access token');
+      console.log('   4. Add to .env: FIGMA_OAUTH_TOKEN=your_token');
+      console.log('   5. Run your code again\n');
+
+      // Also open the Figma dev docs
+      setTimeout(() => {
+        console.log('Opening Figma MCP documentation...\n');
+        open('https://developers.figma.com/docs/figma-mcp-server/remote-server-installation/');
+      }, 1000);
+    } catch (error) {
+      // If browser opening fails, just show the URLs
+      console.log('⚠️  Could not open browser automatically\n');
+      console.log('📋 Please visit these URLs manually:');
+      console.log('   1. Create/manage app: https://www.figma.com/developers/apps');
+      console.log('   2. Setup guide: https://developers.figma.com/docs/figma-mcp-server/remote-server-installation/');
+      console.log('\n📝 After getting your token, add to .env:');
+      console.log('   FIGMA_OAUTH_TOKEN=your_token\n');
+    }
   }
 
   private async ensureInitialized(): Promise<void> {
@@ -41,12 +79,19 @@ class FigmaDirectClient {
     const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
     try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json, text/event-stream',
+      };
+
+      // Add OAuth header for remote Figma server if token is available
+      if (this.oauthToken) {
+        headers['Authorization'] = `Bearer ${this.oauthToken}`;
+      }
+
       const response = await fetch(this.url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json, text/event-stream',
-        },
+        headers,
         body: JSON.stringify({
           jsonrpc: '2.0',
           method: 'initialize',
@@ -66,6 +111,13 @@ class FigmaDirectClient {
 
       if (!response.ok) {
         const errorText = await response.text();
+
+        // For 401 on remote Figma server, offer to open OAuth link
+        if (response.status === 401 && this.url.includes('figma.com')) {
+          await this.handleOAuthRequired();
+          throw new Error(`Initialization failed: HTTP ${response.status} - ${errorText}`);
+        }
+
         throw new Error(`Initialization failed: HTTP ${response.status} - ${errorText}`);
       }
 
@@ -144,13 +196,20 @@ class FigmaDirectClient {
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout for tool calls
 
     try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json, text/event-stream',
+        ...(this.sessionId ? { 'Mcp-Session-Id': this.sessionId } : {}),
+      };
+
+      // Add OAuth header for remote Figma server if token is available
+      if (this.oauthToken) {
+        headers['Authorization'] = `Bearer ${this.oauthToken}`;
+      }
+
       const response = await fetch(this.url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json, text/event-stream',
-          ...(this.sessionId ? { 'Mcp-Session-Id': this.sessionId } : {}),
-        },
+        headers,
         body: JSON.stringify({
           jsonrpc: '2.0',
           method: 'tools/call',
@@ -218,13 +277,20 @@ class FigmaDirectClient {
     const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
     try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json, text/event-stream',
+        ...(this.sessionId ? { 'Mcp-Session-Id': this.sessionId } : {}),
+      };
+
+      // Add OAuth header for remote Figma server if token is available
+      if (this.oauthToken) {
+        headers['Authorization'] = `Bearer ${this.oauthToken}`;
+      }
+
       const response = await fetch(this.url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json, text/event-stream',
-          ...(this.sessionId ? { 'Mcp-Session-Id': this.sessionId } : {}),
-        },
+        headers,
         body: JSON.stringify({
           jsonrpc: '2.0',
           method: 'tools/list',
@@ -299,6 +365,14 @@ const MCP_SERVERS: Record<string, MCPServerConfig> = {
     transport: 'http',
     url: 'http://127.0.0.1:3845/mcp',
   },
+  'figma-remote': {
+    transport: 'stdio',
+    command: 'npx',
+    args: ['-y', 'mcp-remote', 'https://mcp.figma.com/mcp'],
+    env: {
+      // mcp-remote handles OAuth automatically
+    },
+  },
   'playwright': {
     transport: 'stdio',
     command: 'npx',
@@ -330,11 +404,12 @@ export async function getMCPClient(serverName: keyof typeof MCP_SERVERS): Promis
     throw new Error(`Unknown MCP server: ${serverName}`);
   }
 
-  // Special case: Use direct HTTP client for Figma to bypass schema validation
+  // Special case: Use direct HTTP client for Figma Desktop to bypass schema validation
   if (serverName === 'figma-desktop' && config.transport === 'http') {
     if (!config.url) {
       throw new Error(`HTTP transport requires a URL for server: ${serverName}`);
     }
+
     const figmaClient = new FigmaDirectClient(config.url);
     // Cast to Client type - it implements the required interface (callTool, close)
     const client = figmaClient as unknown as Client;
@@ -417,12 +492,16 @@ export async function callMCPTool<T = any>(
   const client = await getMCPClient(serverName);
 
   // Increase timeout for browser operations which can be slow
-  // Figma: 15s for large design payloads
+  // Figma Desktop: 15s for large design payloads
+  // Figma Remote: 60s for OAuth browser interaction and large payloads
   // Playwright: 30s for browser startup, navigation, and page loading
   // Linear: 5s for API calls
   let timeoutMs = 5000;
   if (serverName === 'figma-desktop') {
     timeoutMs = 15000;
+  } else if (serverName === 'figma-remote') {
+    // Very long timeout: first run opens browser for OAuth consent
+    timeoutMs = 120000; // 2 minutes for user to approve in browser
   } else if (serverName === 'playwright') {
     timeoutMs = 30000;
   }

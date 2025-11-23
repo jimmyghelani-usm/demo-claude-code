@@ -1,0 +1,102 @@
+/* Button Component Styles */
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 16px;
+  border-radius: 32px;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+/* Primary Variant */
+.primary {
+  background-color: #ffffff;
+  color: #1d5ff6;
+  border: 1px solid #ffffff;
+}
+
+.primary:hover:not(:disabled) {
+  background-color: #f0f0f0;
+  box-shadow: 0 4px 12px rgba(29, 95, 246, 0.3);
+}
+
+.primary:active:not(:disabled) {
+  background-color: #e8e8e8;
+}
+
+/* Secondary Variant */
+.secondary {
+  background-color: transparent;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+}
+
+.secondary:hover:not(:disabled) {
+  border-color: #608ff9;
+  color: #608ff9;
+  background-color: rgba(96, 143, 249, 0.05);
+}
+
+.secondary:active:not(:disabled) {
+  border-color: #1d5ff6;
+  color: #1d5ff6;
+}
+
+/* Disabled State */
+.disabled {
+  background-color: #e0e0e0;
+  color: #999999;
+  border-color: #e0e0e0;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.primary.disabled {
+  background-color: #e0e0e0;
+  color: #999999;
+}
+
+.secondary.disabled {
+  border-color: #999999;
+  color: #999999;
+}
+
+/* Icon Styles */
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2em;
+  height: 1.2em;
+}
+
+/* Label Styles */
+.label {
+  display: inline-block;
+}
+
+/* Focus State (Keyboard Navigation) */
+.button:focus-visible {
+  outline: 2px solid #1d5ff6;
+  outline-offset: 2px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .button {
+    min-height: 40px;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
