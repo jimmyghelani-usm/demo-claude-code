@@ -1,10 +1,4 @@
 {
   "name": "demo-claude-code",
-  "description": "Claude Code project with MCP server wrappers and intelligent agent orchestration",
-  "hooks": [
-    {
-      "event": "SubagentStop",
-      "command": "npx ts-node .claude/hooks/agent-orchestrator.ts"
-    }
-  ]
+  "description": "Claude Code project with MCP server wrappers and intelligent agent orchestration"
 }
