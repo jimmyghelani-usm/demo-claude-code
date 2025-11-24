@@ -6,8 +6,7 @@
           {
             "type": "command",
             "command": ".claude/hooks/agent-orchestrator.ts",
-            "timeout": 30,
-            "description": "Intelligent agent orchestration - routes to next agent based on completion status, errors, and workflow context"
+            "timeout": 30
           }
         ]
       }
