@@ -453,10 +453,18 @@ PARALLEL EXECUTION MODE:
  */
 async function main() {
   try {
+    // Log hook entry to stderr immediately (visible in Claude Code UI)
+    console.error('[HOOK-ENTRY] SubagentStop hook triggered at', new Date().toISOString());
+    console.error('[HOOK-INPUT] argv[2]:', process.argv[2] ? process.argv[2].substring(0, 100) : 'none');
+
     const input: SubagentStopInput = JSON.parse(process.argv[2] || '{}');
+
+    console.error('[HOOK-PARSED] session_id:', input.session_id);
+    console.error('[HOOK-PARSED] transcript_path:', input.transcript_path);
 
     // Prevent infinite loops
     if (input.stop_hook_active) {
+      console.error('[HOOK-BLOCKED] Hook already active, preventing infinite loop');
       console.log(
         JSON.stringify({
           decision: undefined,
@@ -467,24 +475,34 @@ async function main() {
     }
 
     // Read transcript
+    console.error('[HOOK-READING] Starting transcript read from:', input.transcript_path);
     const entries = await readTranscript(input.transcript_path);
+    console.error('[HOOK-READ] Transcript entries loaded:', entries.length);
 
     // Analyze current state
+    console.error('[HOOK-ANALYZING] Analyzing transcript...');
     const analysis = analyzeTranscript(entries);
+    console.error('[HOOK-ANALYSIS] Agents run:', analysis.agentsRun.join(', ') || 'none');
 
     // Determine next agent
+    console.error('[HOOK-DECIDING] Determining next agent...');
     const decision = determineNextAgent(analysis);
+    console.error('[HOOK-DECISION] nextAgent:', decision.nextAgent || 'none');
+    console.error('[HOOK-DECISION] parallelAgents:', decision.parallelAgents?.map(a => a.agent).join(', ') || 'none');
 
     // Log the execution
     logHookExecution(input, analysis, decision);
+    console.error('[HOOK-LOGGED] Execution logged to file');
 
     // Output decision summary to console
     console.log(formatDecisionForConsole(decision));
 
     // Output JSON decision for Claude Code to parse
     console.log(JSON.stringify(decision));
+
+    console.error('[HOOK-COMPLETE] SubagentStop hook execution completed successfully');
   } catch (error) {
-    console.error('Agent orchestrator error:', error);
+    console.error('[HOOK-ERROR] Agent orchestrator error:', error);
     process.exit(1);
   }
 }

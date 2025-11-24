@@ -1,4 +1,4 @@
-import { Navigation, GiveawayHero, MilestoneCards, StatisticsSection, FAQSection, CTAFooterSection, CTASection, FeaturedSection, MultiStepForm, BusinessPageHeader, BusinessPageHero, FAQAccordion, BusinessPageFooter, PricingSection, DeviceShowcase, NetworkCoverage } from '@/components/sections';
+import { Navigation, GiveawayHero, MilestoneCards, StatisticsSection, FAQSection, CTAFooterSection, CTASection, FeaturedSection, MultiStepForm, BusinessPageHeader, BusinessPageHero, FAQAccordion, BusinessPageFooter, PricingSection, DeviceShowcase, NetworkCoverage, UsMobileTradeInHero, UsMobileTradeInHowItWorks, UsMobileTradeInFAQ, UsMobileTradeInFooter } from '@/components/sections';
 import { PricingCard, Button, TextInput, IconButton, FeatureCard, SectionHeading, NumberedStepCard, Card, DeviceCard } from '@/components/ui';
 import './App.css';
 
@@ -80,6 +80,29 @@ function App() {
           </div>
           <BusinessPageFooter />
         </section>
+
+        {/* Divider */}
+        <div style={{ height: '100px', backgroundColor: '#ffffff' }} />
+
+        {/* US Mobile Trade In Page */}
+        <UsMobileTradeInHero
+          headline="Trade In Your Old Phone"
+          subheadline="Get instant credit toward your next device"
+          ctaLabel="START TRADE IN"
+          ctaHref="/trade-in"
+        />
+        <UsMobileTradeInHowItWorks
+          sectionTitle="Simple 4-Step Process"
+          sectionDescription="Get the best value for your device in just a few minutes"
+        />
+        <UsMobileTradeInFAQ
+          title="Frequently Asked Questions"
+          subtitle="Find answers to common questions about our trade-in process"
+        />
+        <UsMobileTradeInFooter
+          brandText="US Mobile"
+          brandDescription="The best way to get the most value from your old devices. Trade in with confidence."
+        />
 
         {/* Divider */}
         <div style={{ height: '100px', backgroundColor: '#ffffff' }} />

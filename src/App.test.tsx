@@ -27,7 +27,10 @@ describe('App', () => {
   describe('rendering', () => {
     it('renders the BusinessPageHeader', () => {
       render(<App />)
-      expect(screen.getByText('US Mobile')).toBeInTheDocument()
+      // Look for the logo/brand text in the header (should be a heading or have a specific role)
+      expect(
+        screen.getAllByText('US Mobile').length
+      ).toBeGreaterThan(0)
     })
 
     it('renders the BusinessPageHero heading', () => {

@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "npx ts-node .claude/hooks/agent-orchestrator.ts",
+            "command": "npx tsx .claude/hooks/agent-orchestrator.ts",
             "timeout": 30
           }
         ]
