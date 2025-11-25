@@ -1,1 +1,0 @@
-export { BusinessPageFooter } from './BusinessPageFooter';

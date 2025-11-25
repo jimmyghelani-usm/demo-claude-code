@@ -53,9 +53,6 @@ storybook-static
 
 # Hook execution logs
 .claude/hooks/logs/
-/docs/temp/figma-specs/IMPLEMENTATION_GUIDE.md
-/docs/temp/figma-specs/README.md
-/docs/temp/figma-specs/specs-2171-12869.json
-/docs/temp/figma-specs/specs-2171-12869-2025-11-24.json
-/docs/temp/figma-specs/specs-2171-12869-2025-11-24.md
-/docs/temp/DESIGN_SPECS_SUMMARY.md
+/docs/temp/*
+/mcp/tests/playwright/*
+/mcp/examples/*

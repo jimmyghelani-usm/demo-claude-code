@@ -5,8 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "npx tsx .claude/hooks/agent-orchestrator.ts",
-            "timeout": 30
+            "prompt": "run the next subagent in the orchestration cycle based on our orchestration workflow of choice. If youre not sure what to do, ask for help! "
           }
         ]
       }

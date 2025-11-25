@@ -8,8 +8,8 @@
  *   npx tsx mcp/tests/capture-screenshots.ts <url> [output-prefix]
  *
  * Examples:
- *   npx tsx mcp/tests/capture-screenshots.ts http://localhost:3000
- *   npx tsx mcp/tests/capture-screenshots.ts http://localhost:3000 homepage
+ *   npx tsx mcp/tests/capture-screenshots.ts http://localhost:3005
+ *   npx tsx mcp/tests/capture-screenshots.ts http://localhost:3005 splash
  */
 
 import { config } from 'dotenv';
@@ -64,8 +64,8 @@ const [url, prefix] = process.argv.slice(2);
 if (!url) {
   console.error('Usage: npx tsx mcp/tests/capture-screenshots.ts <url> [output-prefix]');
   console.error('\nExamples:');
-  console.error('  npx tsx mcp/tests/capture-screenshots.ts http://localhost:3000');
-  console.error('  npx tsx mcp/tests/capture-screenshots.ts http://localhost:3000 homepage');
+  console.error('  npx tsx mcp/tests/capture-screenshots.ts http://localhost:3005');
+  console.error('  npx tsx mcp/tests/capture-screenshots.ts http://localhost:3005 splash');
   process.exit(1);
 }
 

@@ -1,6 +1,6 @@
 ---
 description: Orchestrate multi-agent workflows. Parse arguments and execute Linear/Figma/PRD workflows.
-argument-hint: linear <ticket-id> | figma <url> [url ...] | prd <requirements> [--figma <url> ...] [--implement]
+argument-hint: linear <ticket-id> | figma <url> [url ...] | prd <requirements> [--figma <url> ...] [--implement] | prompt
 ---
 
 ## Your Job
@@ -275,6 +275,12 @@ prd-writer (create PRD only)
 6. If --implement: Task("playwright-dev-tester", { implementations }) [visual verification only - NO test files]
 7. Cleanup: `rm -rf mcp/tests/temp-* docs/temp/*`
 
+**prompt**
+1. based on user input, determine which agents to run
+2. agents that can be run are either figma-design-analyzer, senior-frontend-engineer, storybook-expert, react-component-tester or playwright-dev-tester
+3. Run as many agents as you need from the above list in any order and in parallel
+4. Try and orchestrate the flow as much as possible
+
 ## Key Rules
 
 - Use explicit agent names only: `Task("figma-design-analyzer", {...})`
@@ -324,6 +330,15 @@ prd-writer (create PRD only)
 - ✅ prd-writer
 
 **Total: 1 agent**
+
+### Prompt workflow
+**All agents that must run (non-optional):**
+- Depends on user input; can be any of:
+  - figma-design-analyzer
+  - senior-frontend-engineer
+  - storybook-expert
+  - react-component-tester
+  - playwright-dev-tester
 
 ## Communication Protocol for Orchestration
 

@@ -128,7 +128,7 @@ function analyzeTranscript(entries: SessionEntry[]): {
       }
     }
 
-    if (entry.type === 'tool_result' && entry.result?.includes('error')) {
+    if (entry.type === 'tool_result' && entry.result && entry.result.includes('error')) {
       errors.push(entry.result);
     }
   }
@@ -461,6 +461,18 @@ async function main() {
 
     console.error('[HOOK-PARSED] session_id:', input.session_id);
     console.error('[HOOK-PARSED] transcript_path:', input.transcript_path);
+
+    // Validate required parameters
+    if (!input.transcript_path) {
+      console.error('[HOOK-ERROR] Missing required parameter: transcript_path');
+      console.log(
+        JSON.stringify({
+          decision: undefined,
+          reason: 'Missing required parameter: transcript_path. Hook requires proper SubagentStop input.',
+        })
+      );
+      process.exit(1);
+    }
 
     // Prevent infinite loops
     if (input.stop_hook_active) {

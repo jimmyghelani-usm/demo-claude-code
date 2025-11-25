@@ -24,7 +24,7 @@ export default defineConfig({
   },
   // Development server configuration
   server: {
-    port: 3000,
+    port: 3005,
     open: true,
     // Automatically open browser
     strictPort: false, // Try next port if 3000 is taken
