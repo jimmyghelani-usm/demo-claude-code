@@ -191,23 +191,133 @@ This repo includes a full Claude Code setup in `.claude/` with reusable agents a
 Key principle: implementation agents must trigger testing agents (stories + tests) automatically and in parallel.
 
 ### Commands (`.claude/commands/`)
-- **/implement-linear <ticket-id>**: Linear → (optional PRD) → Figma analysis → implementation → tests → update ticket.
-  - Skips PRD unless explicitly requested.
-  - Parallelizes Figma analyzers and implementations; engineers auto-trigger Storybook + tests.
-  - Example:
-    ```bash
-    /implement-linear FE-123
-    ```
-- **/implement-design <figma-urls>**: Figma-first flow: analyze designs → implement → tests, optimized for multiple URLs.
-  - Example:
-    ```bash
-    /implement-design https://figma.com/file/ABC?node-id=1413-14114 https://figma.com/file/ABC?node-id=1413-15016
-    ```
-- **/prd <requirements>**: Create a concise PRD, then ask how to proceed (just PRD, implement from Figma, implement directly, update Linear).
-  - Example:
-    ```bash
-    /prd Add dark mode toggle with system preference and manual override
-    ```
+
+#### `/orchestrate` - Multi-Agent Workflow Orchestrator
+
+The orchestrate command is the central hub for coordinating complex multi-agent workflows. It intelligently routes work to specialized agents based on your input type (Linear ticket, Figma design, PRD requirements, or custom prompt).
+
+**Available Workflow Types:**
+
+##### 1. Linear Ticket Workflow
+Fetch a Linear ticket, analyze attached designs, implement, test, and update the ticket.
+
+```bash
+/orchestrate linear FE-123
+```
+
+**What happens:**
+- Fetches Linear ticket context (title, description, Figma URLs)
+- Analyzes Figma designs attached to ticket
+- Implements components with multiple parallel engineers (scaled by complexity)
+- Creates Storybook stories and unit tests in parallel
+- Runs visual verification against Figma
+- Type checks and runs all tests
+- Updates Linear ticket with completion status
+
+**Agents involved (6):** mcp-execution-agent → figma-design-analyzer → senior-frontend-engineer (1-4 parallel) → storybook-expert + react-component-tester (parallel) → playwright-dev-tester
+
+---
+
+##### 2. Figma Design Workflow
+Analyze one or more Figma designs and implement them directly.
+
+```bash
+/orchestrate figma https://figma.com/file/ABC?node-id=1413-14114
+```
+
+**Multiple designs:**
+```bash
+/orchestrate figma https://figma.com/file/ABC?node-id=1413-14114 https://figma.com/file/ABC?node-id=1413-15016
+```
+
+**What happens:**
+- Extracts design specifications from all provided Figma URLs
+- Implements components with parallel engineers (scaled by design complexity)
+- Creates comprehensive Storybook documentation
+- Writes unit tests for all components
+- Performs visual verification against original designs
+- Validates implementation with type checking and test runs
+
+**Agents involved (5):** figma-design-analyzer → senior-frontend-engineer (1-4 parallel) → storybook-expert + react-component-tester (parallel) → playwright-dev-tester
+
+---
+
+##### 3. PRD Workflow
+Create a Product Requirements Document, optionally with Figma reference and immediate implementation.
+
+**Basic PRD creation:**
+```bash
+/orchestrate prd Add dark mode toggle with system preference detection and manual override
+```
+
+**PRD with Figma reference:**
+```bash
+/orchestrate prd Implement new checkout flow --figma https://figma.com/file/ABC?node-id=2171-13039
+```
+
+**PRD with immediate implementation:**
+```bash
+/orchestrate prd Create responsive navigation menu with mobile drawer --implement
+```
+
+**PRD with Figma + implementation:**
+```bash
+/orchestrate prd Build product card grid with filters --figma https://figma.com/file/ABC?node-id=1413-14114 --implement
+```
+
+**What happens (basic):**
+- Analyzes requirements and asks clarifying questions
+- Creates structured PRD with P0/P1/P2 priorities and success criteria
+- Stops and asks for next steps
+
+**What happens (with --implement):**
+- Creates PRD as above
+- Optionally analyzes Figma designs (if --figma provided)
+- Implements components with parallel engineers
+- Creates documentation and tests
+- Runs validation checks
+
+**Agents involved:**
+- Basic: prd-writer (1 agent)
+- With --implement: prd-writer → [figma-design-analyzer] → senior-frontend-engineer (1-4 parallel) → storybook-expert + react-component-tester (parallel) → playwright-dev-tester (5-6 agents)
+
+---
+
+##### 4. Prompt Workflow (Flexible)
+Use natural language to orchestrate custom agent combinations.
+
+```bash
+/orchestrate prompt
+```
+
+Then provide instructions like:
+- "Analyze these three Figma designs and create a component library"
+- "Implement the hero section and navigation, then test them"
+- "Create Storybook stories for all components in src/components/ui"
+- "Run visual tests on the checkout flow"
+
+**What happens:**
+- Analyzes your prompt to determine required agents
+- Selects from: figma-design-analyzer, senior-frontend-engineer, storybook-expert, react-component-tester, playwright-dev-tester
+- Orchestrates agents in optimal order with parallelization
+- Adapts to your specific needs
+
+**Agents involved:** Variable based on prompt (1-5+ agents)
+
+---
+
+**Key Features:**
+- **Intelligent Scaling**: Automatically runs 1-4 parallel frontend engineers based on design complexity
+- **Parallel Execution**: Independent agents run simultaneously for maximum speed
+- **Context Efficiency**: Uses MCP wrappers (98.7% context reduction) for all external tool calls
+- **Full Coverage**: Every workflow includes implementation, documentation (stories), and tests
+- **Visual Verification**: Playwright agent compares implementations against Figma designs
+- **Type Safety**: Validates TypeScript compilation before completing
+
+**Alternative Commands (Legacy):**
+- **/implement-linear <ticket-id>**: Equivalent to `/orchestrate linear <ticket-id>`
+- **/implement-design <figma-urls>**: Equivalent to `/orchestrate figma <url> [url ...]`
+- **/prd <requirements>**: Equivalent to `/orchestrate prd <requirements>`
 
 Notes:
 - Agents return content in responses, not files. Screenshots are the exception and must be saved.
